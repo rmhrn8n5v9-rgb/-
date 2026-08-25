@@ -416,7 +416,7 @@ h1 {
 
     cursor: pointer;
 
-    touch-action: none;
+    touch-action: pan-x pan-y;
 
     user-select: none;
 
