@@ -746,3 +746,125 @@ h1 {
 
     cursor: pointer;
 }
+/* =========================================
+   完全リセット
+========================================= */
+
+.reset-area {
+    width: 100%;
+    max-width: 700px;
+
+    margin: 20px auto;
+
+    text-align: center;
+}
+
+
+.reset-open-button {
+    padding: 12px 25px;
+
+    border: 2px solid #d32f2f;
+    border-radius: 10px;
+
+    background: white;
+
+    color: #d32f2f;
+
+    font-size: 16px;
+    font-weight: bold;
+}
+
+
+/* =========================================
+   リセット確認画面
+========================================= */
+
+.reset-confirm-area {
+    display: none;
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 20000;
+
+    background:
+        rgba(0, 0, 0, 0.55);
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+}
+
+
+.reset-confirm-area.show {
+    display: flex;
+}
+
+
+.reset-confirm-box {
+    width: min(500px, 100%);
+
+    padding: 25px;
+
+    background: white;
+
+    border-radius: 15px;
+
+    box-shadow:
+        0 5px 30px
+        rgba(0, 0, 0, 0.35);
+}
+
+
+.reset-warning {
+    margin-bottom: 15px;
+
+    color: #d32f2f;
+
+    font-size: 22px;
+    font-weight: bold;
+}
+
+
+.reset-description {
+    margin-bottom: 20px;
+
+    line-height: 1.7;
+
+    font-size: 16px;
+}
+
+
+.reset-buttons {
+    display: flex;
+
+    gap: 10px;
+}
+
+
+.reset-execute-button,
+.reset-cancel-button {
+    flex: 1;
+
+    padding: 15px;
+
+    border: none;
+    border-radius: 10px;
+
+    color: white;
+
+    font-size: 16px;
+    font-weight: bold;
+}
+
+
+.reset-execute-button {
+    background: #d32f2f;
+}
+
+
+.reset-cancel-button {
+    background: #777;
+}
