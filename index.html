@@ -13,7 +13,7 @@
 
     <link
         rel="stylesheet"
-        href="style.css"
+        href="style.css?v=4"
     >
 </head>
 
@@ -28,9 +28,7 @@
 
     <div class="reception-wrapper">
 
-
         <!-- ACEG -->
-
         <div class="reception aceg-reception">
 
             <h2>ACEGブロック受付</h2>
@@ -113,7 +111,6 @@
 
 
         <!-- BDFH -->
-
         <div class="reception bdfh-reception">
 
             <h2>BDFHブロック受付</h2>
@@ -198,6 +195,29 @@
 
 
     <!-- =====================================
+         座席操作モード
+    ====================================== -->
+
+    <div class="seat-mode-area">
+
+        <button
+            id="seatModeButton"
+            class="seat-mode-button"
+        >
+            範囲選択を開始
+        </button>
+
+        <div
+            id="seatModeMessage"
+            class="seat-mode-message"
+        >
+            通常モード：座席の上からスクロールできます
+        </div>
+
+    </div>
+
+
+    <!-- =====================================
          舞台
     ====================================== -->
 
@@ -215,7 +235,7 @@
 
 
     <!-- =====================================
-         ドラッグ一括変更 確定画面
+         一括変更の確認
     ====================================== -->
 
     <div
@@ -252,7 +272,10 @@
     </div>
 
 
-   <script type="module" src="script.js?v=3"></script>
+    <script
+        type="module"
+        src="script.js?v=4"
+    ></script>
 
 </body>
 
