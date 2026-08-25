@@ -567,9 +567,29 @@ document.addEventListener(
         }
 
 
-        changeSeatByDrag(
-            seat
-        );
+const groupName =
+    getGroupName(
+        seat.dataset.block
+    );
+
+const group =
+    groups[groupName];
+
+
+if (
+    group.currentCustomer === null
+) {
+
+    applyBulkSeatChange(
+        seat
+    );
+
+} else {
+
+    changeSeatByDrag(
+        seat
+    );
+}
 
     },
     {
@@ -589,6 +609,10 @@ function endDragging() {
     dragGroupName = null;
 
     dragMode = "select";
+
+    bulkSeatMode = null;
+
+    bulkTouchedSeats.clear();
 }
 
 
@@ -2017,3 +2041,127 @@ onValue(
             );
     }
 );
+// =====================================
+// 案内中ではないとき
+// 座席をなぞって一括変更
+// =====================================
+
+function applyBulkSeatChange(seat) {
+
+    if (!seat) {
+        return;
+    }
+
+
+    if (
+        !seat.classList.contains("seat")
+    ) {
+        return;
+    }
+
+
+    if (
+        bulkTouchedSeats.has(seat)
+    ) {
+        return;
+    }
+
+
+    const groupName =
+        getGroupName(
+            seat.dataset.block
+        );
+
+
+    if (
+        groupName !==
+        dragGroupName
+    ) {
+        return;
+    }
+
+
+    bulkTouchedSeats.add(
+        seat
+    );
+
+
+    const seatNumber =
+        seat
+            .querySelector("span")
+            .textContent;
+
+
+    // =================================
+    // 空席 → 使用中
+    // =================================
+
+    if (
+        bulkSeatMode === "to-used"
+    ) {
+
+        if (
+            seat.classList.contains("used")
+        ) {
+            return;
+        }
+
+
+        seat.classList.add(
+            "used"
+        );
+
+
+        seat
+            .querySelector("small")
+            .textContent =
+            "使用中";
+
+
+        set(
+            ref(
+                database,
+                "seats/" + seatNumber
+            ),
+            true
+        );
+
+
+        return;
+    }
+
+
+    // =================================
+    // 使用中 → 空席
+    // =================================
+
+    if (
+        bulkSeatMode === "to-empty"
+    ) {
+
+        if (
+            !seat.classList.contains("used")
+        ) {
+            return;
+        }
+
+
+        seat.classList.remove(
+            "used"
+        );
+
+
+        seat
+            .querySelector("small")
+            .textContent =
+            "空席";
+
+
+        remove(
+            ref(
+                database,
+                "seats/" + seatNumber
+            )
+        );
+    }
+}
