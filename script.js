@@ -98,7 +98,33 @@ const bulkCancelButton =
         "bulkCancelButton"
     );
 
+// =====================================
+// 完全リセット
+// =====================================
 
+const resetOpenButton =
+    document.getElementById(
+        "resetOpenButton"
+    );
+
+
+const resetConfirmArea =
+    document.getElementById(
+        "resetConfirmArea"
+    );
+
+
+const resetExecuteButton =
+    document.getElementById(
+        "resetExecuteButton"
+    );
+
+
+const resetCancelButton =
+    document.getElementById(
+        "resetCancelButton"
+    );
+    
 // =====================================
 // 選択モード
 // =====================================
@@ -3004,3 +3030,187 @@ function changeWaitingCustomerCount(
         "名に変更しました。"
     );
 }
+// =====================================
+// 完全リセット確認を開く
+// =====================================
+
+resetOpenButton.addEventListener(
+    "click",
+    function () {
+
+        resetConfirmArea.classList.add(
+            "show"
+        );
+
+    }
+);
+
+
+// =====================================
+// リセットをキャンセル
+// =====================================
+
+resetCancelButton.addEventListener(
+    "click",
+    function () {
+
+        resetConfirmArea.classList.remove(
+            "show"
+        );
+
+    }
+);
+
+
+// =====================================
+// 完全リセット確定
+// =====================================
+
+resetExecuteButton.addEventListener(
+    "click",
+    async function () {
+
+        resetExecuteButton.disabled =
+            true;
+
+
+        resetExecuteButton.textContent =
+            "リセット中…";
+
+
+        try {
+
+            // =================================
+            // 全座席を空席にする
+            // =================================
+
+            await remove(
+                ref(
+                    database,
+                    "seats"
+                )
+            );
+
+
+            // =================================
+            // 受付データを0から作り直す
+            // =================================
+
+            await set(
+                ref(
+                    database,
+                    "reception"
+                ),
+                {
+
+                    ACEG: {
+
+                        receptionNumber: 0,
+
+                        confirmedCount: 0,
+
+                        waiting: [],
+
+                        currentCustomer: null
+                    },
+
+
+                    BDFH: {
+
+                        receptionNumber: 0,
+
+                        confirmedCount: 0,
+
+                        waiting: [],
+
+                        currentCustomer: null
+                    }
+
+                }
+            );
+
+
+            // =================================
+            // この端末の一時選択も解除
+            // =================================
+
+            groups.ACEG.selectedSeats
+                .forEach(
+                    seat => {
+
+                        seat.classList.remove(
+                            groups.ACEG.selectedClass
+                        );
+
+                    }
+                );
+
+
+            groups.BDFH.selectedSeats
+                .forEach(
+                    seat => {
+
+                        seat.classList.remove(
+                            groups.BDFH.selectedClass
+                        );
+
+                    }
+                );
+
+
+            groups.ACEG.selectedSeats = [];
+
+            groups.BDFH.selectedSeats = [];
+
+
+            cancelBulkSelection();
+
+
+            exitSelectionMode();
+
+
+            // =================================
+            // 確認画面を閉じる
+            // =================================
+
+            resetConfirmArea.classList.remove(
+                "show"
+            );
+
+
+            alert(
+                "完全リセットしました。\n\n" +
+                "受付番号：0\n" +
+                "待ち人数：0\n" +
+                "確定人数：0\n" +
+                "全座席：空席\n\n" +
+                "新しい受付を開始できます。"
+            );
+
+        }
+
+        catch (error) {
+
+            console.error(
+                error
+            );
+
+
+            alert(
+                "リセットに失敗しました。"
+            );
+
+        }
+
+        finally {
+
+            resetExecuteButton.disabled =
+                false;
+
+
+            resetExecuteButton.textContent =
+                "完全リセットを確定";
+        }
+
+    }
+);
