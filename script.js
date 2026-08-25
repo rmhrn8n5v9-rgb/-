@@ -16,32 +16,64 @@ import {
 // =====================================
 
 const firebaseConfig = {
-    apiKey: "AIzaSyBSUuyyxr5Duvm_sp0x7lSCNC-o9lGrUpg",
-    authDomain: "seat-1a2e8.firebaseapp.com",
-    databaseURL: "https://seat-1a2e8-default-rtdb.firebaseio.com",
-    projectId: "seat-1a2e8",
-    storageBucket: "seat-1a2e8.firebasestorage.app",
-    messagingSenderId: "571458713265",
-    appId: "1:571458713265:web:7193eccb5b1710b8b3d490",
-    measurementId: "G-3LL31LK2RW"
+
+    apiKey:
+        "AIzaSyBSUuyyxr5Duvm_sp0x7lSCNC-o9lGrUpg",
+
+    authDomain:
+        "seat-1a2e8.firebaseapp.com",
+
+    databaseURL:
+        "https://seat-1a2e8-default-rtdb.firebaseio.com",
+
+    projectId:
+        "seat-1a2e8",
+
+    storageBucket:
+        "seat-1a2e8.firebasestorage.app",
+
+    messagingSenderId:
+        "571458713265",
+
+    appId:
+        "1:571458713265:web:7193eccb5b1710b8b3d490",
+
+    measurementId:
+        "G-3LL31LK2RW"
 };
 
 
 const app =
-    initializeApp(firebaseConfig);
+    initializeApp(
+        firebaseConfig
+    );
 
 
 const database =
     getDatabase(app);
 
 
+// =====================================
+// HTML
+// =====================================
+
 const seatsArea =
-    document.getElementById("seats");
+    document.getElementById(
+        "seats"
+    );
 
 
-// =====================================
-// 一括変更バー
-// =====================================
+const seatModeButton =
+    document.getElementById(
+        "seatModeButton"
+    );
+
+
+const seatModeMessage =
+    document.getElementById(
+        "seatModeMessage"
+    );
+
 
 const bulkActionBar =
     document.getElementById(
@@ -68,25 +100,39 @@ const bulkCancelButton =
 
 
 // =====================================
-// ドラッグ状態
+// 選択モード
 // =====================================
 
-let isDragging = false;
+let selectionMode =
+    false;
 
-let dragGroupName = null;
 
-let dragMode = "select";
+let isDragging =
+    false;
 
-let bulkSeatMode = null;
+
+let dragGroupName =
+    null;
+
+
+let dragMode =
+    "select";
+
+
+let bulkSeatMode =
+    null;
+
 
 let bulkTouchedSeats =
     new Set();
 
-let bulkPendingSeats = [];
+
+let bulkPendingSeats =
+    [];
 
 
 // =====================================
-// 受付
+// 受付グループ
 // =====================================
 
 const groups = {
@@ -109,7 +155,8 @@ const groups = {
         selectedClass:
             "selected-aceg",
 
-        prefix: "A",
+        prefix:
+            "A",
 
         customerCountId:
             "acegCustomerCount",
@@ -158,7 +205,8 @@ const groups = {
         selectedClass:
             "selected-bdfh",
 
-        prefix: "B",
+        prefix:
+            "B",
 
         customerCountId:
             "bdfhCustomerCount",
@@ -194,7 +242,9 @@ const groups = {
 // グループ判定
 // =====================================
 
-function getGroupName(block) {
+function getGroupName(
+    block
+) {
 
     if (
         groups.ACEG.blocks.includes(
@@ -207,6 +257,110 @@ function getGroupName(block) {
 
 
     return "BDFH";
+}
+
+
+// =====================================
+// 範囲選択モード
+// =====================================
+
+seatModeButton.addEventListener(
+    "click",
+    function () {
+
+        /*
+         確定待ち中は
+         モード変更させない
+        */
+
+        if (
+            bulkPendingSeats.length >
+            0
+        ) {
+
+            return;
+        }
+
+
+        selectionMode =
+            !selectionMode;
+
+
+        if (
+            selectionMode
+        ) {
+
+            seatsArea.classList.add(
+                "selection-mode"
+            );
+
+
+            seatModeButton.classList.add(
+                "active"
+            );
+
+
+            seatModeButton.textContent =
+                "範囲選択を終了";
+
+
+            seatModeMessage.textContent =
+                "選択モード：座席をなぞってください";
+
+
+        } else {
+
+            seatsArea.classList.remove(
+                "selection-mode"
+            );
+
+
+            seatModeButton.classList.remove(
+                "active"
+            );
+
+
+            seatModeButton.textContent =
+                "範囲選択を開始";
+
+
+            seatModeMessage.textContent =
+                "通常モード：座席の上からスクロールできます";
+
+
+            cancelBulkSelection();
+        }
+
+    }
+);
+
+
+// =====================================
+// 選択モード終了
+// =====================================
+
+function exitSelectionMode() {
+
+    selectionMode =
+        false;
+
+
+    seatsArea.classList.remove(
+        "selection-mode"
+    );
+
+
+    seatModeButton.classList.remove(
+        "active"
+    );
+
+
+    seatModeButton.textContent =
+        "範囲選択を開始";
+
+
+    seatModeMessage.textContent =
+        "通常モード：座席の上からスクロールできます";
 }
 
 
@@ -233,8 +387,10 @@ function createSeat(
     button.dataset.block =
         block;
 
+
     button.dataset.row =
         row;
+
 
     button.dataset.number =
         number;
@@ -246,15 +402,34 @@ function createSeat(
     `;
 
 
+    // =================================
+    // 座席に触れた
+    // =================================
+
     button.addEventListener(
         "pointerdown",
         function (event) {
 
-            event.preventDefault();
+            /*
+             通常モードなら
+             座席には何もしない
+
+             → スクロール専用
+            */
+
+            if (
+                !selectionMode
+            ) {
+
+                return;
+            }
 
 
-            // 一括変更の確認待ちなら
-            // 新しい操作をさせない
+            /*
+             一括変更の
+             確定待ち中
+            */
+
             if (
                 bulkPendingSeats.length >
                 0
@@ -262,6 +437,9 @@ function createSeat(
 
                 return;
             }
+
+
+            event.preventDefault();
 
 
             const groupName =
@@ -274,9 +452,18 @@ function createSeat(
                 groups[groupName];
 
 
+            isDragging =
+                true;
+
+
+            dragGroupName =
+                groupName;
+
+
             // =================================
             // 案内中ではない
-            // → 一括変更
+            //
+            // 空席 ⇄ 使用中
             // =================================
 
             if (
@@ -284,12 +471,8 @@ function createSeat(
                 null
             ) {
 
-                isDragging = true;
-
-                dragGroupName =
-                    groupName;
-
                 bulkTouchedSeats.clear();
+
 
                 bulkPendingSeats = [];
 
@@ -321,6 +504,8 @@ function createSeat(
 
             // =================================
             // 案内中
+            //
+            // 候補席の変更
             // =================================
 
             if (
@@ -333,29 +518,26 @@ function createSeat(
             }
 
 
-            isDragging = true;
-
-            dragGroupName =
-                groupName;
-
-
             if (
                 button.classList.contains(
                     group.selectedClass
                 )
             ) {
 
-                dragMode = "remove";
+                dragMode =
+                    "remove";
 
             } else {
 
-                dragMode = "select";
+                dragMode =
+                    "select";
             }
 
 
             changeSeatByDrag(
                 button
             );
+
         }
     );
 
@@ -365,14 +547,18 @@ function createSeat(
 
 
 // =====================================
-// 一括変更 仮選択
+// 通常時
+// 空席 ⇄ 使用中
+// 仮選択
 // =====================================
 
 function applyBulkSeatChange(
     seat
 ) {
 
-    if (!seat) {
+    if (
+        !seat
+    ) {
         return;
     }
 
@@ -407,7 +593,10 @@ function applyBulkSeatChange(
     );
 
 
+    // =================================
     // 空席 → 使用中
+    // =================================
+
     if (
         bulkSeatMode ===
         "to-used"
@@ -437,7 +626,10 @@ function applyBulkSeatChange(
     }
 
 
+    // =================================
     // 使用中 → 空席
+    // =================================
+
     if (
         bulkSeatMode ===
         "to-empty"
@@ -466,14 +658,17 @@ function applyBulkSeatChange(
 
 
 // =====================================
-// 案内中ドラッグ
+// 案内中
+// 候補席変更
 // =====================================
 
 function changeSeatByDrag(
     seat
 ) {
 
-    if (!seat) {
+    if (
+        !seat
+    ) {
         return;
     }
 
@@ -516,7 +711,10 @@ function changeSeatByDrag(
     }
 
 
+    // =================================
     // 選択解除
+    // =================================
+
     if (
         dragMode ===
         "remove"
@@ -540,7 +738,8 @@ function changeSeatByDrag(
         group.selectedSeats =
             group.selectedSeats.filter(
                 item =>
-                    item !== seat
+                    item !==
+                    seat
             );
 
 
@@ -553,7 +752,10 @@ function changeSeatByDrag(
     }
 
 
+    // =================================
     // 選択
+    // =================================
+
     if (
         seat.classList.contains(
             group.selectedClass
@@ -597,7 +799,11 @@ document.addEventListener(
     "pointermove",
     function (event) {
 
-        if (!isDragging) {
+        if (
+            !selectionMode ||
+            !isDragging
+        ) {
+
             return;
         }
 
@@ -612,7 +818,10 @@ document.addEventListener(
             );
 
 
-        if (!element) {
+        if (
+            !element
+        ) {
+
             return;
         }
 
@@ -623,7 +832,10 @@ document.addEventListener(
             );
 
 
-        if (!seat) {
+        if (
+            !seat
+        ) {
+
             return;
         }
 
@@ -662,23 +874,29 @@ document.addEventListener(
 
 
 // =====================================
-// ドラッグ終了
-//
-// ここでは確定しない
+// 指を離した
 // =====================================
 
 function finishDrag() {
 
-    if (!isDragging) {
+    if (
+        !isDragging
+    ) {
+
         return;
     }
 
 
-    isDragging = false;
+    isDragging =
+        false;
 
 
-    // 通常時の一括変更なら
-    // 下に確認バーを表示
+    /*
+     通常時の
+     空席⇄使用中操作なら
+     確認バー
+    */
+
     if (
         bulkPendingSeats.length >
         0
@@ -688,9 +906,12 @@ function finishDrag() {
     }
 
 
-    dragGroupName = null;
+    dragGroupName =
+        null;
 
-    dragMode = "select";
+
+    dragMode =
+        "select";
 }
 
 
@@ -707,7 +928,7 @@ document.addEventListener(
 
 
 // =====================================
-// 一括変更バー表示
+// 一括変更バー
 // =====================================
 
 function showBulkActionBar() {
@@ -729,6 +950,7 @@ function showBulkActionBar() {
         bulkConfirmButton.textContent =
             count +
             "席を使用中にする";
+
 
     } else {
 
@@ -842,42 +1064,58 @@ bulkConfirmButton.addEventListener(
 
         resetBulkSelection();
 
+
+        exitSelectionMode();
+
     }
 );
 
 
 // =====================================
-// 一括変更 キャンセル
+// キャンセル
 // =====================================
 
 bulkCancelButton.addEventListener(
     "click",
     function () {
 
-        bulkPendingSeats.forEach(
-            seat => {
-
-                seat.classList.remove(
-                    "bulk-pending-used"
-                );
+        cancelBulkSelection();
 
 
-                seat.classList.remove(
-                    "bulk-pending-empty"
-                );
-
-            }
-        );
-
-
-        resetBulkSelection();
+        exitSelectionMode();
 
     }
 );
 
 
 // =====================================
-// 一括変更状態リセット
+// 仮選択解除
+// =====================================
+
+function cancelBulkSelection() {
+
+    bulkPendingSeats.forEach(
+        seat => {
+
+            seat.classList.remove(
+                "bulk-pending-used"
+            );
+
+
+            seat.classList.remove(
+                "bulk-pending-empty"
+            );
+
+        }
+    );
+
+
+    resetBulkSelection();
+}
+
+
+// =====================================
+// 一括変更リセット
 // =====================================
 
 function resetBulkSelection() {
@@ -887,15 +1125,23 @@ function resetBulkSelection() {
     );
 
 
-    bulkPendingSeats = [];
+    bulkPendingSeats =
+        [];
+
 
     bulkTouchedSeats.clear();
 
-    bulkSeatMode = null;
 
-    dragGroupName = null;
+    bulkSeatMode =
+        null;
 
-    isDragging = false;
+
+    dragGroupName =
+        null;
+
+
+    isDragging =
+        false;
 }
 
 
@@ -995,12 +1241,20 @@ function createBlock(
                     );
 
 
-                if (!reverse) {
+                // ACEG
+                if (
+                    !reverse
+                ) {
 
                     seat.style.gridColumn =
-                        String(number);
+                        String(
+                            number
+                        );
 
-                } else {
+                }
+
+                // BDFH
+                else {
 
                     seat.style.gridColumn =
                         String(
@@ -1018,14 +1272,12 @@ function createBlock(
                 row.appendChild(
                     seat
                 );
-
             }
 
 
             block.appendChild(
                 row
             );
-
         }
     );
 
@@ -1040,7 +1292,8 @@ function createBlock(
 
 function makeAB() {
 
-    const rules = [];
+    const rules =
+        [];
 
 
     for (
@@ -1095,7 +1348,8 @@ function makeAB() {
 
 function makeCD() {
 
-    const rules = [];
+    const rules =
+        [];
 
 
     for (
@@ -1158,7 +1412,9 @@ function makeCD() {
 }
 
 
-// Cだけ欠番
+// =====================================
+// Cのみ欠番
+// =====================================
 
 function makeC() {
 
@@ -1186,7 +1442,8 @@ function makeC() {
 
 function makeE() {
 
-    const rules = [];
+    const rules =
+        [];
 
 
     for (
@@ -1213,7 +1470,8 @@ function makeE() {
 
 function makeF() {
 
-    const rules = [];
+    const rules =
+        [];
 
 
     for (
@@ -1240,7 +1498,8 @@ function makeF() {
 
 function makeG() {
 
-    const rules = [];
+    const rules =
+        [];
 
 
     for (
@@ -1267,7 +1526,8 @@ function makeG() {
 
 function makeH() {
 
-    const rules = [];
+    const rules =
+        [];
 
 
     for (
@@ -1360,7 +1620,6 @@ const seatPairs = [
                 true
             )
     }
-
 ];
 
 
@@ -1394,15 +1653,12 @@ seatPairs.forEach(
         seatsArea.appendChild(
             pairArea
         );
-
     }
 );
 
 
 // =====================================
-// 自動座席候補
-// 1番から順番
-// 足りなければ次の行
+// 自動座席選択
 // =====================================
 
 function findSuggestedSeats(
@@ -1414,7 +1670,8 @@ function findSuggestedSeats(
         groups[groupName];
 
 
-    const selected = [];
+    const selected =
+        [];
 
 
     for (
@@ -1429,7 +1686,10 @@ function findSuggestedSeats(
             );
 
 
-        if (!block) {
+        if (
+            !block
+        ) {
+
             continue;
         }
 
@@ -1491,7 +1751,7 @@ function findSuggestedSeats(
 
 
 // =====================================
-// 自動候補表示
+// 自動候補
 // =====================================
 
 function suggestSeats(
@@ -1515,7 +1775,8 @@ function suggestSeats(
 
 
     if (
-        seats.length === 0
+        seats.length ===
+        0
     ) {
 
         alert(
@@ -1554,7 +1815,7 @@ function suggestSeats(
 
 
 // =====================================
-// 受付設定
+// 受付
 // =====================================
 
 function setupReception(
@@ -1598,6 +1859,7 @@ function setupReception(
                         "人数を入力してください。"
                     );
 
+
                     return;
                 }
 
@@ -1615,11 +1877,11 @@ function setupReception(
 
                     time:
                         new Date()
-
                 });
 
 
-                input.value = 1;
+                input.value =
+                    1;
 
 
                 updateWaitingList(
@@ -1666,6 +1928,7 @@ function setupReception(
                         "現在案内中のお客様がいます。"
                     );
 
+
                     return;
                 }
 
@@ -1678,6 +1941,7 @@ function setupReception(
                     alert(
                         "待っているお客様はいません。"
                     );
+
 
                     return;
                 }
@@ -1758,11 +2022,13 @@ function confirmSeats(
             "席選択してください。"
         );
 
+
         return;
     }
 
 
-    const seatNames = [];
+    const seatNames =
+        [];
 
 
     group.selectedSeats.forEach(
@@ -1819,7 +2085,8 @@ function confirmSeats(
         confirmedCustomer.count;
 
 
-    group.selectedSeats = [];
+    group.selectedSeats =
+        [];
 
 
     group.currentCustomer =
@@ -1839,6 +2106,14 @@ function confirmSeats(
     updateConfirmButton(
         groupName
     );
+
+
+    /*
+      確定後は
+      通常スクロールへ戻す
+    */
+
+    exitSelectionMode();
 
 
     alert(
@@ -1877,7 +2152,8 @@ function clearSelected(
     );
 
 
-    group.selectedSeats = [];
+    group.selectedSeats =
+        [];
 }
 
 
@@ -1904,7 +2180,9 @@ function updateConfirmButton(
         null
     ) {
 
-        button.disabled = true;
+        button.disabled =
+            true;
+
 
         button.textContent =
             "座席を確定";
@@ -1959,7 +2237,8 @@ function updateWaitingList(
     }
 
 
-    list.innerHTML = "";
+    list.innerHTML =
+        "";
 
 
     group.waiting.forEach(
@@ -2072,19 +2351,28 @@ function updatePeopleSummary(
         );
 
 
-    if (confirmedArea) {
+    if (
+        confirmedArea
+    ) {
+
         confirmedArea.textContent =
             confirmedPeople;
     }
 
 
-    if (waitingArea) {
+    if (
+        waitingArea
+    ) {
+
         waitingArea.textContent =
             waitingPeople;
     }
 
 
-    if (totalArea) {
+    if (
+        totalArea
+    ) {
+
         totalArea.textContent =
             totalPeople;
     }
@@ -2092,7 +2380,7 @@ function updatePeopleSummary(
 
 
 // =====================================
-// 案内中
+// 現在案内中
 // =====================================
 
 function showCurrentCustomer(
@@ -2135,6 +2423,10 @@ function showCurrentCustomer(
         <div>
             自動選択された座席を確認してください
         </div>
+
+        <div>
+            変更する場合は「範囲選択を開始」を押してください
+        </div>
     `;
 }
 
@@ -2143,33 +2435,58 @@ function showCurrentCustomer(
 // 初期設定
 // =====================================
 
-setupReception("ACEG");
-
-setupReception("BDFH");
-
-
-updateWaitingList("ACEG");
-
-updateWaitingList("BDFH");
+setupReception(
+    "ACEG"
+);
 
 
-updatePeopleSummary("ACEG");
-
-updatePeopleSummary("BDFH");
-
-
-showCurrentCustomer("ACEG");
-
-showCurrentCustomer("BDFH");
+setupReception(
+    "BDFH"
+);
 
 
-updateConfirmButton("ACEG");
+updateWaitingList(
+    "ACEG"
+);
 
-updateConfirmButton("BDFH");
+
+updateWaitingList(
+    "BDFH"
+);
+
+
+updatePeopleSummary(
+    "ACEG"
+);
+
+
+updatePeopleSummary(
+    "BDFH"
+);
+
+
+showCurrentCustomer(
+    "ACEG"
+);
+
+
+showCurrentCustomer(
+    "BDFH"
+);
+
+
+updateConfirmButton(
+    "ACEG"
+);
+
+
+updateConfirmButton(
+    "BDFH"
+);
 
 
 // =====================================
-// Firebaseリアルタイム同期
+// Firebase同期
 // =====================================
 
 onValue(
@@ -2177,10 +2494,14 @@ onValue(
         database,
         "seats"
     ),
-    function (snapshot) {
+
+    function (
+        snapshot
+    ) {
 
         const data =
-            snapshot.val() || {};
+            snapshot.val() ||
+            {};
 
 
         document
