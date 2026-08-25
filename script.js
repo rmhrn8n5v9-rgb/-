@@ -2141,17 +2141,7 @@ saveReceptionState(
 
 );
 
-alert(
-                    groupName +
-                    "受付\n\n" +
-                    "受付番号 " +
-                    group.prefix +
-                    "-" +
-                    group.receptionNumber +
-                    "\n" +
-                    count +
-                    "名様"
-                );
+
             }
         );
 
