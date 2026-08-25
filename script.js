@@ -98,6 +98,46 @@ const bulkCancelButton =
     document.getElementById(
         "bulkCancelButton"
     );
+    const seatMoveButton =
+    document.getElementById(
+        "seatMoveButton"
+    );
+
+const seatMoveMessage =
+    document.getElementById(
+        "seatMoveMessage"
+    );
+
+const seatMoveBar =
+    document.getElementById(
+        "seatMoveBar"
+    );
+
+const seatMoveStatus =
+    document.getElementById(
+        "seatMoveStatus"
+    );
+
+const seatMoveConfirmButton =
+    document.getElementById(
+        "seatMoveConfirmButton"
+    );
+
+const seatMoveCancelButton =
+    document.getElementById(
+        "seatMoveCancelButton"
+    );
+    // =====================================
+// 座席入替
+// =====================================
+
+let seatMoveMode = false;
+
+let moveSourceSeats = [];
+
+let moveTargetSeats = [];
+
+let moveReceptionId = null;
 
 
 // =====================================
@@ -859,7 +899,23 @@ function createSeat(
         }
     );
 
+button.addEventListener(
+    "click",
+    function (event) {
 
+        if (!seatMoveMode) {
+            return;
+        }
+
+
+        event.preventDefault();
+
+
+        handleSeatMoveClick(
+            button
+        );
+    }
+);
     return button;
 }
 
@@ -3306,6 +3362,9 @@ onValue(
         const data =
             snapshot.val() ||
             {};
+            
+window.currentSeatData =
+    data;
 
 
         document
@@ -3507,3 +3566,449 @@ onValue(
 
     }
 );
+// =====================================
+// 入替モード開始・終了
+// =====================================
+
+seatMoveButton.addEventListener(
+    "click",
+    function () {
+
+        if (seatMoveMode) {
+
+            cancelSeatMove();
+
+            return;
+        }
+
+
+        // 範囲選択とは同時に使わない
+        exitSelectionMode();
+
+
+        seatMoveMode = true;
+
+
+        seatMoveButton.classList.add(
+            "active"
+        );
+
+
+        seatMoveButton.textContent =
+            "座席入替を終了";
+
+
+        seatMoveMessage.textContent =
+            "まず移動する使用中の座席を選択してください";
+
+
+        seatMoveBar.classList.add(
+            "show"
+        );
+
+
+        updateSeatMoveStatus();
+    }
+);
+
+
+// =====================================
+// 座席入替の選択
+// =====================================
+
+function handleSeatMoveClick(
+    seat
+) {
+
+    if (!seatMoveMode) {
+        return;
+    }
+
+
+    const seatNumber =
+        seat
+            .querySelector("span")
+            .textContent;
+
+
+    // =================================
+    // 使用中の席
+    // → 移動元
+    // =================================
+
+    if (
+        seat.classList.contains(
+            "used"
+        )
+    ) {
+
+        // すでに選択済みなら解除
+        if (
+            moveSourceSeats.includes(
+                seat
+            )
+        ) {
+
+            seat.classList.remove(
+                "move-source"
+            );
+
+
+            moveSourceSeats =
+                moveSourceSeats.filter(
+                    item =>
+                        item !== seat
+                );
+
+
+            if (
+                moveSourceSeats.length ===
+                0
+            ) {
+
+                moveReceptionId =
+                    null;
+            }
+
+
+            updateSeatMoveStatus();
+
+            return;
+        }
+
+
+        const seatData =
+            window.currentSeatData
+                ? window.currentSeatData[
+                    seatNumber
+                ]
+                : null;
+
+
+        if (!seatData) {
+            return;
+        }
+
+
+        const receptionId =
+            seatData.receptionId ||
+            seatData.group ||
+            "MANUAL";
+
+
+        // 最初の席
+        if (
+            moveSourceSeats.length ===
+            0
+        ) {
+
+            moveReceptionId =
+                receptionId;
+
+        }
+
+        // 違う受付番号は同時選択禁止
+        else if (
+            receptionId !==
+            moveReceptionId
+        ) {
+
+            alert(
+                "同じ受付番号の座席だけを選択してください。"
+            );
+
+            return;
+        }
+
+
+        seat.classList.add(
+            "move-source"
+        );
+
+
+        moveSourceSeats.push(
+            seat
+        );
+
+
+        seatMoveMessage.textContent =
+            "次に同じ数だけ空席を選択してください";
+
+
+        updateSeatMoveStatus();
+
+        return;
+    }
+
+
+    // =================================
+    // 空席
+    // → 移動先
+    // =================================
+
+    if (
+        moveSourceSeats.length ===
+        0
+    ) {
+
+        alert(
+            "先に移動する使用中の座席を選択してください。"
+        );
+
+        return;
+    }
+
+
+    // すでに選択済みなら解除
+    if (
+        moveTargetSeats.includes(
+            seat
+        )
+    ) {
+
+        seat.classList.remove(
+            "move-target"
+        );
+
+
+        moveTargetSeats =
+            moveTargetSeats.filter(
+                item =>
+                    item !== seat
+            );
+
+
+        updateSeatMoveStatus();
+
+        return;
+    }
+
+
+    if (
+        moveTargetSeats.length >=
+        moveSourceSeats.length
+    ) {
+
+        alert(
+            "移動元と同じ席数まで選択できます。"
+        );
+
+        return;
+    }
+
+
+    seat.classList.add(
+        "move-target"
+    );
+
+
+    moveTargetSeats.push(
+        seat
+    );
+
+
+    updateSeatMoveStatus();
+}
+
+
+// =====================================
+// 入替状況表示
+// =====================================
+
+function updateSeatMoveStatus() {
+
+    seatMoveStatus.textContent =
+        "移動元 " +
+        moveSourceSeats.length +
+        "席 ／ 移動先 " +
+        moveTargetSeats.length +
+        "席";
+
+
+    seatMoveConfirmButton.disabled =
+        moveSourceSeats.length === 0 ||
+        moveSourceSeats.length !==
+        moveTargetSeats.length;
+}
+
+
+// =====================================
+// 入替確定
+// =====================================
+
+seatMoveConfirmButton.addEventListener(
+    "click",
+    async function () {
+
+        if (
+            moveSourceSeats.length ===
+            0 ||
+            moveSourceSeats.length !==
+            moveTargetSeats.length
+        ) {
+
+            return;
+        }
+
+
+        const updates = {};
+
+
+        for (
+            let i = 0;
+            i < moveSourceSeats.length;
+            i++
+        ) {
+
+            const sourceSeat =
+                moveSourceSeats[i];
+
+
+            const targetSeat =
+                moveTargetSeats[i];
+
+
+            const sourceNumber =
+                sourceSeat
+                    .querySelector("span")
+                    .textContent;
+
+
+            const targetNumber =
+                targetSeat
+                    .querySelector("span")
+                    .textContent;
+
+
+            const sourceData =
+                window.currentSeatData[
+                    sourceNumber
+                ];
+
+
+            // 移動先へそのまま引き継ぐ
+            updates[
+                "seats/" +
+                targetNumber
+            ] =
+                sourceData;
+
+
+            // 元の座席を空席へ
+            updates[
+                "seats/" +
+                sourceNumber
+            ] =
+                null;
+        }
+
+
+        seatMoveConfirmButton.disabled =
+            true;
+
+
+        seatMoveConfirmButton.textContent =
+            "入替中…";
+
+
+        try {
+
+            // 一括更新
+            await update(
+                ref(database),
+                updates
+            );
+
+
+            cancelSeatMove();
+
+
+            alert(
+                "座席を入れ替えました。"
+            );
+
+        }
+
+        catch (error) {
+
+            console.error(error);
+
+
+            alert(
+                "座席の入替に失敗しました。"
+            );
+
+        }
+
+        finally {
+
+            seatMoveConfirmButton.textContent =
+                "入替を確定";
+        }
+    }
+);
+
+
+// =====================================
+// 入替キャンセル
+// =====================================
+
+seatMoveCancelButton.addEventListener(
+    "click",
+    cancelSeatMove
+);
+
+
+function cancelSeatMove() {
+
+    moveSourceSeats.forEach(
+        seat => {
+
+            seat.classList.remove(
+                "move-source"
+            );
+
+        }
+    );
+
+
+    moveTargetSeats.forEach(
+        seat => {
+
+            seat.classList.remove(
+                "move-target"
+            );
+
+        }
+    );
+
+
+    moveSourceSeats = [];
+
+    moveTargetSeats = [];
+
+    moveReceptionId = null;
+
+    seatMoveMode = false;
+
+
+    seatMoveBar.classList.remove(
+        "show"
+    );
+
+
+    seatMoveButton.classList.remove(
+        "active"
+    );
+
+
+    seatMoveButton.textContent =
+        "座席入替を開始";
+
+
+    seatMoveMessage.textContent =
+        "入替モードはOFFです";
+
+
+    updateSeatMoveStatus();
+}
