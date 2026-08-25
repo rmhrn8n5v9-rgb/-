@@ -9,9 +9,16 @@ import {
     remove
 } from
 "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-    // Firebase画面に表示されている内容を
-    // ここへそのまま貼る
+  apiKey: "AIzaSyBSUuyyxr5Duvm_sp0x7lSCNC-o9lGrUpg",
+  authDomain: "seat-1a2e8.firebaseapp.com",
+  databaseURL: "https://seat-1a2e8-default-rtdb.firebaseio.com",
+  projectId: "seat-1a2e8",
+  storageBucket: "seat-1a2e8.firebasestorage.app",
+  messagingSenderId: "571458713265",
+  appId: "1:571458713265:web:7193eccb5b1710b8b3d490",
+  measurementId: "G-3LL31LK2RW"
 };
 const app =
     initializeApp(firebaseConfig);
