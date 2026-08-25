@@ -17,37 +17,19 @@ import {
 // =====================================
 
 const firebaseConfig = {
-
-    apiKey:
-        "AIzaSyBSUuyyxr5Duvm_sp0x7lSCNC-o9lGrUpg",
-
-    authDomain:
-        "seat-1a2e8.firebaseapp.com",
-
-    databaseURL:
-        "https://seat-1a2e8-default-rtdb.firebaseio.com",
-
-    projectId:
-        "seat-1a2e8",
-
-    storageBucket:
-        "seat-1a2e8.firebasestorage.app",
-
-    messagingSenderId:
-        "571458713265",
-
-    appId:
-        "1:571458713265:web:7193eccb5b1710b8b3d490",
-
-    measurementId:
-        "G-3LL31LK2RW"
+    apiKey: "AIzaSyBSUuyyxr5Duvm_sp0x7lSCNC-o9lGrUpg",
+    authDomain: "seat-1a2e8.firebaseapp.com",
+    databaseURL: "https://seat-1a2e8-default-rtdb.firebaseio.com",
+    projectId: "seat-1a2e8",
+    storageBucket: "seat-1a2e8.firebasestorage.app",
+    messagingSenderId: "571458713265",
+    appId: "1:571458713265:web:7193eccb5b1710b8b3d490",
+    measurementId: "G-3LL31LK2RW"
 };
 
 
 const app =
-    initializeApp(
-        firebaseConfig
-    );
+    initializeApp(firebaseConfig);
 
 
 const database =
@@ -59,9 +41,7 @@ const database =
 // =====================================
 
 const seatsArea =
-    document.getElementById(
-        "seats"
-    );
+    document.getElementById("seats");
 
 
 const seatModeButton =
@@ -98,46 +78,6 @@ const bulkCancelButton =
     document.getElementById(
         "bulkCancelButton"
     );
-    const seatMoveButton =
-    document.getElementById(
-        "seatMoveButton"
-    );
-
-const seatMoveMessage =
-    document.getElementById(
-        "seatMoveMessage"
-    );
-
-const seatMoveBar =
-    document.getElementById(
-        "seatMoveBar"
-    );
-
-const seatMoveStatus =
-    document.getElementById(
-        "seatMoveStatus"
-    );
-
-const seatMoveConfirmButton =
-    document.getElementById(
-        "seatMoveConfirmButton"
-    );
-
-const seatMoveCancelButton =
-    document.getElementById(
-        "seatMoveCancelButton"
-    );
-    // =====================================
-// 座席入替
-// =====================================
-
-let seatMoveMode = false;
-
-let moveSourceSeats = [];
-
-let moveTargetSeats = [];
-
-let moveReceptionId = null;
 
 
 // =====================================
@@ -169,35 +109,89 @@ const resetCancelButton =
 
 
 // =====================================
-// 選択状態
+// 座席入替
 // =====================================
 
-let selectionMode =
-    false;
+const seatMoveButton =
+    document.getElementById(
+        "seatMoveButton"
+    );
 
 
-let isDragging =
-    false;
+const seatMoveMessage =
+    document.getElementById(
+        "seatMoveMessage"
+    );
 
 
-let dragGroupName =
-    null;
+const seatMoveBar =
+    document.getElementById(
+        "seatMoveBar"
+    );
 
 
-let dragMode =
-    "select";
+const seatMoveStatus =
+    document.getElementById(
+        "seatMoveStatus"
+    );
 
 
-let bulkSeatMode =
-    null;
+const seatMoveConfirmButton =
+    document.getElementById(
+        "seatMoveConfirmButton"
+    );
 
+
+const seatMoveCancelButton =
+    document.getElementById(
+        "seatMoveCancelButton"
+    );
+
+
+// =====================================
+// 通常範囲選択
+// =====================================
+
+let selectionMode = false;
+
+let isDragging = false;
+
+let dragGroupName = null;
+
+let dragMode = "select";
+
+let bulkSeatMode = null;
 
 let bulkTouchedSeats =
     new Set();
 
+let bulkPendingSeats = [];
 
-let bulkPendingSeats =
-    [];
+
+// =====================================
+// 座席入替状態
+// =====================================
+
+let seatMoveMode = false;
+
+let moveSourceSeats = [];
+
+let moveTargetSeats = [];
+
+let moveReceptionId = null;
+
+let moveDragging = false;
+
+let moveDragType = null;
+
+let moveTouchedSeats =
+    new Set();
+
+
+// Firebaseから受け取った
+// 最新の座席データ
+
+let currentSeatData = {};
 
 
 // =====================================
@@ -224,8 +218,7 @@ const groups = {
         selectedClass:
             "selected-aceg",
 
-        prefix:
-            "A",
+        prefix: "A",
 
         customerCountId:
             "acegCustomerCount",
@@ -274,8 +267,7 @@ const groups = {
         selectedClass:
             "selected-bdfh",
 
-        prefix:
-            "B",
+        prefix: "B",
 
         customerCountId:
             "bdfhCustomerCount",
@@ -304,11 +296,12 @@ const groups = {
         waitingListId:
             "bdfhWaitingList"
     }
+
 };
 
 
 // =====================================
-// 受付番号ごとの座席色
+// 受付番号ごとの色
 // =====================================
 
 const receptionColors = [
@@ -332,8 +325,6 @@ const receptionColors = [
 ];
 
 
-// A-1 / A-2 / B-1 などから
-// 毎回同じ色を取得
 function getReceptionColor(
     receptionId
 ) {
@@ -385,7 +376,7 @@ function getGroupName(
 
 
 // =====================================
-// 受付状況をFirebaseへ保存
+// 受付状態保存
 // =====================================
 
 function saveReceptionState(
@@ -408,8 +399,10 @@ function saveReceptionState(
 
                 time:
                     customer.time instanceof Date
-                        ? customer.time.getTime()
-                        : customer.time
+                        ?
+                        customer.time.getTime()
+                        :
+                        customer.time
             })
         );
 
@@ -431,9 +424,15 @@ function saveReceptionState(
                 group.currentCustomer.count,
 
             time:
-                group.currentCustomer.time instanceof Date
-                    ? group.currentCustomer.time.getTime()
-                    : group.currentCustomer.time
+                group.currentCustomer.time
+                    instanceof Date
+
+                    ?
+                    group.currentCustomer.time
+                        .getTime()
+
+                    :
+                    group.currentCustomer.time
         };
     }
 
@@ -464,7 +463,7 @@ function saveReceptionState(
 
 
 // =====================================
-// Firebaseから受付状況を受信
+// 受付状態受信
 // =====================================
 
 function setupReceptionSync(
@@ -482,15 +481,12 @@ function setupReceptionSync(
             groupName
         ),
 
-        function (
-            snapshot
-        ) {
+        function (snapshot) {
 
             const data =
                 snapshot.val();
 
 
-            // Firebaseにまだデータがない
             if (!data) {
 
                 saveReceptionState(
@@ -515,9 +511,7 @@ function setupReceptionSync(
                 );
 
 
-            // =================================
             // 待ち一覧
-            // =================================
 
             if (
                 data.waiting
@@ -527,8 +521,12 @@ function setupReceptionSync(
                     Array.isArray(
                         data.waiting
                     )
-                        ? data.waiting
-                        : Object.values(
+
+                        ?
+                        data.waiting
+
+                        :
+                        Object.values(
                             data.waiting
                         );
 
@@ -561,14 +559,11 @@ function setupReceptionSync(
 
             } else {
 
-                group.waiting =
-                    [];
+                group.waiting = [];
             }
 
 
-            // =================================
-            // 現在案内中
-            // =================================
+            // 案内中
 
             if (
                 data.currentCustomer
@@ -630,7 +625,7 @@ function setupReceptionSync(
 
 
 // =====================================
-// 範囲選択モード
+// 通常範囲選択モード
 // =====================================
 
 if (
@@ -639,7 +634,17 @@ if (
 
     seatModeButton.addEventListener(
         "click",
+
         function () {
+
+            // 入替中は使わない
+            if (
+                seatMoveMode
+            ) {
+
+                return;
+            }
+
 
             if (
                 bulkPendingSeats.length >
@@ -663,9 +668,10 @@ if (
                 );
 
 
-                seatModeButton.classList.add(
-                    "active"
-                );
+                seatModeButton
+                    .classList.add(
+                        "active"
+                    );
 
 
                 seatModeButton.textContent =
@@ -689,13 +695,12 @@ if (
 
 
 // =====================================
-// 選択モード終了
+// 通常選択終了
 // =====================================
 
 function exitSelectionMode() {
 
-    selectionMode =
-        false;
+    selectionMode = false;
 
 
     if (
@@ -712,9 +717,10 @@ function exitSelectionMode() {
         seatModeButton
     ) {
 
-        seatModeButton.classList.remove(
-            "active"
-        );
+        seatModeButton
+            .classList.remove(
+                "active"
+            );
 
 
         seatModeButton.textContent =
@@ -770,14 +776,62 @@ function createSeat(
     `;
 
 
+    // =================================
+    // pointerdown
+    // =================================
+
     button.addEventListener(
         "pointerdown",
-        function (
-            event
-        ) {
 
-            // 通常モードは
-            // スクロール専用
+        function (event) {
+
+            // =================================
+            // 座席入替モード
+            // =================================
+
+            if (
+                seatMoveMode
+            ) {
+
+                event.preventDefault();
+
+
+                moveDragging =
+                    true;
+
+
+                moveTouchedSeats.clear();
+
+
+                if (
+                    button.classList.contains(
+                        "used"
+                    )
+                ) {
+
+                    moveDragType =
+                        "source";
+
+                } else {
+
+                    moveDragType =
+                        "target";
+                }
+
+
+                applySeatMoveDrag(
+                    button
+                );
+
+
+                return;
+            }
+
+
+            // =================================
+            // 通常モード
+            // =================================
+
             if (
                 !selectionMode
             ) {
@@ -786,7 +840,6 @@ function createSeat(
             }
 
 
-            // 確定待ち
             if (
                 bulkPendingSeats.length >
                 0
@@ -819,7 +872,6 @@ function createSeat(
 
             // =================================
             // 案内中ではない
-            // 空席⇄使用中
             // =================================
 
             if (
@@ -830,8 +882,7 @@ function createSeat(
                 bulkTouchedSeats.clear();
 
 
-                bulkPendingSeats =
-                    [];
+                bulkPendingSeats = [];
 
 
                 if (
@@ -899,30 +950,13 @@ function createSeat(
         }
     );
 
-button.addEventListener(
-    "click",
-    function (event) {
 
-        if (!seatMoveMode) {
-            return;
-        }
-
-
-        event.preventDefault();
-
-
-        handleSeatMoveClick(
-            button
-        );
-    }
-);
     return button;
 }
 
 
 // =====================================
-// 通常時
-// 空席 ⇄ 使用中
+// 手動範囲変更
 // =====================================
 
 function applyBulkSeatChange(
@@ -964,9 +998,7 @@ function applyBulkSeatChange(
     );
 
 
-    // =================================
     // 空席 → 使用中
-    // =================================
 
     if (
         bulkSeatMode ===
@@ -997,9 +1029,7 @@ function applyBulkSeatChange(
     }
 
 
-    // =================================
     // 使用中 → 空席
-    // =================================
 
     if (
         bulkSeatMode ===
@@ -1029,7 +1059,7 @@ function applyBulkSeatChange(
 
 
 // =====================================
-// 案内中の座席変更
+// 案内中の候補変更
 // =====================================
 
 function changeSeatByDrag(
@@ -1079,9 +1109,7 @@ function changeSeatByDrag(
     }
 
 
-    // =================================
     // 選択解除
-    // =================================
 
     if (
         dragMode ===
@@ -1119,9 +1147,7 @@ function changeSeatByDrag(
     }
 
 
-    // =================================
     // 選択
-    // =================================
 
     if (
         seat.classList.contains(
@@ -1159,19 +1185,18 @@ function changeSeatByDrag(
 
 
 // =====================================
-// ドラッグ中
+// 通常ドラッグ
 // =====================================
 
 document.addEventListener(
     "pointermove",
 
-    function (
-        event
-    ) {
+    function (event) {
 
         if (
             !selectionMode ||
-            !isDragging
+            !isDragging ||
+            seatMoveMode
         ) {
 
             return;
@@ -1239,7 +1264,7 @@ document.addEventListener(
 
 
 // =====================================
-// ドラッグ終了
+// 通常ドラッグ終了
 // =====================================
 
 function finishDrag() {
@@ -1287,7 +1312,7 @@ document.addEventListener(
 
 
 // =====================================
-// 一括変更バー
+// 手動変更確認バー
 // =====================================
 
 function showBulkActionBar() {
@@ -1338,7 +1363,7 @@ function showBulkActionBar() {
 
 
 // =====================================
-// 一括変更 確定
+// 手動変更確定
 // =====================================
 
 if (
@@ -1361,9 +1386,7 @@ if (
                             .textContent;
 
 
-                    // =================================
                     // 空席 → 手動使用中
-                    // =================================
 
                     if (
                         bulkSeatMode ===
@@ -1373,24 +1396,6 @@ if (
                         seat.classList.remove(
                             "bulk-pending-used"
                         );
-
-
-                        seat.classList.add(
-                            "used",
-                            "used-manual"
-                        );
-
-
-                        seat.style.background =
-                            "#e53935";
-
-
-                        seat
-                            .querySelector(
-                                "small"
-                            )
-                            .textContent =
-                            "手動";
 
 
                         set(
@@ -1410,9 +1415,7 @@ if (
                     }
 
 
-                    // =================================
                     // 使用中 → 空席
-                    // =================================
 
                     if (
                         bulkSeatMode ===
@@ -1420,24 +1423,8 @@ if (
                     ) {
 
                         seat.classList.remove(
-                            "bulk-pending-empty",
-                            "used",
-                            "used-aceg",
-                            "used-bdfh",
-                            "used-manual"
+                            "bulk-pending-empty"
                         );
-
-
-                        seat.style.background =
-                            "";
-
-
-                        seat
-                            .querySelector(
-                                "small"
-                            )
-                            .textContent =
-                            "空席";
 
 
                         remove(
@@ -1464,7 +1451,7 @@ if (
 
 
 // =====================================
-// 一括変更キャンセル
+// 手動変更キャンセル
 // =====================================
 
 if (
@@ -1480,6 +1467,7 @@ if (
 
 
             exitSelectionMode();
+
         }
     );
 }
@@ -1495,11 +1483,7 @@ function cancelBulkSelection() {
         seat => {
 
             seat.classList.remove(
-                "bulk-pending-used"
-            );
-
-
-            seat.classList.remove(
+                "bulk-pending-used",
                 "bulk-pending-empty"
             );
 
@@ -1512,7 +1496,7 @@ function cancelBulkSelection() {
 
 
 // =====================================
-// 一括変更リセット
+// 手動選択リセット
 // =====================================
 
 function resetBulkSelection() {
@@ -1527,8 +1511,7 @@ function resetBulkSelection() {
     }
 
 
-    bulkPendingSeats =
-        [];
+    bulkPendingSeats = [];
 
 
     bulkTouchedSeats.clear();
@@ -1544,6 +1527,628 @@ function resetBulkSelection() {
 
     isDragging =
         false;
+}
+
+
+// =====================================
+// 座席入替開始
+// =====================================
+
+if (
+    seatMoveButton
+) {
+
+    seatMoveButton.addEventListener(
+        "click",
+
+        function () {
+
+            // すでに入替中
+            if (
+                seatMoveMode
+            ) {
+
+                cancelSeatMove();
+
+                return;
+            }
+
+
+            // 通常範囲選択を終了
+            cancelBulkSelection();
+
+            exitSelectionMode();
+
+
+            seatMoveMode =
+                true;
+
+
+            seatsArea.classList.add(
+                "selection-mode"
+            );
+
+
+            seatMoveButton
+                .classList.add(
+                    "active"
+                );
+
+
+            seatMoveButton.textContent =
+                "座席入替を終了";
+
+
+            seatMoveMessage.textContent =
+                "使用中の座席をなぞって選択してください";
+
+
+            seatMoveBar.classList.add(
+                "show"
+            );
+
+
+            updateSeatMoveStatus();
+
+        }
+    );
+}
+
+
+// =====================================
+// 入替ドラッグ選択
+// =====================================
+
+function applySeatMoveDrag(
+    seat
+) {
+
+    if (!seat) {
+        return;
+    }
+
+
+    if (
+        moveTouchedSeats.has(
+            seat
+        )
+    ) {
+
+        return;
+    }
+
+
+    moveTouchedSeats.add(
+        seat
+    );
+
+
+    const seatNumber =
+        seat
+            .querySelector(
+                "span"
+            )
+            .textContent;
+
+
+    // =================================
+    // 移動元
+    // =================================
+
+    if (
+        moveDragType ===
+        "source"
+    ) {
+
+        if (
+            !seat.classList.contains(
+                "used"
+            )
+        ) {
+
+            return;
+        }
+
+
+        if (
+            moveSourceSeats.includes(
+                seat
+            )
+        ) {
+
+            return;
+        }
+
+
+        const seatData =
+            currentSeatData[
+                seatNumber
+            ];
+
+
+        if (!seatData) {
+            return;
+        }
+
+
+        const receptionId =
+            seatData.receptionId ||
+            seatData.group ||
+            "MANUAL";
+
+
+        // 最初の1席
+        if (
+            moveSourceSeats.length ===
+            0
+        ) {
+
+            moveReceptionId =
+                receptionId;
+
+        }
+
+        // 違う受付番号は選択不可
+        else if (
+            receptionId !==
+            moveReceptionId
+        ) {
+
+            return;
+        }
+
+
+        seat.classList.add(
+            "move-source"
+        );
+
+
+        moveSourceSeats.push(
+            seat
+        );
+
+
+        seatMoveMessage.textContent =
+            "次に同じ数だけ空席をなぞってください";
+
+
+        updateSeatMoveStatus();
+
+
+        return;
+    }
+
+
+    // =================================
+    // 移動先
+    // =================================
+
+    if (
+        moveDragType ===
+        "target"
+    ) {
+
+        // 使用中は移動先不可
+        if (
+            seat.classList.contains(
+                "used"
+            )
+        ) {
+
+            return;
+        }
+
+
+        // まず移動元を選ぶ
+        if (
+            moveSourceSeats.length ===
+            0
+        ) {
+
+            return;
+        }
+
+
+        if (
+            moveTargetSeats.includes(
+                seat
+            )
+        ) {
+
+            return;
+        }
+
+
+        // 移動元以上は選択不可
+        if (
+            moveTargetSeats.length >=
+            moveSourceSeats.length
+        ) {
+
+            return;
+        }
+
+
+        seat.classList.add(
+            "move-target"
+        );
+
+
+        moveTargetSeats.push(
+            seat
+        );
+
+
+        updateSeatMoveStatus();
+    }
+}
+
+
+// =====================================
+// 入替ドラッグ中
+// =====================================
+
+document.addEventListener(
+    "pointermove",
+
+    function (event) {
+
+        if (
+            !seatMoveMode ||
+            !moveDragging
+        ) {
+
+            return;
+        }
+
+
+        event.preventDefault();
+
+
+        const element =
+            document.elementFromPoint(
+                event.clientX,
+                event.clientY
+            );
+
+
+        if (!element) {
+            return;
+        }
+
+
+        const seat =
+            element.closest(
+                ".seat"
+            );
+
+
+        if (!seat) {
+            return;
+        }
+
+
+        applySeatMoveDrag(
+            seat
+        );
+
+    },
+
+    {
+        passive: false
+    }
+);
+
+
+// =====================================
+// 入替ドラッグ終了
+// =====================================
+
+function finishSeatMoveDrag() {
+
+    moveDragging =
+        false;
+
+
+    moveDragType =
+        null;
+
+
+    moveTouchedSeats.clear();
+}
+
+
+document.addEventListener(
+    "pointerup",
+    finishSeatMoveDrag
+);
+
+
+document.addEventListener(
+    "pointercancel",
+    finishSeatMoveDrag
+);
+
+
+// =====================================
+// 入替状況表示
+// =====================================
+
+function updateSeatMoveStatus() {
+
+    if (
+        !seatMoveStatus
+    ) {
+
+        return;
+    }
+
+
+    seatMoveStatus.textContent =
+        "移動元 " +
+        moveSourceSeats.length +
+        "席 ／ 移動先 " +
+        moveTargetSeats.length +
+        "席";
+
+
+    if (
+        seatMoveConfirmButton
+    ) {
+
+        seatMoveConfirmButton.disabled =
+            moveSourceSeats.length ===
+                0 ||
+
+            moveSourceSeats.length !==
+                moveTargetSeats.length;
+    }
+}
+
+
+// =====================================
+// 入替確定
+// =====================================
+
+if (
+    seatMoveConfirmButton
+) {
+
+    seatMoveConfirmButton.addEventListener(
+        "click",
+
+        async function () {
+
+            if (
+                moveSourceSeats.length ===
+                0
+            ) {
+
+                return;
+            }
+
+
+            if (
+                moveSourceSeats.length !==
+                moveTargetSeats.length
+            ) {
+
+                return;
+            }
+
+
+            const updates = {};
+
+
+            for (
+                let i = 0;
+                i < moveSourceSeats.length;
+                i++
+            ) {
+
+                const sourceSeat =
+                    moveSourceSeats[i];
+
+
+                const targetSeat =
+                    moveTargetSeats[i];
+
+
+                const sourceNumber =
+                    sourceSeat
+                        .querySelector(
+                            "span"
+                        )
+                        .textContent;
+
+
+                const targetNumber =
+                    targetSeat
+                        .querySelector(
+                            "span"
+                        )
+                        .textContent;
+
+
+                const sourceData =
+                    currentSeatData[
+                        sourceNumber
+                    ];
+
+
+                if (!sourceData) {
+                    continue;
+                }
+
+
+                // 移動先へデータをコピー
+
+                updates[
+                    "seats/" +
+                    targetNumber
+                ] =
+                    sourceData;
+
+
+                // 元の座席を空席
+
+                updates[
+                    "seats/" +
+                    sourceNumber
+                ] =
+                    null;
+            }
+
+
+            seatMoveConfirmButton.disabled =
+                true;
+
+
+            seatMoveConfirmButton.textContent =
+                "入替中…";
+
+
+            try {
+
+                await update(
+                    ref(database),
+                    updates
+                );
+
+
+                cancelSeatMove();
+
+
+                alert(
+                    "座席を入れ替えました。"
+                );
+
+            }
+
+            catch (
+                error
+            ) {
+
+                console.error(
+                    error
+                );
+
+
+                alert(
+                    "座席の入替に失敗しました。"
+                );
+
+            }
+
+            finally {
+
+                seatMoveConfirmButton.textContent =
+                    "入替を確定";
+            }
+
+        }
+    );
+}
+
+
+// =====================================
+// 入替キャンセル
+// =====================================
+
+if (
+    seatMoveCancelButton
+) {
+
+    seatMoveCancelButton.addEventListener(
+        "click",
+        cancelSeatMove
+    );
+}
+
+
+// =====================================
+// 入替終了
+// =====================================
+
+function cancelSeatMove() {
+
+    moveSourceSeats.forEach(
+        seat => {
+
+            seat.classList.remove(
+                "move-source"
+            );
+
+        }
+    );
+
+
+    moveTargetSeats.forEach(
+        seat => {
+
+            seat.classList.remove(
+                "move-target"
+            );
+
+        }
+    );
+
+
+    moveSourceSeats = [];
+
+    moveTargetSeats = [];
+
+    moveReceptionId = null;
+
+    moveDragging = false;
+
+    moveDragType = null;
+
+    moveTouchedSeats.clear();
+
+    seatMoveMode = false;
+
+
+    seatsArea.classList.remove(
+        "selection-mode"
+    );
+
+
+    if (
+        seatMoveBar
+    ) {
+
+        seatMoveBar.classList.remove(
+            "show"
+        );
+    }
+
+
+    if (
+        seatMoveButton
+    ) {
+
+        seatMoveButton
+            .classList.remove(
+                "active"
+            );
+
+
+        seatMoveButton.textContent =
+            "座席入替を開始";
+    }
+
+
+    if (
+        seatMoveMessage
+    ) {
+
+        seatMoveMessage.textContent =
+            "入替モードはOFFです";
+    }
+
+
+    updateSeatMoveStatus();
 }
 
 
@@ -1644,6 +2249,7 @@ function createBlock(
 
 
                 // ACEG
+
                 if (
                     !reverse
                 ) {
@@ -1656,6 +2262,7 @@ function createBlock(
                 }
 
                 // BDFH
+
                 else {
 
                     seat.style.gridColumn =
@@ -1694,8 +2301,7 @@ function createBlock(
 
 function makeAB() {
 
-    const rules =
-        [];
+    const rules = [];
 
 
     for (
@@ -1750,8 +2356,7 @@ function makeAB() {
 
 function makeCD() {
 
-    const rules =
-        [];
+    const rules = [];
 
 
     for (
@@ -1827,7 +2432,6 @@ function makeC() {
     rules[
         rules.length - 1
     ].skip = [
-
         20,
         21,
         23,
@@ -1845,8 +2449,7 @@ function makeC() {
 
 function makeE() {
 
-    const rules =
-        [];
+    const rules = [];
 
 
     for (
@@ -1873,8 +2476,7 @@ function makeE() {
 
 function makeF() {
 
-    const rules =
-        [];
+    const rules = [];
 
 
     for (
@@ -1901,8 +2503,7 @@ function makeF() {
 
 function makeG() {
 
-    const rules =
-        [];
+    const rules = [];
 
 
     for (
@@ -1929,8 +2530,7 @@ function makeG() {
 
 function makeH() {
 
-    const rules =
-        [];
+    const rules = [];
 
 
     for (
@@ -2023,6 +2623,7 @@ const seatPairs = [
                 true
             )
     }
+
 ];
 
 
@@ -2056,14 +2657,13 @@ seatPairs.forEach(
         seatsArea.appendChild(
             pairArea
         );
+
     }
 );
 
 
 // =====================================
 // 自動座席選択
-// 1番から順番
-// 足りなければ次の列
 // =====================================
 
 function findSuggestedSeats(
@@ -2075,8 +2675,7 @@ function findSuggestedSeats(
         groups[groupName];
 
 
-    const selected =
-        [];
+    const selected = [];
 
 
     for (
@@ -2206,6 +2805,7 @@ function suggestSeats(
             seat.classList.add(
                 group.selectedClass
             );
+
         }
     );
 
@@ -2217,7 +2817,7 @@ function suggestSeats(
 
 
 // =====================================
-// 受付設定
+// 受付
 // =====================================
 
 function setupReception(
@@ -2282,10 +2882,10 @@ function setupReception(
 
                     time:
                         new Date()
+
                 });
 
 
-                // 受付後は空欄
                 input.value =
                     "";
 
@@ -2300,7 +2900,6 @@ function setupReception(
                 );
 
 
-                // Firebase共有
                 saveReceptionState(
                     groupName
                 );
@@ -2398,6 +2997,7 @@ function setupReception(
                 confirmSeats(
                     groupName
                 );
+
             }
         );
 }
@@ -2449,14 +3049,7 @@ function confirmSeats(
         confirmedCustomer.number;
 
 
-    const receptionColor =
-        getReceptionColor(
-            receptionId
-        );
-
-
-    const seatNames =
-        [];
+    const seatNames = [];
 
 
     group.selectedSeats.forEach(
@@ -2467,25 +3060,6 @@ function confirmSeats(
             );
 
 
-            seat.classList.add(
-                "used"
-            );
-
-
-            // 受付番号ごとの色
-            seat.style.background =
-                receptionColor;
-
-
-            // 座席内に受付番号表示
-            seat
-                .querySelector(
-                    "small"
-                )
-                .textContent =
-                receptionId;
-
-
             const seatNumber =
                 seat
                     .querySelector(
@@ -2494,8 +3068,6 @@ function confirmSeats(
                     .textContent;
 
 
-            // Firebaseへ
-            // 受付番号も保存
             set(
                 ref(
                     database,
@@ -2527,23 +3099,17 @@ function confirmSeats(
     );
 
 
-    // =================================
-    // 確定人数
-    // =================================
-
     group.confirmedCount +=
         confirmedCustomer.count;
 
 
-    group.selectedSeats =
-        [];
+    group.selectedSeats = [];
 
 
     group.currentCustomer =
         null;
 
 
-    // Firebase受付情報更新
     saveReceptionState(
         groupName
     );
@@ -2597,12 +3163,12 @@ function clearSelected(
             seat.classList.remove(
                 group.selectedClass
             );
+
         }
     );
 
 
-    group.selectedSeats =
-        [];
+    group.selectedSeats = [];
 }
 
 
@@ -2624,10 +3190,7 @@ function updateConfirmButton(
         );
 
 
-    if (
-        !button
-    ) {
-
+    if (!button) {
         return;
     }
 
@@ -2681,10 +3244,7 @@ function updateWaitingList(
         );
 
 
-    if (
-        !list
-    ) {
-
+    if (!list) {
         return;
     }
 
@@ -2755,10 +3315,6 @@ function updateWaitingList(
                 time;
 
 
-            // =================================
-            // 人数変更ボタン
-            // =================================
-
             const editButton =
                 document.createElement(
                     "button"
@@ -2782,6 +3338,7 @@ function updateWaitingList(
                         groupName,
                         customer.number
                     );
+
                 }
             );
 
@@ -2806,7 +3363,7 @@ function updateWaitingList(
 
 
 // =====================================
-// 受付済み人数変更
+// 受付人数変更
 // =====================================
 
 function changeWaitingCustomerCount(
@@ -2826,9 +3383,7 @@ function changeWaitingCustomerCount(
         );
 
 
-    if (
-        !customer
-    ) {
+    if (!customer) {
 
         alert(
             "受付情報が見つかりません。"
@@ -2938,9 +3493,11 @@ function updatePeopleSummary(
     const currentPeople =
         group.currentCustomer
 
-            ? group.currentCustomer.count
+            ?
+            group.currentCustomer.count
 
-            : 0;
+            :
+            0;
 
 
     const confirmedPeople =
@@ -3017,10 +3574,7 @@ function showCurrentCustomer(
         );
 
 
-    if (
-        !area
-    ) {
-
+    if (!area) {
         return;
     }
 
@@ -3062,7 +3616,7 @@ function showCurrentCustomer(
 
 
 // =====================================
-// 完全リセット確認
+// 完全リセット
 // =====================================
 
 if (
@@ -3074,17 +3628,15 @@ if (
 
         function () {
 
-            resetConfirmArea.classList.add(
-                "show"
-            );
+            resetConfirmArea
+                .classList.add(
+                    "show"
+                );
+
         }
     );
 }
 
-
-// =====================================
-// リセットキャンセル
-// =====================================
 
 if (
     resetCancelButton
@@ -3095,17 +3647,15 @@ if (
 
         function () {
 
-            resetConfirmArea.classList.remove(
-                "show"
-            );
+            resetConfirmArea
+                .classList.remove(
+                    "show"
+                );
+
         }
     );
 }
 
-
-// =====================================
-// 完全リセット
-// =====================================
 
 if (
     resetExecuteButton
@@ -3126,10 +3676,6 @@ if (
 
             try {
 
-                // =================================
-                // 全座席
-                // =================================
-
                 await remove(
                     ref(
                         database,
@@ -3137,10 +3683,6 @@ if (
                     )
                 );
 
-
-                // =================================
-                // 受付状態
-                // =================================
 
                 await set(
                     ref(
@@ -3185,71 +3727,36 @@ if (
                 );
 
 
-                groups.ACEG.selectedSeats
-                    .forEach(
-                        seat => {
-
-                            seat.classList.remove(
-                                groups
-                                    .ACEG
-                                    .selectedClass
-                            );
-                        }
-                    );
+                groups.ACEG
+                    .selectedSeats = [];
 
 
-                groups.BDFH.selectedSeats
-                    .forEach(
-                        seat => {
-
-                            seat.classList.remove(
-                                groups
-                                    .BDFH
-                                    .selectedClass
-                            );
-                        }
-                    );
-
-
-                groups.ACEG.selectedSeats =
-                    [];
-
-
-                groups.BDFH.selectedSeats =
-                    [];
+                groups.BDFH
+                    .selectedSeats = [];
 
 
                 cancelBulkSelection();
 
 
+                cancelSeatMove();
+
+
                 exitSelectionMode();
 
 
-                if (
-                    resetConfirmArea
-                ) {
-
-                    resetConfirmArea.classList.remove(
+                resetConfirmArea
+                    .classList.remove(
                         "show"
                     );
-                }
 
 
                 alert(
-
-                    "完全リセットしました。\n\n" +
-
-                    "受付番号：0\n" +
-                    "待ち人数：0\n" +
-                    "確定人数：0\n" +
-                    "全座席：空席"
+                    "完全リセットしました。"
                 );
 
             }
 
-            catch (
-                error
-            ) {
+            catch (error) {
 
                 console.error(
                     error
@@ -3342,11 +3849,7 @@ updateConfirmButton(
 
 
 // =====================================
-// Firebase 座席状態リアルタイム同期
-//
-// 受付番号ごとに色分け
-// 座席内に受付番号表示
-// 手動は赤
+// Firebase 座席同期
 // =====================================
 
 onValue(
@@ -3355,16 +3858,17 @@ onValue(
         "seats"
     ),
 
-    function (
-        snapshot
-    ) {
+    function (snapshot) {
 
         const data =
             snapshot.val() ||
             {};
-            
-window.currentSeatData =
-    data;
+
+
+        // 入替用に保存
+
+        currentSeatData =
+            data;
 
 
         document
@@ -3395,12 +3899,21 @@ window.currentSeatData =
                         ];
 
 
-                    // =================================
-                    // 一度状態をリセット
-                    // =================================
+                    // 入替選択中の装飾は残す
+
+                    const isMoveSource =
+                        seat.classList.contains(
+                            "move-source"
+                        );
+
+
+                    const isMoveTarget =
+                        seat.classList.contains(
+                            "move-target"
+                        );
+
 
                     seat.classList.remove(
-
                         "used",
                         "used-aceg",
                         "used-bdfh",
@@ -3416,12 +3929,30 @@ window.currentSeatData =
                     // 空席
                     // =================================
 
-                    if (
-                        !seatData
-                    ) {
+                    if (!seatData) {
 
                         small.textContent =
                             "空席";
+
+
+                        if (
+                            isMoveSource
+                        ) {
+
+                            seat.classList.add(
+                                "move-source"
+                            );
+                        }
+
+
+                        if (
+                            isMoveTarget
+                        ) {
+
+                            seat.classList.add(
+                                "move-target"
+                            );
+                        }
 
 
                         return;
@@ -3434,7 +3965,7 @@ window.currentSeatData =
 
 
                     // =================================
-                    // 昔のtrueデータ
+                    // 昔のtrue
                     // =================================
 
                     if (
@@ -3453,35 +3984,27 @@ window.currentSeatData =
 
                         small.textContent =
                             "手動";
-
-
-                        return;
                     }
 
 
                     // =================================
-                    // 受付番号付き
+                    // 受付番号あり
                     // =================================
 
-                    if (
+                    else if (
                         seatData.receptionId
                     ) {
 
-                        const receptionId =
-                            seatData.receptionId;
-
-
                         seat.style.background =
                             getReceptionColor(
-                                receptionId
+                                seatData
+                                    .receptionId
                             );
 
 
                         small.textContent =
-                            receptionId;
-
-
-                        return;
+                            seatData
+                                .receptionId;
                     }
 
 
@@ -3489,7 +4012,7 @@ window.currentSeatData =
                     // 手動
                     // =================================
 
-                    if (
+                    else if (
                         seatData.group ===
                         "MANUAL"
                     ) {
@@ -3505,9 +4028,6 @@ window.currentSeatData =
 
                         small.textContent =
                             "手動";
-
-
-                        return;
                     }
 
 
@@ -3515,7 +4035,7 @@ window.currentSeatData =
                     // 古いACEG
                     // =================================
 
-                    if (
+                    else if (
                         seatData.group ===
                         "ACEG"
                     ) {
@@ -3526,9 +4046,6 @@ window.currentSeatData =
 
                         small.textContent =
                             "ACEG";
-
-
-                        return;
                     }
 
 
@@ -3536,7 +4053,7 @@ window.currentSeatData =
                     // 古いBDFH
                     // =================================
 
-                    if (
+                    else if (
                         seatData.group ===
                         "BDFH"
                     ) {
@@ -3547,468 +4064,41 @@ window.currentSeatData =
 
                         small.textContent =
                             "BDFH";
-
-
-                        return;
                     }
 
 
-                    // その他
-                    seat.style.background =
-                        "#e53935";
+                    else {
+
+                        seat.style.background =
+                            "#e53935";
 
 
-                    small.textContent =
-                        "使用中";
+                        small.textContent =
+                            "使用中";
+                    }
+
+
+                    if (
+                        isMoveSource
+                    ) {
+
+                        seat.classList.add(
+                            "move-source"
+                        );
+                    }
+
+
+                    if (
+                        isMoveTarget
+                    ) {
+
+                        seat.classList.add(
+                            "move-target"
+                        );
+                    }
 
                 }
             );
 
     }
 );
-// =====================================
-// 入替モード開始・終了
-// =====================================
-
-seatMoveButton.addEventListener(
-    "click",
-    function () {
-
-        if (seatMoveMode) {
-
-            cancelSeatMove();
-
-            return;
-        }
-
-
-        // 範囲選択とは同時に使わない
-        exitSelectionMode();
-
-
-        seatMoveMode = true;
-
-
-        seatMoveButton.classList.add(
-            "active"
-        );
-
-
-        seatMoveButton.textContent =
-            "座席入替を終了";
-
-
-        seatMoveMessage.textContent =
-            "まず移動する使用中の座席を選択してください";
-
-
-        seatMoveBar.classList.add(
-            "show"
-        );
-
-
-        updateSeatMoveStatus();
-    }
-);
-
-
-// =====================================
-// 座席入替の選択
-// =====================================
-
-function handleSeatMoveClick(
-    seat
-) {
-
-    if (!seatMoveMode) {
-        return;
-    }
-
-
-    const seatNumber =
-        seat
-            .querySelector("span")
-            .textContent;
-
-
-    // =================================
-    // 使用中の席
-    // → 移動元
-    // =================================
-
-    if (
-        seat.classList.contains(
-            "used"
-        )
-    ) {
-
-        // すでに選択済みなら解除
-        if (
-            moveSourceSeats.includes(
-                seat
-            )
-        ) {
-
-            seat.classList.remove(
-                "move-source"
-            );
-
-
-            moveSourceSeats =
-                moveSourceSeats.filter(
-                    item =>
-                        item !== seat
-                );
-
-
-            if (
-                moveSourceSeats.length ===
-                0
-            ) {
-
-                moveReceptionId =
-                    null;
-            }
-
-
-            updateSeatMoveStatus();
-
-            return;
-        }
-
-
-        const seatData =
-            window.currentSeatData
-                ? window.currentSeatData[
-                    seatNumber
-                ]
-                : null;
-
-
-        if (!seatData) {
-            return;
-        }
-
-
-        const receptionId =
-            seatData.receptionId ||
-            seatData.group ||
-            "MANUAL";
-
-
-        // 最初の席
-        if (
-            moveSourceSeats.length ===
-            0
-        ) {
-
-            moveReceptionId =
-                receptionId;
-
-        }
-
-        // 違う受付番号は同時選択禁止
-        else if (
-            receptionId !==
-            moveReceptionId
-        ) {
-
-            alert(
-                "同じ受付番号の座席だけを選択してください。"
-            );
-
-            return;
-        }
-
-
-        seat.classList.add(
-            "move-source"
-        );
-
-
-        moveSourceSeats.push(
-            seat
-        );
-
-
-        seatMoveMessage.textContent =
-            "次に同じ数だけ空席を選択してください";
-
-
-        updateSeatMoveStatus();
-
-        return;
-    }
-
-
-    // =================================
-    // 空席
-    // → 移動先
-    // =================================
-
-    if (
-        moveSourceSeats.length ===
-        0
-    ) {
-
-        alert(
-            "先に移動する使用中の座席を選択してください。"
-        );
-
-        return;
-    }
-
-
-    // すでに選択済みなら解除
-    if (
-        moveTargetSeats.includes(
-            seat
-        )
-    ) {
-
-        seat.classList.remove(
-            "move-target"
-        );
-
-
-        moveTargetSeats =
-            moveTargetSeats.filter(
-                item =>
-                    item !== seat
-            );
-
-
-        updateSeatMoveStatus();
-
-        return;
-    }
-
-
-    if (
-        moveTargetSeats.length >=
-        moveSourceSeats.length
-    ) {
-
-        alert(
-            "移動元と同じ席数まで選択できます。"
-        );
-
-        return;
-    }
-
-
-    seat.classList.add(
-        "move-target"
-    );
-
-
-    moveTargetSeats.push(
-        seat
-    );
-
-
-    updateSeatMoveStatus();
-}
-
-
-// =====================================
-// 入替状況表示
-// =====================================
-
-function updateSeatMoveStatus() {
-
-    seatMoveStatus.textContent =
-        "移動元 " +
-        moveSourceSeats.length +
-        "席 ／ 移動先 " +
-        moveTargetSeats.length +
-        "席";
-
-
-    seatMoveConfirmButton.disabled =
-        moveSourceSeats.length === 0 ||
-        moveSourceSeats.length !==
-        moveTargetSeats.length;
-}
-
-
-// =====================================
-// 入替確定
-// =====================================
-
-seatMoveConfirmButton.addEventListener(
-    "click",
-    async function () {
-
-        if (
-            moveSourceSeats.length ===
-            0 ||
-            moveSourceSeats.length !==
-            moveTargetSeats.length
-        ) {
-
-            return;
-        }
-
-
-        const updates = {};
-
-
-        for (
-            let i = 0;
-            i < moveSourceSeats.length;
-            i++
-        ) {
-
-            const sourceSeat =
-                moveSourceSeats[i];
-
-
-            const targetSeat =
-                moveTargetSeats[i];
-
-
-            const sourceNumber =
-                sourceSeat
-                    .querySelector("span")
-                    .textContent;
-
-
-            const targetNumber =
-                targetSeat
-                    .querySelector("span")
-                    .textContent;
-
-
-            const sourceData =
-                window.currentSeatData[
-                    sourceNumber
-                ];
-
-
-            // 移動先へそのまま引き継ぐ
-            updates[
-                "seats/" +
-                targetNumber
-            ] =
-                sourceData;
-
-
-            // 元の座席を空席へ
-            updates[
-                "seats/" +
-                sourceNumber
-            ] =
-                null;
-        }
-
-
-        seatMoveConfirmButton.disabled =
-            true;
-
-
-        seatMoveConfirmButton.textContent =
-            "入替中…";
-
-
-        try {
-
-            // 一括更新
-            await update(
-                ref(database),
-                updates
-            );
-
-
-            cancelSeatMove();
-
-
-            alert(
-                "座席を入れ替えました。"
-            );
-
-        }
-
-        catch (error) {
-
-            console.error(error);
-
-
-            alert(
-                "座席の入替に失敗しました。"
-            );
-
-        }
-
-        finally {
-
-            seatMoveConfirmButton.textContent =
-                "入替を確定";
-        }
-    }
-);
-
-
-// =====================================
-// 入替キャンセル
-// =====================================
-
-seatMoveCancelButton.addEventListener(
-    "click",
-    cancelSeatMove
-);
-
-
-function cancelSeatMove() {
-
-    moveSourceSeats.forEach(
-        seat => {
-
-            seat.classList.remove(
-                "move-source"
-            );
-
-        }
-    );
-
-
-    moveTargetSeats.forEach(
-        seat => {
-
-            seat.classList.remove(
-                "move-target"
-            );
-
-        }
-    );
-
-
-    moveSourceSeats = [];
-
-    moveTargetSeats = [];
-
-    moveReceptionId = null;
-
-    seatMoveMode = false;
-
-
-    seatMoveBar.classList.remove(
-        "show"
-    );
-
-
-    seatMoveButton.classList.remove(
-        "active"
-    );
-
-
-    seatMoveButton.textContent =
-        "座席入替を開始";
-
-
-    seatMoveMessage.textContent =
-        "入替モードはOFFです";
-
-
-    updateSeatMoveStatus();
-}
