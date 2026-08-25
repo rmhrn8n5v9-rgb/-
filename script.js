@@ -263,6 +263,57 @@ const groups = {
     }
 };
 // =====================================
+// 受付番号ごとの座席色
+// =====================================
+
+const receptionColors = [
+    "#1565c0",
+    "#ef6c00",
+    "#7b1fa2",
+    "#00897b",
+    "#d81b60",
+    "#5d4037",
+    "#3949ab",
+    "#00838f",
+    "#6a1b9a",
+    "#ad1457",
+    "#2e7d32",
+    "#4527a0",
+    "#0277bd",
+    "#c62828",
+    "#558b2f",
+    "#6d4c41"
+];
+
+
+// A-1 / A-2 / B-1 など
+// 受付IDから毎回同じ色を作る
+function getReceptionColor(
+    receptionId
+) {
+
+    let hash = 0;
+
+    for (
+        let i = 0;
+        i < receptionId.length;
+        i++
+    ) {
+
+        hash =
+            (
+                hash * 31 +
+                receptionId.charCodeAt(i)
+            ) >>> 0;
+    }
+
+
+    return receptionColors[
+        hash %
+        receptionColors.length
+    ];
+}
+// =====================================
 // 受付状況をFirebaseへ保存
 // =====================================
 
@@ -2273,6 +2324,8 @@ function confirmSeats(
     const seatNames =
         [];
 
+ const confirmedCustomer =
+        group.currentCustomer;
 
     group.selectedSeats.forEach(
         seat => {
@@ -2314,7 +2367,12 @@ function confirmSeats(
                     .textContent;
 
 
-            set(
+            const receptionId =
+    group.prefix +
+    "-" +
+    confirmedCustomer.number;
+
+set(
     ref(
         database,
         "seats/" +
@@ -2322,9 +2380,45 @@ function confirmSeats(
     ),
     {
         used: true,
-        group: groupName
+
+        group:
+            groupName,
+
+        receptionId:
+            receptionId,
+
+        receptionNumber:
+            confirmedCustomer.number
     }
 );
+// =====================================
+// 受付番号ごとの座席色
+// =====================================
+
+const receptionColors = [
+    "#1565c0", // 青
+    "#ef6c00", // オレンジ
+    "#7b1fa2", // 紫
+    "#00897b", // 緑
+    "#d81b60", // ピンク
+    "#5d4037", // 茶
+    "#3949ab", // 藍
+    "#c62828", // 赤
+    "#00838f", // 水色
+    "#6a1b9a"  // 濃紫
+];
+
+
+function getReceptionColor(
+    receptionNumber
+) {
+
+    const index =
+        (Number(receptionNumber) - 1) %
+        receptionColors.length;
+
+    return receptionColors[index];
+}
 
 
             seatNames.push(
@@ -2334,9 +2428,12 @@ function confirmSeats(
     );
 
 
-    const confirmedCustomer =
-        group.currentCustomer;
+   
 
+const receptionId =
+    group.prefix +
+    "-" +
+    confirmedCustomer.number;
 
     group.confirmedCount +=
         confirmedCustomer.count;
@@ -2801,11 +2898,225 @@ updateConfirmButton(
 // ACEG・BDFH・手動の色を分ける
 // =====================================
 
+// =====================================
+// Firebase 座席状態をリアルタイム同期
+//
+// ・受付番号ごとに色分け
+// ・受付番号を座席内に表示
+// ・手動変更は赤
+// =====================================
+
 onValue(
     ref(
         database,
         "seats"
     ),
+
+    function (snapshot) {
+
+        const data =
+            snapshot.val() || {};
+
+
+        document
+            .querySelectorAll(
+                ".seat"
+            )
+            .forEach(
+                seat => {
+
+                    const seatNumber =
+                        seat
+                            .querySelector(
+                                "span"
+                            )
+                            .textContent;
+
+
+                    const small =
+                        seat
+                            .querySelector(
+                                "small"
+                            );
+
+
+                    const seatData =
+                        data[
+                            seatNumber
+                        ];
+
+
+                    // =========================
+                    // 一度状態をリセット
+                    // =========================
+
+                    seat.classList.remove(
+                        "used",
+                        "used-aceg",
+                        "used-bdfh",
+                        "used-manual"
+                    );
+
+
+                    // インライン色も解除
+                    seat.style.background =
+                        "";
+
+
+                    // =========================
+                    // 空席
+                    // =========================
+
+                    if (
+                        !seatData
+                    ) {
+
+                        small.textContent =
+                            "空席";
+
+                        return;
+                    }
+
+
+                    // =========================
+                    // 使用中
+                    // =========================
+
+                    seat.classList.add(
+                        "used"
+                    );
+
+
+                    // =========================
+                    // 昔の true データ
+                    // =========================
+
+                    if (
+                        seatData === true
+                    ) {
+
+                        seat.classList.add(
+                            "used-manual"
+                        );
+
+
+                        seat.style.background =
+                            "#e53935";
+
+
+                        small.textContent =
+                            "手動";
+
+
+                        return;
+                    }
+
+
+                    // =========================
+                    // 受付番号が保存されている
+                    // =========================
+
+                    if (
+                        seatData.receptionId
+                    ) {
+
+                        const receptionId =
+                            seatData.receptionId;
+
+
+                        seat.style.background =
+                            getReceptionColor(
+                                receptionId
+                            );
+
+
+                        small.textContent =
+                            receptionId;
+
+
+                        return;
+                    }
+
+
+                    // =========================
+                    // 手動変更
+                    // =========================
+
+                    if (
+                        seatData.group ===
+                        "MANUAL"
+                    ) {
+
+                        seat.classList.add(
+                            "used-manual"
+                        );
+
+
+                        seat.style.background =
+                            "#e53935";
+
+
+                        small.textContent =
+                            "手動";
+
+
+                        return;
+                    }
+
+
+                    // =========================
+                    // 古いACEGデータ
+                    // =========================
+
+                    if (
+                        seatData.group ===
+                        "ACEG"
+                    ) {
+
+                        seat.style.background =
+                            "#1565c0";
+
+
+                        small.textContent =
+                            "ACEG";
+
+
+                        return;
+                    }
+
+
+                    // =========================
+                    // 古いBDFHデータ
+                    // =========================
+
+                    if (
+                        seatData.group ===
+                        "BDFH"
+                    ) {
+
+                        seat.style.background =
+                            "#7b1fa2";
+
+
+                        small.textContent =
+                            "BDFH";
+
+
+                        return;
+                    }
+
+
+                    // その他
+                    seat.style.background =
+                        "#e53935";
+
+
+                    small.textContent =
+                        "使用中";
+                }
+            );
+    }
+);
 
     function (snapshot) {
 
