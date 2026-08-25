@@ -40,6 +40,9 @@ let dragGroupName = null;
 
 let dragMode = "select";
 
+let bulkSeatMode = null;
+
+let bulkTouchedSeats = new Set();
 
 // =====================================
 // 受付グループ
