@@ -10,28 +10,65 @@ import {
 } from
 "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
 
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+
+// =====================================
+// Firebase
+// =====================================
+
 const firebaseConfig = {
-  apiKey: "AIzaSyBSUuyyxr5Duvm_sp0x7lSCNC-o9lGrUpg",
-  authDomain: "seat-1a2e8.firebaseapp.com",
-  databaseURL: "https://seat-1a2e8-default-rtdb.firebaseio.com",
-  projectId: "seat-1a2e8",
-  storageBucket: "seat-1a2e8.firebasestorage.app",
-  messagingSenderId: "571458713265",
-  appId: "1:571458713265:web:7193eccb5b1710b8b3d490",
-  measurementId: "G-3LL31LK2RW"
+    apiKey: "AIzaSyBSUuyyxr5Duvm_sp0x7lSCNC-o9lGrUpg",
+    authDomain: "seat-1a2e8.firebaseapp.com",
+    databaseURL: "https://seat-1a2e8-default-rtdb.firebaseio.com",
+    projectId: "seat-1a2e8",
+    storageBucket: "seat-1a2e8.firebasestorage.app",
+    messagingSenderId: "571458713265",
+    appId: "1:571458713265:web:7193eccb5b1710b8b3d490",
+    measurementId: "G-3LL31LK2RW"
 };
+
+
 const app =
     initializeApp(firebaseConfig);
 
+
 const database =
     getDatabase(app);
+
+
 const seatsArea =
     document.getElementById("seats");
 
 
 // =====================================
-// ドラッグ・範囲選択
+// 一括変更バー
+// =====================================
+
+const bulkActionBar =
+    document.getElementById(
+        "bulkActionBar"
+    );
+
+
+const bulkActionText =
+    document.getElementById(
+        "bulkActionText"
+    );
+
+
+const bulkConfirmButton =
+    document.getElementById(
+        "bulkConfirmButton"
+    );
+
+
+const bulkCancelButton =
+    document.getElementById(
+        "bulkCancelButton"
+    );
+
+
+// =====================================
+// ドラッグ状態
 // =====================================
 
 let isDragging = false;
@@ -42,19 +79,22 @@ let dragMode = "select";
 
 let bulkSeatMode = null;
 
-let bulkTouchedSeats = new Set();
+let bulkTouchedSeats =
+    new Set();
 
 let bulkPendingSeats = [];
 
+
 // =====================================
-// 受付グループ
+// 受付
 // =====================================
 
 const groups = {
 
     ACEG: {
 
-        blocks: ["A", "C", "E", "G"],
+        blocks:
+            ["A", "C", "E", "G"],
 
         waiting: [],
 
@@ -102,7 +142,8 @@ const groups = {
 
     BDFH: {
 
-        blocks: ["B", "D", "F", "H"],
+        blocks:
+            ["B", "D", "F", "H"],
 
         waiting: [],
 
@@ -146,18 +187,19 @@ const groups = {
         waitingListId:
             "bdfhWaitingList"
     }
-
 };
 
 
 // =====================================
-// ブロックがどちらの受付か
+// グループ判定
 // =====================================
 
 function getGroupName(block) {
 
     if (
-        groups.ACEG.blocks.includes(block)
+        groups.ACEG.blocks.includes(
+            block
+        )
     ) {
 
         return "ACEG";
@@ -179,7 +221,9 @@ function createSeat(
 ) {
 
     const button =
-        document.createElement("button");
+        document.createElement(
+            "button"
+        );
 
 
     button.className =
@@ -202,206 +246,131 @@ function createSeat(
     `;
 
 
-    // =================================
-    // 座席を押した
-    // =================================
+    button.addEventListener(
+        "pointerdown",
+        function (event) {
 
-button.addEventListener(
-    "pointerdown",
-    function (event) {
-
-        event.preventDefault();
-
-        const groupName =
-            getGroupName(
-                button.dataset.block
-            );
-
-        const group =
-            groups[groupName];
+            event.preventDefault();
 
 
-        // =====================================
-        // 案内中ではない
-        // → 空席/使用中をなぞって一括変更
-        // =====================================
+            // 一括変更の確認待ちなら
+            // 新しい操作をさせない
+            if (
+                bulkPendingSeats.length >
+                0
+            ) {
 
-        if (
-            group.currentCustomer === null
-        ) {
-
-            isDragging = true;
-
-            dragGroupName =
-                groupName;
-
-            bulkTouchedSeats.clear();
+                return;
+            }
 
 
-            // 最初に触った席でモードを決める
+            const groupName =
+                getGroupName(
+                    button.dataset.block
+                );
+
+
+            const group =
+                groups[groupName];
+
+
+            // =================================
+            // 案内中ではない
+            // → 一括変更
+            // =================================
+
+            if (
+                group.currentCustomer ===
+                null
+            ) {
+
+                isDragging = true;
+
+                dragGroupName =
+                    groupName;
+
+                bulkTouchedSeats.clear();
+
+                bulkPendingSeats = [];
+
+
+                if (
+                    button.classList.contains(
+                        "used"
+                    )
+                ) {
+
+                    bulkSeatMode =
+                        "to-empty";
+
+                } else {
+
+                    bulkSeatMode =
+                        "to-used";
+                }
+
+
+                applyBulkSeatChange(
+                    button
+                );
+
+
+                return;
+            }
+
+
+            // =================================
+            // 案内中
+            // =================================
+
             if (
                 button.classList.contains(
                     "used"
                 )
             ) {
 
-                bulkSeatMode =
-                    "to-empty";
-
-            } else {
-
-                bulkSeatMode =
-                    "to-used";
+                return;
             }
 
 
-            applyBulkSeatChange(
+            isDragging = true;
+
+            dragGroupName =
+                groupName;
+
+
+            if (
+                button.classList.contains(
+                    group.selectedClass
+                )
+            ) {
+
+                dragMode = "remove";
+
+            } else {
+
+                dragMode = "select";
+            }
+
+
+            changeSeatByDrag(
                 button
             );
-
-            return;
         }
+    );
 
-
-        // =====================================
-        // 案内中
-        // → 今まで通り候補席選択
-        // =====================================
-
-        if (
-            button.classList.contains("used")
-        ) {
-            return;
-        }
-
-
-        isDragging =
-            true;
-
-        dragGroupName =
-            groupName;
-
-
-        if (
-            button.classList.contains(
-                group.selectedClass
-            )
-        ) {
-
-            dragMode =
-                "remove";
-
-        } else {
-
-            dragMode =
-                "select";
-        }
-
-
-        changeSeatByDrag(
-            button
-        );
-    }
-);
 
     return button;
 }
 
 
 // =====================================
-// 空席 ⇄ 使用中
+// 一括変更 仮選択
 // =====================================
 
-function manualChangeSeat(seat) {
-
-    const seatNumber =
-        seat
-            .querySelector("span")
-            .textContent;
-
-
-    // =================================
-    // 使用中 → 空席
-    // =================================
-
-    if (
-        seat.classList.contains("used")
-    ) {
-
-        const result =
-            confirm(
-                seatNumber +
-                " は使用中です。\n\n" +
-                "空席に戻しますか？"
-            );
-
-
-        if (!result) {
-            return;
-        }
-
-
-        seat.classList.remove(
-            "used"
-        );
-
-
-        seat
-            .querySelector("small")
-            .textContent =
-            "空席";
-remove(
-    ref(
-        database,
-        "seats/" + seatNumber
-    )
-);
-
-        return;
-    }
-
-
-    // =================================
-    // 空席 → 使用中
-    // =================================
-
-    const result =
-        confirm(
-            seatNumber +
-                " は空席です。\n\n" +
-                "使用中に変更しますか？"
-        );
-
-
-    if (!result) {
-        return;
-    }
-
-
-    seat.classList.add(
-        "used"
-    );
-
-
+function applyBulkSeatChange(
     seat
-        .querySelector("small")
-        .textContent =
-        "使用中";
-set(
-    ref(
-        database,
-        "seats/" + seatNumber
-    ),
-    true
-);
-}
-
-
-// =====================================
-// なぞって座席を選択・解除
-// =====================================
-
-function changeSeatByDrag(seat) {
+) {
 
     if (!seat) {
         return;
@@ -409,15 +378,9 @@ function changeSeatByDrag(seat) {
 
 
     if (
-        !seat.classList.contains("seat")
-    ) {
-
-        return;
-    }
-
-
-    if (
-        seat.classList.contains("used")
+        bulkTouchedSeats.has(
+            seat
+        )
     ) {
 
         return;
@@ -430,8 +393,107 @@ function changeSeatByDrag(seat) {
         );
 
 
-    // ACEGからBDFHへは
-    // ドラッグをまたがせない
+    if (
+        groupName !==
+        dragGroupName
+    ) {
+
+        return;
+    }
+
+
+    bulkTouchedSeats.add(
+        seat
+    );
+
+
+    // 空席 → 使用中
+    if (
+        bulkSeatMode ===
+        "to-used"
+    ) {
+
+        if (
+            seat.classList.contains(
+                "used"
+            )
+        ) {
+
+            return;
+        }
+
+
+        seat.classList.add(
+            "bulk-pending-used"
+        );
+
+
+        bulkPendingSeats.push(
+            seat
+        );
+
+
+        return;
+    }
+
+
+    // 使用中 → 空席
+    if (
+        bulkSeatMode ===
+        "to-empty"
+    ) {
+
+        if (
+            !seat.classList.contains(
+                "used"
+            )
+        ) {
+
+            return;
+        }
+
+
+        seat.classList.add(
+            "bulk-pending-empty"
+        );
+
+
+        bulkPendingSeats.push(
+            seat
+        );
+    }
+}
+
+
+// =====================================
+// 案内中ドラッグ
+// =====================================
+
+function changeSeatByDrag(
+    seat
+) {
+
+    if (!seat) {
+        return;
+    }
+
+
+    if (
+        seat.classList.contains(
+            "used"
+        )
+    ) {
+
+        return;
+    }
+
+
+    const groupName =
+        getGroupName(
+            seat.dataset.block
+        );
+
+
     if (
         groupName !==
         dragGroupName
@@ -446,19 +508,18 @@ function changeSeatByDrag(seat) {
 
 
     if (
-        group.currentCustomer === null
+        group.currentCustomer ===
+        null
     ) {
 
         return;
     }
 
 
-    // =================================
-    // 選択解除モード
-    // =================================
-
+    // 選択解除
     if (
-        dragMode === "remove"
+        dragMode ===
+        "remove"
     ) {
 
         if (
@@ -492,10 +553,7 @@ function changeSeatByDrag(seat) {
     }
 
 
-    // =================================
-    // 選択モード
-    // =================================
-
+    // 選択
     if (
         seat.classList.contains(
             group.selectedClass
@@ -506,7 +564,6 @@ function changeSeatByDrag(seat) {
     }
 
 
-    // 人数に達した
     if (
         group.selectedSeats.length >=
         group.currentCustomer.count
@@ -533,7 +590,7 @@ function changeSeatByDrag(seat) {
 
 
 // =====================================
-// 指を動かしている位置の席を取得
+// ドラッグ中
 // =====================================
 
 document.addEventListener(
@@ -561,7 +618,9 @@ document.addEventListener(
 
 
         const seat =
-            element.closest(".seat");
+            element.closest(
+                ".seat"
+            );
 
 
         if (!seat) {
@@ -569,29 +628,31 @@ document.addEventListener(
         }
 
 
-const groupName =
-    getGroupName(
-        seat.dataset.block
-    );
-
-const group =
-    groups[groupName];
+        const groupName =
+            getGroupName(
+                seat.dataset.block
+            );
 
 
-if (
-    group.currentCustomer === null
-) {
+        const group =
+            groups[groupName];
 
-    applyBulkSeatChange(
-        seat
-    );
 
-} else {
+        if (
+            group.currentCustomer ===
+            null
+        ) {
 
-    changeSeatByDrag(
-        seat
-    );
-}
+            applyBulkSeatChange(
+                seat
+            );
+
+        } else {
+
+            changeSeatByDrag(
+                seat
+            );
+        }
 
     },
     {
@@ -601,10 +662,12 @@ if (
 
 
 // =====================================
-// 指を離す
+// ドラッグ終了
+//
+// ここでは確定しない
 // =====================================
 
-function endDragging() {
+function finishDrag() {
 
     if (!isDragging) {
         return;
@@ -614,180 +677,253 @@ function endDragging() {
     isDragging = false;
 
 
-    // =================================
-    // ドラッグ変更の確認
-    // =================================
-
+    // 通常時の一括変更なら
+    // 下に確認バーを表示
     if (
-        bulkPendingSeats.length > 0
+        bulkPendingSeats.length >
+        0
     ) {
 
-        const count =
-            bulkPendingSeats.length;
-
-
-        let message = "";
-
-
-        if (
-            bulkSeatMode === "to-used"
-        ) {
-
-            message =
-                count +
-                "席を使用中に変更しますか？";
-
-        } else if (
-            bulkSeatMode === "to-empty"
-        ) {
-
-            message =
-                count +
-                "席を空席に戻しますか？";
-        }
-
-
-        const result =
-            confirm(message);
-
-
-        // =================================
-        // OK → 確定
-        // =================================
-
-        if (result) {
-
-            bulkPendingSeats.forEach(
-                seat => {
-
-                    const seatNumber =
-                        seat
-                            .querySelector("span")
-                            .textContent;
-
-
-                    // 空席 → 使用中
-                    if (
-                        bulkSeatMode ===
-                        "to-used"
-                    ) {
-
-                        seat.classList.remove(
-                            "bulk-pending-used"
-                        );
-
-                        seat.classList.add(
-                            "used"
-                        );
-
-                        seat
-                            .querySelector("small")
-                            .textContent =
-                            "使用中";
-
-
-                        set(
-                            ref(
-                                database,
-                                "seats/" +
-                                seatNumber
-                            ),
-                            true
-                        );
-                    }
-
-
-                    // 使用中 → 空席
-                    if (
-                        bulkSeatMode ===
-                        "to-empty"
-                    ) {
-
-                        seat.classList.remove(
-                            "bulk-pending-empty"
-                        );
-
-                        seat.classList.remove(
-                            "used"
-                        );
-
-                        seat
-                            .querySelector("small")
-                            .textContent =
-                            "空席";
-
-
-                        remove(
-                            ref(
-                                database,
-                                "seats/" +
-                                seatNumber
-                            )
-                        );
-                    }
-
-                }
-            );
-
-        }
-
-        // =================================
-        // キャンセル
-        // → 仮選択解除
-        // =================================
-
-        else {
-
-            bulkPendingSeats.forEach(
-                seat => {
-
-                    seat.classList.remove(
-                        "bulk-pending-used"
-                    );
-
-                    seat.classList.remove(
-                        "bulk-pending-empty"
-                    );
-
-                }
-            );
-        }
+        showBulkActionBar();
     }
 
 
     dragGroupName = null;
 
     dragMode = "select";
+}
 
-    bulkSeatMode = null;
 
-    bulkTouchedSeats.clear();
+document.addEventListener(
+    "pointerup",
+    finishDrag
+);
 
-    bulkPendingSeats = [];
+
+document.addEventListener(
+    "pointercancel",
+    finishDrag
+);
+
+
+// =====================================
+// 一括変更バー表示
+// =====================================
+
+function showBulkActionBar() {
+
+    const count =
+        bulkPendingSeats.length;
+
+
+    if (
+        bulkSeatMode ===
+        "to-used"
+    ) {
+
+        bulkActionText.textContent =
+            count +
+            "席を使用中に変更しますか？";
+
+
+        bulkConfirmButton.textContent =
+            count +
+            "席を使用中にする";
+
+    } else {
+
+        bulkActionText.textContent =
+            count +
+            "席を空席に戻しますか？";
+
+
+        bulkConfirmButton.textContent =
+            count +
+            "席を空席に戻す";
+    }
+
+
+    bulkActionBar.classList.add(
+        "show"
+    );
 }
 
 
 // =====================================
-// ブロックを作る
+// 一括変更 確定
+// =====================================
+
+bulkConfirmButton.addEventListener(
+    "click",
+    function () {
+
+        bulkPendingSeats.forEach(
+            seat => {
+
+                const seatNumber =
+                    seat
+                        .querySelector(
+                            "span"
+                        )
+                        .textContent;
+
+
+                // 空席 → 使用中
+                if (
+                    bulkSeatMode ===
+                    "to-used"
+                ) {
+
+                    seat.classList.remove(
+                        "bulk-pending-used"
+                    );
+
+
+                    seat.classList.add(
+                        "used"
+                    );
+
+
+                    seat
+                        .querySelector(
+                            "small"
+                        )
+                        .textContent =
+                        "使用中";
+
+
+                    set(
+                        ref(
+                            database,
+                            "seats/" +
+                            seatNumber
+                        ),
+                        true
+                    );
+                }
+
+
+                // 使用中 → 空席
+                if (
+                    bulkSeatMode ===
+                    "to-empty"
+                ) {
+
+                    seat.classList.remove(
+                        "bulk-pending-empty"
+                    );
+
+
+                    seat.classList.remove(
+                        "used"
+                    );
+
+
+                    seat
+                        .querySelector(
+                            "small"
+                        )
+                        .textContent =
+                        "空席";
+
+
+                    remove(
+                        ref(
+                            database,
+                            "seats/" +
+                            seatNumber
+                        )
+                    );
+                }
+
+            }
+        );
+
+
+        resetBulkSelection();
+
+    }
+);
+
+
+// =====================================
+// 一括変更 キャンセル
+// =====================================
+
+bulkCancelButton.addEventListener(
+    "click",
+    function () {
+
+        bulkPendingSeats.forEach(
+            seat => {
+
+                seat.classList.remove(
+                    "bulk-pending-used"
+                );
+
+
+                seat.classList.remove(
+                    "bulk-pending-empty"
+                );
+
+            }
+        );
+
+
+        resetBulkSelection();
+
+    }
+);
+
+
+// =====================================
+// 一括変更状態リセット
+// =====================================
+
+function resetBulkSelection() {
+
+    bulkActionBar.classList.remove(
+        "show"
+    );
+
+
+    bulkPendingSeats = [];
+
+    bulkTouchedSeats.clear();
+
+    bulkSeatMode = null;
+
+    dragGroupName = null;
+
+    isDragging = false;
+}
+
+
+// =====================================
+// ブロック作成
 // =====================================
 
 function createBlock(
-
     name,
     rules,
     reverse
 ) {
 
     const block =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
 
 
     block.className =
-        "block block-" + name;
+        "block block-" +
+        name;
 
 
     const title =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
 
 
     title.className =
@@ -795,7 +931,8 @@ function createBlock(
 
 
     title.textContent =
-        name + "ブロック";
+        name +
+        "ブロック";
 
 
     block.appendChild(
@@ -839,7 +976,6 @@ function createBlock(
                 number++
             ) {
 
-                // 欠番
                 if (
                     rule.skip &&
                     rule.skip.includes(
@@ -859,17 +995,12 @@ function createBlock(
                     );
 
 
-                // ACEG
                 if (!reverse) {
 
                     seat.style.gridColumn =
                         String(number);
 
-                }
-
-                // BDFH
-                // 右から1番
-                else {
+                } else {
 
                     seat.style.gridColumn =
                         String(
@@ -877,11 +1008,9 @@ function createBlock(
                             number +
                             1
                         );
-
                 }
 
 
-                // 斜め防止
                 seat.style.gridRow =
                     "1";
 
@@ -907,10 +1036,6 @@ function createBlock(
 
 // =====================================
 // A・B
-//
-// 1〜10 → 1〜24
-// 11〜13 → 5〜24
-// 14〜20 → 13〜24
 // =====================================
 
 function makeAB() {
@@ -929,7 +1054,6 @@ function makeAB() {
             start: 1,
             end: 24
         });
-
     }
 
 
@@ -944,7 +1068,6 @@ function makeAB() {
             start: 5,
             end: 24
         });
-
     }
 
 
@@ -959,7 +1082,6 @@ function makeAB() {
             start: 13,
             end: 24
         });
-
     }
 
 
@@ -976,7 +1098,6 @@ function makeCD() {
     const rules = [];
 
 
-    // 21〜22 → 10〜42
     for (
         let row = 21;
         row <= 22;
@@ -988,11 +1109,9 @@ function makeCD() {
             start: 10,
             end: 42
         });
-
     }
 
 
-    // 23〜26 → 1〜42
     for (
         let row = 23;
         row <= 26;
@@ -1004,11 +1123,9 @@ function makeCD() {
             start: 1,
             end: 42
         });
-
     }
 
 
-    // 27〜28 → 1〜36
     for (
         let row = 27;
         row <= 28;
@@ -1020,11 +1137,9 @@ function makeCD() {
             start: 1,
             end: 36
         });
-
     }
 
 
-    // 29〜40 → 1〜42
     for (
         let row = 29;
         row <= 40;
@@ -1036,7 +1151,6 @@ function makeCD() {
             start: 1,
             end: 42
         });
-
     }
 
 
@@ -1044,14 +1158,7 @@ function makeCD() {
 }
 
 
-// =====================================
 // Cだけ欠番
-//
-// C-40-20
-// C-40-21
-// C-40-23
-// C-40-24
-// =====================================
 
 function makeC() {
 
@@ -1075,7 +1182,6 @@ function makeC() {
 
 // =====================================
 // E
-// 41〜59 → 3〜42
 // =====================================
 
 function makeE() {
@@ -1094,7 +1200,6 @@ function makeE() {
             start: 3,
             end: 42
         });
-
     }
 
 
@@ -1104,7 +1209,6 @@ function makeE() {
 
 // =====================================
 // F
-// 41〜59 → 1〜42
 // =====================================
 
 function makeF() {
@@ -1123,7 +1227,6 @@ function makeF() {
             start: 1,
             end: 42
         });
-
     }
 
 
@@ -1133,7 +1236,6 @@ function makeF() {
 
 // =====================================
 // G
-// 60〜71 → 3〜36
 // =====================================
 
 function makeG() {
@@ -1152,7 +1254,6 @@ function makeG() {
             start: 3,
             end: 36
         });
-
     }
 
 
@@ -1162,7 +1263,6 @@ function makeG() {
 
 // =====================================
 // H
-// 60〜71 → 1〜36
 // =====================================
 
 function makeH() {
@@ -1181,7 +1281,6 @@ function makeH() {
             start: 1,
             end: 36
         });
-
     }
 
 
@@ -1301,12 +1400,9 @@ seatPairs.forEach(
 
 
 // =====================================
-// 自動座席選択
-//
+// 自動座席候補
 // 1番から順番
-//
-// 足りなければ
-// 次の列・次のブロックへ
+// 足りなければ次の行
 // =====================================
 
 function findSuggestedSeats(
@@ -1318,15 +1414,8 @@ function findSuggestedSeats(
         groups[groupName];
 
 
-    const selected =
-        [];
+    const selected = [];
 
-
-    // ACEG
-    // A → C → E → G
-
-    // BDFH
-    // B → D → F → H
 
     for (
         const blockName
@@ -1364,7 +1453,6 @@ function findSuggestedSeats(
                 );
 
 
-            // 1番から
             availableSeats.sort(
                 (a, b) =>
                     Number(
@@ -1392,13 +1480,9 @@ function findSuggestedSeats(
                 ) {
 
                     return selected;
-
                 }
-
             }
-
         }
-
     }
 
 
@@ -1459,7 +1543,6 @@ function suggestSeats(
             seat.classList.add(
                 group.selectedClass
             );
-
         }
     );
 
@@ -1471,7 +1554,7 @@ function suggestSeats(
 
 
 // =====================================
-// 受付を設定
+// 受付設定
 // =====================================
 
 function setupReception(
@@ -1482,9 +1565,7 @@ function setupReception(
         groups[groupName];
 
 
-    // =================================
     // 受付
-    // =================================
 
     document
         .getElementById(
@@ -1507,7 +1588,9 @@ function setupReception(
 
 
                 if (
-                    !Number.isInteger(count) ||
+                    !Number.isInteger(
+                        count
+                    ) ||
                     count < 1
                 ) {
 
@@ -1536,8 +1619,7 @@ function setupReception(
                 });
 
 
-                input.value =
-                    1;
+                input.value = 1;
 
 
                 updateWaitingList(
@@ -1561,14 +1643,11 @@ function setupReception(
                     count +
                     "名様"
                 );
-
             }
         );
 
 
-    // =================================
     // 次のお客様
-    // =================================
 
     document
         .getElementById(
@@ -1623,18 +1702,14 @@ function setupReception(
                 );
 
 
-                // 自動で候補席
                 suggestSeats(
                     groupName
                 );
-
             }
         );
 
 
-    // =================================
     // 座席確定
-    // =================================
 
     document
         .getElementById(
@@ -1647,7 +1722,6 @@ function setupReception(
                 confirmSeats(
                     groupName
                 );
-
             }
         );
 }
@@ -1666,7 +1740,8 @@ function confirmSeats(
 
 
     if (
-        group.currentCustomer === null
+        group.currentCustomer ===
+        null
     ) {
 
         return;
@@ -1687,8 +1762,7 @@ function confirmSeats(
     }
 
 
-    const seatNames =
-        [];
+    const seatNames = [];
 
 
     group.selectedSeats.forEach(
@@ -1705,28 +1779,34 @@ function confirmSeats(
 
 
             seat
-                .querySelector("small")
+                .querySelector(
+                    "small"
+                )
                 .textContent =
                 "使用中";
-const seatNumber =
-    seat
-        .querySelector("span")
-        .textContent;
 
-set(
-    ref(
-        database,
-        "seats/" + seatNumber
-    ),
-    true
-);
 
-            seatNames.push(
+            const seatNumber =
                 seat
-                    .querySelector("span")
-                    .textContent
+                    .querySelector(
+                        "span"
+                    )
+                    .textContent;
+
+
+            set(
+                ref(
+                    database,
+                    "seats/" +
+                    seatNumber
+                ),
+                true
             );
 
+
+            seatNames.push(
+                seatNumber
+            );
         }
     );
 
@@ -1735,13 +1815,11 @@ set(
         group.currentCustomer;
 
 
-    // 確定人数を追加
     group.confirmedCount +=
         confirmedCustomer.count;
 
 
-    group.selectedSeats =
-        [];
+    group.selectedSeats = [];
 
 
     group.currentCustomer =
@@ -1778,7 +1856,7 @@ set(
 
 
 // =====================================
-// 候補席を解除
+// 候補解除
 // =====================================
 
 function clearSelected(
@@ -1795,13 +1873,11 @@ function clearSelected(
             seat.classList.remove(
                 group.selectedClass
             );
-
         }
     );
 
 
-    group.selectedSeats =
-        [];
+    group.selectedSeats = [];
 }
 
 
@@ -1824,12 +1900,11 @@ function updateConfirmButton(
 
 
     if (
-        group.currentCustomer === null
+        group.currentCustomer ===
+        null
     ) {
 
-        button.disabled =
-            true;
-
+        button.disabled = true;
 
         button.textContent =
             "座席を確定";
@@ -1884,8 +1959,7 @@ function updateWaitingList(
     }
 
 
-    list.innerHTML =
-        "";
+    list.innerHTML = "";
 
 
     group.waiting.forEach(
@@ -1933,7 +2007,6 @@ function updateWaitingList(
             list.appendChild(
                 item
             );
-
         }
     );
 }
@@ -1941,10 +2014,6 @@ function updateWaitingList(
 
 // =====================================
 // 人数集計
-//
-// 確定人数
-// 待ち人数
-// 合計人数
 // =====================================
 
 function updatePeopleSummary(
@@ -1955,7 +2024,6 @@ function updatePeopleSummary(
         groups[groupName];
 
 
-    // 待っている人数
     const waitingPeople =
         group.waiting.reduce(
             (
@@ -1968,19 +2036,18 @@ function updatePeopleSummary(
         );
 
 
-    // 現在案内中
     const currentPeople =
         group.currentCustomer
-            ? group.currentCustomer.count
-            : 0;
+            ?
+            group.currentCustomer.count
+            :
+            0;
 
 
-    // 確定人数
     const confirmedPeople =
         group.confirmedCount;
 
 
-    // 合計
     const totalPeople =
         confirmedPeople +
         waitingPeople +
@@ -2006,21 +2073,18 @@ function updatePeopleSummary(
 
 
     if (confirmedArea) {
-
         confirmedArea.textContent =
             confirmedPeople;
     }
 
 
     if (waitingArea) {
-
         waitingArea.textContent =
             waitingPeople;
     }
 
 
     if (totalArea) {
-
         totalArea.textContent =
             totalPeople;
     }
@@ -2028,7 +2092,7 @@ function updatePeopleSummary(
 
 
 // =====================================
-// 現在案内中
+// 案内中
 // =====================================
 
 function showCurrentCustomer(
@@ -2046,7 +2110,8 @@ function showCurrentCustomer(
 
 
     if (
-        group.currentCustomer === null
+        group.currentCustomer ===
+        null
     ) {
 
         area.innerHTML =
@@ -2070,10 +2135,6 @@ function showCurrentCustomer(
         <div>
             自動選択された座席を確認してください
         </div>
-
-        <div>
-            指で座席をなぞると変更できます
-        </div>
     `;
 }
 
@@ -2082,60 +2143,40 @@ function showCurrentCustomer(
 // 初期設定
 // =====================================
 
-setupReception(
-    "ACEG"
-);
+setupReception("ACEG");
+
+setupReception("BDFH");
 
 
-setupReception(
-    "BDFH"
-);
+updateWaitingList("ACEG");
+
+updateWaitingList("BDFH");
 
 
-updateWaitingList(
-    "ACEG"
-);
+updatePeopleSummary("ACEG");
+
+updatePeopleSummary("BDFH");
 
 
-updateWaitingList(
-    "BDFH"
-);
+showCurrentCustomer("ACEG");
+
+showCurrentCustomer("BDFH");
 
 
-updatePeopleSummary(
-    "ACEG"
-);
+updateConfirmButton("ACEG");
+
+updateConfirmButton("BDFH");
 
 
-updatePeopleSummary(
-    "BDFH"
-);
-
-
-showCurrentCustomer(
-    "ACEG"
-);
-
-
-showCurrentCustomer(
-    "BDFH"
-);
-
-
-updateConfirmButton(
-    "ACEG"
-);
-
-
-updateConfirmButton(
-    "BDFH"
-);
 // =====================================
-// Firebaseから座席状態をリアルタイム受信
+// Firebaseリアルタイム同期
 // =====================================
 
 onValue(
-    ref(database, "seats"),
+    ref(
+        database,
+        "seats"
+    ),
     function (snapshot) {
 
         const data =
@@ -2143,24 +2184,35 @@ onValue(
 
 
         document
-            .querySelectorAll(".seat")
+            .querySelectorAll(
+                ".seat"
+            )
             .forEach(
                 seat => {
 
                     const seatNumber =
                         seat
-                            .querySelector("span")
+                            .querySelector(
+                                "span"
+                            )
                             .textContent;
 
 
-                    if (data[seatNumber]) {
+                    if (
+                        data[
+                            seatNumber
+                        ]
+                    ) {
 
                         seat.classList.add(
                             "used"
                         );
 
+
                         seat
-                            .querySelector("small")
+                            .querySelector(
+                                "small"
+                            )
                             .textContent =
                             "使用中";
 
@@ -2170,95 +2222,15 @@ onValue(
                             "used"
                         );
 
+
                         seat
-                            .querySelector("small")
+                            .querySelector(
+                                "small"
+                            )
                             .textContent =
                             "空席";
                     }
-
                 }
             );
     }
 );
-// =====================================
-// 案内中ではないとき
-// 座席をなぞって一括変更
-// =====================================
-
-function applyBulkSeatChange(seat) {
-
-    if (!seat) {
-        return;
-    }
-
-    if (!seat.classList.contains("seat")) {
-        return;
-    }
-
-    if (bulkTouchedSeats.has(seat)) {
-        return;
-    }
-
-    const groupName =
-        getGroupName(
-            seat.dataset.block
-        );
-
-    if (
-        groupName !== dragGroupName
-    ) {
-        return;
-    }
-
-    bulkTouchedSeats.add(seat);
-
-
-    // =================================
-    // 空席 → 使用中 の仮選択
-    // =================================
-
-    if (
-        bulkSeatMode === "to-used"
-    ) {
-
-        if (
-            seat.classList.contains("used")
-        ) {
-            return;
-        }
-
-        seat.classList.add(
-            "bulk-pending-used"
-        );
-
-        bulkPendingSeats.push(
-            seat
-        );
-
-        return;
-    }
-
-
-    // =================================
-    // 使用中 → 空席 の仮選択
-    // =================================
-
-    if (
-        bulkSeatMode === "to-empty"
-    ) {
-
-        if (
-            !seat.classList.contains("used")
-        ) {
-            return;
-        }
-
-        seat.classList.add(
-            "bulk-pending-empty"
-        );
-
-        bulkPendingSeats.push(
-            seat
-        );
-    }
-}
