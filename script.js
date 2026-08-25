@@ -1223,13 +1223,16 @@ bulkConfirmButton.addEventListener(
 
 
                     set(
-                        ref(
-                            database,
-                            "seats/" +
-                            seatNumber
-                        ),
-                        true
-                    );
+    ref(
+        database,
+        "seats/" +
+        seatNumber
+    ),
+    {
+        used: true,
+        group: "MANUAL"
+    }
+);
                 }
 
 
@@ -2266,7 +2269,18 @@ function confirmSeats(
             seat.classList.add(
                 "used"
             );
+            if (groupName === "ACEG") {
 
+    seat.classList.add(
+        "used-aceg"
+    );
+
+} else {
+
+    seat.classList.add(
+        "used-bdfh"
+    );
+}
 
             seat
                 .querySelector(
@@ -2285,13 +2299,16 @@ function confirmSeats(
 
 
             set(
-                ref(
-                    database,
-                    "seats/" +
-                    seatNumber
-                ),
-                true
-            );
+    ref(
+        database,
+        "seats/" +
+        seatNumber
+    ),
+    {
+        used: true,
+        group: groupName
+    }
+);
 
 
             seatNames.push(
@@ -2763,9 +2780,9 @@ updateConfirmButton(
     "BDFH"
 );
 
-
 // =====================================
-// Firebase同期
+// Firebase 座席同期
+// ACEG・BDFH・手動の色を分ける
 // =====================================
 
 onValue(
@@ -2774,62 +2791,110 @@ onValue(
         "seats"
     ),
 
-    function (
-        snapshot
-    ) {
+    function (snapshot) {
 
         const data =
-            snapshot.val() ||
-            {};
+            snapshot.val() || {};
 
 
         document
-            .querySelectorAll(
-                ".seat"
-            )
+            .querySelectorAll(".seat")
             .forEach(
                 seat => {
 
                     const seatNumber =
                         seat
-                            .querySelector(
-                                "span"
-                            )
+                            .querySelector("span")
                             .textContent;
 
 
-                    if (
-                        data[
-                            seatNumber
-                        ]
-                    ) {
+                    const seatData =
+                        data[seatNumber];
+
+
+                    // いったん状態をリセット
+                    seat.classList.remove(
+                        "used",
+                        "used-aceg",
+                        "used-bdfh",
+                        "used-manual"
+                    );
+
+
+                    // =========================
+                    // 使用中
+                    // =========================
+
+                    if (seatData) {
 
                         seat.classList.add(
                             "used"
                         );
 
 
+                        // 昔の true データ
+                        if (
+                            seatData === true
+                        ) {
+
+                            seat.classList.add(
+                                "used-manual"
+                            );
+
+                        }
+
+                        // ACEG
+                        else if (
+                            seatData.group ===
+                            "ACEG"
+                        ) {
+
+                            seat.classList.add(
+                                "used-aceg"
+                            );
+
+                        }
+
+                        // BDFH
+                        else if (
+                            seatData.group ===
+                            "BDFH"
+                        ) {
+
+                            seat.classList.add(
+                                "used-bdfh"
+                            );
+
+                        }
+
+                        // 手動
+                        else {
+
+                            seat.classList.add(
+                                "used-manual"
+                            );
+                        }
+
+
                         seat
-                            .querySelector(
-                                "small"
-                            )
+                            .querySelector("small")
                             .textContent =
                             "使用中";
 
-                    } else {
+                    }
 
-                        seat.classList.remove(
-                            "used"
-                        );
+                    // =========================
+                    // 空席
+                    // =========================
 
+                    else {
 
                         seat
-                            .querySelector(
-                                "small"
-                            )
+                            .querySelector("small")
                             .textContent =
                             "空席";
                     }
+
                 }
             );
     }
