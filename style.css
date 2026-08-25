@@ -12,8 +12,7 @@
 
 body {
     margin: 0;
-
-    padding: 20px 20px 120px;
+    padding: 20px 20px 130px;
 
     font-family: Arial, sans-serif;
 
@@ -24,9 +23,7 @@ body {
 
 
 h1 {
-    margin-top: 5px;
-
-    margin-bottom: 25px;
+    margin: 5px 0 25px;
 }
 
 
@@ -38,14 +35,13 @@ h1 {
     display: flex;
 
     justify-content: center;
-
     align-items: flex-start;
 
     gap: 20px;
 
     max-width: 1400px;
 
-    margin: 0 auto 30px;
+    margin: 0 auto 25px;
 }
 
 
@@ -66,14 +62,12 @@ h1 {
 
 
 .aceg-reception {
-    border-top:
-        6px solid #1976d2;
+    border-top: 6px solid #1976d2;
 }
 
 
 .bdfh-reception {
-    border-top:
-        6px solid #7b1fa2;
+    border-top: 6px solid #7b1fa2;
 }
 
 
@@ -92,7 +86,6 @@ h1 {
     display: flex;
 
     justify-content: center;
-
     align-items: center;
 
     gap: 10px;
@@ -100,18 +93,15 @@ h1 {
     margin-bottom: 15px;
 
     font-size: 22px;
-
     font-weight: bold;
 }
 
 
 .customer-count {
     width: 100px;
-
     height: 55px;
 
     font-size: 24px;
-
     font-weight: bold;
 
     text-align: center;
@@ -136,10 +126,7 @@ h1 {
     color: white;
 
     font-size: 20px;
-
     font-weight: bold;
-
-    cursor: pointer;
 }
 
 
@@ -162,7 +149,6 @@ h1 {
     border-radius: 10px;
 
     font-size: 20px;
-
     font-weight: bold;
 
     line-height: 1.8;
@@ -181,10 +167,11 @@ h1 {
 
 
 /* =========================================
-   案内ボタン
+   ボタン
 ========================================= */
 
-.next-button {
+.next-button,
+.confirm-button {
     width: 90%;
 
     max-width: 500px;
@@ -197,15 +184,27 @@ h1 {
 
     border-radius: 10px;
 
-    background: #ff9800;
-
     color: white;
 
     font-size: 20px;
-
     font-weight: bold;
+}
 
-    cursor: pointer;
+
+.next-button {
+    background: #ff9800;
+}
+
+
+.confirm-button {
+    background: #4caf50;
+}
+
+
+.confirm-button:disabled {
+    background: #aaa;
+
+    opacity: 0.7;
 }
 
 
@@ -223,48 +222,9 @@ h1 {
     border-radius: 10px;
 
     font-size: 18px;
-
     font-weight: bold;
 
     line-height: 1.7;
-}
-
-
-/* =========================================
-   座席確定
-========================================= */
-
-.confirm-button {
-    width: 90%;
-
-    max-width: 500px;
-
-    padding: 18px;
-
-    margin: 8px 5px;
-
-    border: none;
-
-    border-radius: 10px;
-
-    background: #4caf50;
-
-    color: white;
-
-    font-size: 20px;
-
-    font-weight: bold;
-
-    cursor: pointer;
-}
-
-
-.confirm-button:disabled {
-    background: #aaa;
-
-    cursor: default;
-
-    opacity: 0.7;
 }
 
 
@@ -290,8 +250,69 @@ h1 {
 .waiting-item {
     padding: 10px;
 
-    border-bottom:
-        1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+}
+
+
+/* =========================================
+   範囲選択モード
+========================================= */
+
+.seat-mode-area {
+    position: sticky;
+
+    top: 0;
+
+    z-index: 5000;
+
+    width: min(700px, calc(100% - 20px));
+
+    margin: 15px auto;
+
+    padding: 10px;
+
+    background: rgba(255,255,255,0.95);
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 2px 8px rgba(0,0,0,0.2);
+}
+
+
+.seat-mode-button {
+    width: 100%;
+
+    max-width: 420px;
+
+    padding: 14px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #1565c0;
+
+    color: white;
+
+    font-size: 18px;
+    font-weight: bold;
+}
+
+
+.seat-mode-button.active {
+    background: #d32f2f;
+}
+
+
+.seat-mode-message {
+    margin-top: 8px;
+
+    font-size: 14px;
+
+    font-weight: bold;
+
+    color: #555;
 }
 
 
@@ -302,7 +323,7 @@ h1 {
 .stage {
     width: 80%;
 
-    margin: 0 auto 25px;
+    margin: 20px auto 25px;
 
     padding: 15px;
 
@@ -311,7 +332,6 @@ h1 {
     color: white;
 
     font-size: 22px;
-
     font-weight: bold;
 
     border-radius: 10px;
@@ -319,7 +339,7 @@ h1 {
 
 
 /* =========================================
-   座席表
+   座席エリア
 ========================================= */
 
 #seats {
@@ -327,11 +347,19 @@ h1 {
 
     overflow-x: auto;
 
-    padding:
-        10px 0 30px;
+    padding: 10px 0 30px;
 
-    -webkit-overflow-scrolling:
-        touch;
+    -webkit-overflow-scrolling: touch;
+
+    touch-action: pan-x pan-y;
+}
+
+
+/* 範囲選択モードの時だけ
+   スクロール操作を止める */
+
+#seats.selection-mode {
+    touch-action: none;
 }
 
 
@@ -386,8 +414,7 @@ h1 {
 
     width: max-content;
 
-    min-height:
-        var(--seat-height);
+    min-height: var(--seat-height);
 
     margin-bottom: 5px;
 }
@@ -398,11 +425,9 @@ h1 {
 ========================================= */
 
 .seat {
-    width:
-        var(--seat-width);
+    width: var(--seat-width);
 
-    height:
-        var(--seat-height);
+    height: var(--seat-height);
 
     padding: 3px;
 
@@ -416,13 +441,25 @@ h1 {
 
     cursor: pointer;
 
+    /*
+       通常モードでは
+       座席の上からスクロール可能
+    */
     touch-action: pan-x pan-y;
 
     user-select: none;
-
     -webkit-user-select: none;
-
     -webkit-touch-callout: none;
+}
+
+
+/*
+ 範囲選択モードのみ
+ 座席ドラッグを優先
+*/
+
+#seats.selection-mode .seat {
+    touch-action: none;
 }
 
 
@@ -448,67 +485,63 @@ h1 {
 }
 
 
-/* ACEG案内候補 */
-
-.seat.selected-aceg {
-    background: #2196f3;
-
-    outline:
-        3px solid #0d47a1;
-}
-
-
-/* BDFH案内候補 */
-
-.seat.selected-bdfh {
-    background: #9c27b0;
-
-    outline:
-        3px solid #4a148c;
-}
-
-
-/* 使用中 */
+/* =========================================
+   使用中
+========================================= */
 
 .seat.used {
     background: #e53935;
-
-    outline: none;
 }
 
 
 /* =========================================
-   ドラッグ仮選択
+   ACEG案内候補
+========================================= */
 
-   空席 → 使用中予定
+.seat.selected-aceg {
+    background: #2196f3;
+
+    outline: 3px solid #0d47a1;
+}
+
+
+/* =========================================
+   BDFH案内候補
+========================================= */
+
+.seat.selected-bdfh {
+    background: #9c27b0;
+
+    outline: 3px solid #4a148c;
+}
+
+
+/* =========================================
+   空席 → 使用中 仮選択
 ========================================= */
 
 .seat.bulk-pending-used {
     background: #ff9800;
 
-    outline:
-        3px solid #e65100;
-
-    color: white;
+    outline: 3px solid #e65100;
 }
 
 
 /* =========================================
-   使用中 → 空席予定
+   使用中 → 空席 仮選択
 ========================================= */
 
 .seat.bulk-pending-empty {
     background: #ffeb3b;
 
-    outline:
-        3px solid #f57f17;
-
     color: #333;
+
+    outline: 3px solid #f57f17;
 }
 
 
 /* =========================================
-   一括変更バー
+   確定バー
 ========================================= */
 
 .bulk-action-bar {
@@ -517,11 +550,9 @@ h1 {
     position: fixed;
 
     left: 50%;
-
     bottom: 15px;
 
-    transform:
-        translateX(-50%);
+    transform: translateX(-50%);
 
     z-index: 9999;
 
@@ -575,8 +606,6 @@ h1 {
     font-size: 18px;
 
     font-weight: bold;
-
-    cursor: pointer;
 }
 
 
@@ -608,32 +637,6 @@ h1 {
 
 
 /* =========================================
-   iPad
-========================================= */
-
-@media (max-width: 1100px) {
-
-    body {
-        padding:
-            10px 10px 120px;
-    }
-
-
-    .reception-wrapper {
-        gap: 10px;
-    }
-
-
-    .block-pair {
-        justify-content:
-            flex-start;
-
-        gap: 40px;
-    }
-}
-
-
-/* =========================================
    スマホ
 ========================================= */
 
@@ -648,7 +651,7 @@ h1 {
 
     body {
         padding:
-            8px 8px 130px;
+            8px 8px 140px;
     }
 
 
@@ -671,19 +674,13 @@ h1 {
     }
 
 
-    .reception-area {
-        flex-wrap: wrap;
-    }
-
-
     .stage {
         width: 95%;
     }
 
 
     .block-pair {
-        justify-content:
-            flex-start;
+        justify-content: flex-start;
 
         gap: 25px;
     }
@@ -701,10 +698,5 @@ h1 {
 
     .seat small {
         font-size: 8px;
-    }
-
-
-    .bulk-action-bar {
-        bottom: 8px;
     }
 }
