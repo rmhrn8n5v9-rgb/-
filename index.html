@@ -265,6 +265,19 @@
         >
             通常モード：座席の上からスクロールできます
         </div>
+        <button
+    id="seatMoveButton"
+    class="seat-move-button"
+>
+    座席入替を開始
+</button>
+
+<div
+    id="seatMoveMessage"
+    class="seat-move-message"
+>
+    入替モードはOFFです
+</div>
 
     </div>
 
@@ -328,7 +341,35 @@
         type="module"
         src="script.js?v=10"
     ></script>
+<div
+    id="seatMoveBar"
+    class="seat-move-bar"
+>
 
+    <div id="seatMoveStatus">
+        移動元 0席 ／ 移動先 0席
+    </div>
+
+    <div class="seat-move-actions">
+
+        <button
+            id="seatMoveConfirmButton"
+            class="seat-move-confirm"
+            disabled
+        >
+            入替を確定
+        </button>
+
+        <button
+            id="seatMoveCancelButton"
+            class="seat-move-cancel"
+        >
+            キャンセル
+        </button>
+
+    </div>
+
+</div>
 </body>
 
 </html>
