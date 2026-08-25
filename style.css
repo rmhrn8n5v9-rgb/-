@@ -700,3 +700,33 @@ h1 {
         font-size: 8px;
     }
 }
+.waiting-item {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 10px;
+}
+
+
+.waiting-edit-button {
+    flex-shrink: 0;
+
+    padding: 7px 12px;
+
+    border: none;
+
+    border-radius: 7px;
+
+    background: #607d8b;
+
+    color: white;
+
+    font-size: 14px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+}
