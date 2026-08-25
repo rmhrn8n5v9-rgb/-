@@ -2118,7 +2118,7 @@ function setupReception(
 
 
                 input.value =
-                    1;
+                    "";
 
 
                 updateWaitingList(
