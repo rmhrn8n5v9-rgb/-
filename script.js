@@ -1,3 +1,23 @@
+import { initializeApp } from
+"https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+
+import {
+    getDatabase,
+    ref,
+    set,
+    onValue,
+    remove
+} from
+"https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
+const firebaseConfig = {
+    // Firebase画面に表示されている内容を
+    // ここへそのまま貼る
+};
+const app =
+    initializeApp(firebaseConfig);
+
+const database =
+    getDatabase(app);
 const seatsArea =
     document.getElementById("seats");
 
