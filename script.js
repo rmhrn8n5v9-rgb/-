@@ -236,7 +236,215 @@ const groups = {
             "bdfhWaitingList"
     }
 };
+// =====================================
+// 受付状況をFirebaseへ保存
+// =====================================
 
+function saveReceptionState(groupName) {
+
+    const group =
+        groups[groupName];
+
+
+    const waiting =
+        group.waiting.map(
+            customer => ({
+                number:
+                    customer.number,
+
+                count:
+                    customer.count,
+
+                time:
+                    customer.time instanceof Date
+                        ? customer.time.getTime()
+                        : customer.time
+            })
+        );
+
+
+    let currentCustomer = null;
+
+
+    if (
+        group.currentCustomer
+    ) {
+
+        currentCustomer = {
+
+            number:
+                group.currentCustomer.number,
+
+            count:
+                group.currentCustomer.count,
+
+            time:
+                group.currentCustomer.time instanceof Date
+                    ? group.currentCustomer.time.getTime()
+                    : group.currentCustomer.time
+        };
+    }
+
+
+    set(
+        ref(
+            database,
+            "reception/" +
+            groupName
+        ),
+        {
+
+            receptionNumber:
+                group.receptionNumber,
+
+            confirmedCount:
+                group.confirmedCount,
+
+            waiting:
+                waiting,
+
+            currentCustomer:
+                currentCustomer
+        }
+    );
+}
+// =====================================
+// Firebaseから受付状況を受信
+// =====================================
+
+function setupReceptionSync(
+    groupName
+) {
+
+    const group =
+        groups[groupName];
+
+
+    onValue(
+        ref(
+            database,
+            "reception/" +
+            groupName
+        ),
+
+        function (snapshot) {
+
+            const data =
+                snapshot.val();
+
+
+            // 初回でデータがない
+            if (!data) {
+
+                saveReceptionState(
+                    groupName
+                );
+
+                return;
+            }
+
+
+            group.receptionNumber =
+                Number(
+                    data.receptionNumber ||
+                    0
+                );
+
+
+            group.confirmedCount =
+                Number(
+                    data.confirmedCount ||
+                    0
+                );
+
+
+            // 待ち一覧
+            if (
+                Array.isArray(
+                    data.waiting
+                )
+            ) {
+
+                group.waiting =
+                    data.waiting.map(
+                        customer => ({
+
+                            number:
+                                Number(
+                                    customer.number
+                                ),
+
+                            count:
+                                Number(
+                                    customer.count
+                                ),
+
+                            time:
+                                new Date(
+                                    customer.time
+                                )
+                        })
+                    );
+
+            } else {
+
+                group.waiting =
+                    [];
+            }
+
+
+            // 現在案内中
+            if (
+                data.currentCustomer
+            ) {
+
+                group.currentCustomer = {
+
+                    number:
+                        Number(
+                            data.currentCustomer.number
+                        ),
+
+                    count:
+                        Number(
+                            data.currentCustomer.count
+                        ),
+
+                    time:
+                        new Date(
+                            data.currentCustomer.time
+                        )
+                };
+
+            } else {
+
+                group.currentCustomer =
+                    null;
+            }
+
+
+            // 画面を更新
+            updateWaitingList(
+                groupName
+            );
+
+
+            updatePeopleSummary(
+                groupName
+            );
+
+
+            showCurrentCustomer(
+                groupName
+            );
+
+
+            updateConfirmButton(
+                groupName
+            );
+        }
+    );
+}
 
 // =====================================
 // グループ判定
@@ -1885,16 +2093,26 @@ function setupReception(
 
 
                 updateWaitingList(
-                    groupName
-                );
 
+    groupName
 
-                updatePeopleSummary(
-                    groupName
-                );
+);
 
+updatePeopleSummary(
 
-                alert(
+    groupName
+
+);
+
+// ★受付状況を全端末へ保存
+
+saveReceptionState(
+
+    groupName
+
+);
+
+alert(
                     groupName +
                     "受付\n\n" +
                     "受付番号 " +
@@ -1948,27 +2166,33 @@ function setupReception(
 
 
                 group.currentCustomer =
-                    group.waiting.shift();
+    group.waiting.shift();
 
 
-                updateWaitingList(
-                    groupName
-                );
+updateWaitingList(
+    groupName
+);
 
 
-                updatePeopleSummary(
-                    groupName
-                );
+updatePeopleSummary(
+    groupName
+);
 
 
-                showCurrentCustomer(
-                    groupName
-                );
+showCurrentCustomer(
+    groupName
+);
 
 
-                suggestSeats(
-                    groupName
-                );
+// ★案内中のお客様を全端末へ保存
+saveReceptionState(
+    groupName
+);
+
+
+suggestSeats(
+    groupName
+);
             }
         );
 
@@ -2092,6 +2316,10 @@ function confirmSeats(
     group.currentCustomer =
         null;
 
+// ★確定人数・案内終了を全端末へ保存
+saveReceptionState(
+    groupName
+);
 
     updatePeopleSummary(
         groupName
@@ -2444,6 +2672,14 @@ setupReception(
     "BDFH"
 );
 
+setupReceptionSync(
+    "ACEG"
+);
+
+
+setupReceptionSync(
+    "BDFH"
+);
 
 updateWaitingList(
     "ACEG"
