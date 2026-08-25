@@ -794,3 +794,20 @@ h1 {
         font-size: 8px;
     }
 }
+/* =========================================
+   ドラッグ仮選択
+========================================= */
+
+/* 空席 → 使用中にする予定 */
+.seat.bulk-pending-used {
+    background: #ff9800;
+    outline: 3px solid #e65100;
+}
+
+
+/* 使用中 → 空席に戻す予定 */
+.seat.bulk-pending-empty {
+    background: #ffeb3b;
+    color: #333;
+    outline: 3px solid #f57f17;
+}
