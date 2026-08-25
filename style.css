@@ -490,9 +490,25 @@ h1 {
 ========================================= */
 
 .seat.used {
-    background: #e53935;
+    color: white;
+}
+/* ACEGで確定した使用中席 */
+.seat.used-aceg {
+    background: #1565c0;
+    color: white;
 }
 
+/* BDFHで確定した使用中席 */
+.seat.used-bdfh {
+    background: #7b1fa2;
+    color: white;
+}
+
+/* 手動で使用中にした席 */
+.seat.used-manual {
+    background: #e53935;
+    color: white;
+}
 
 /* =========================================
    ACEG案内候補
