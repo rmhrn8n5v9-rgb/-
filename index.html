@@ -1,24 +1,42 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
     <title>座席管理システム</title>
-    <link rel="stylesheet" href="style.css">
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
 </head>
 
 <body>
 
     <h1>座席管理システム</h1>
 
+
+    <!-- =====================================
+         受付
+    ====================================== -->
+
     <div class="reception-wrapper">
 
-        <!-- ACEG受付 -->
+
+        <!-- ACEG -->
+
         <div class="reception aceg-reception">
 
             <h2>ACEGブロック受付</h2>
 
             <div class="reception-area">
+
                 <input
                     id="acegCustomerCount"
                     class="customer-count"
@@ -35,32 +53,37 @@
                 >
                     受付
                 </button>
+
             </div>
+
 
             <div class="people-summary">
 
-    <div>
-        確定人数：
-        <span id="acegConfirmedCount">0</span>人
-    </div>
+                <div>
+                    確定人数：
+                    <span id="acegConfirmedCount">0</span>人
+                </div>
 
-    <div>
-        待ち人数：
-        <span id="acegWaitingCount">0</span>人
-    </div>
+                <div>
+                    待ち人数：
+                    <span id="acegWaitingCount">0</span>人
+                </div>
 
-    <div class="total-count">
-        合計人数：
-        <span id="acegTotalCount">0</span>人
-    </div>
+                <div class="total-count">
+                    合計人数：
+                    <span id="acegTotalCount">0</span>人
+                </div>
 
-</div>
+            </div>
+
+
             <button
                 id="acegNextButton"
                 class="next-button"
             >
                 次のお客様を案内
             </button>
+
 
             <div
                 id="acegCurrentCustomer"
@@ -69,6 +92,7 @@
                 現在案内中のお客様はいません
             </div>
 
+
             <button
                 id="acegConfirmButton"
                 class="confirm-button"
@@ -76,6 +100,7 @@
             >
                 座席を確定
             </button>
+
 
             <div
                 id="acegWaitingList"
@@ -87,12 +112,14 @@
         </div>
 
 
-        <!-- BDFH受付 -->
+        <!-- BDFH -->
+
         <div class="reception bdfh-reception">
 
             <h2>BDFHブロック受付</h2>
 
             <div class="reception-area">
+
                 <input
                     id="bdfhCustomerCount"
                     class="customer-count"
@@ -109,26 +136,29 @@
                 >
                     受付
                 </button>
+
             </div>
 
-           <div class="people-summary">
 
-    <div>
-        確定人数：
-        <span id="bdfhConfirmedCount">0</span>人
-    </div>
+            <div class="people-summary">
 
-    <div>
-        待ち人数：
-        <span id="bdfhWaitingCount">0</span>人
-    </div>
+                <div>
+                    確定人数：
+                    <span id="bdfhConfirmedCount">0</span>人
+                </div>
 
-    <div class="total-count">
-        合計人数：
-        <span id="bdfhTotalCount">0</span>人
-    </div>
+                <div>
+                    待ち人数：
+                    <span id="bdfhWaitingCount">0</span>人
+                </div>
 
-</div>
+                <div class="total-count">
+                    合計人数：
+                    <span id="bdfhTotalCount">0</span>人
+                </div>
+
+            </div>
+
 
             <button
                 id="bdfhNextButton"
@@ -137,12 +167,14 @@
                 次のお客様を案内
             </button>
 
+
             <div
                 id="bdfhCurrentCustomer"
                 class="current-customer"
             >
                 現在案内中のお客様はいません
             </div>
+
 
             <button
                 id="bdfhConfirmButton"
@@ -151,6 +183,7 @@
             >
                 座席を確定
             </button>
+
 
             <div
                 id="bdfhWaitingList"
@@ -164,6 +197,10 @@
     </div>
 
 
+    <!-- =====================================
+         舞台
+    ====================================== -->
+
     <div class="stage">
         舞台側
     </div>
@@ -175,8 +212,51 @@
     <div class="back">
         後方
     </div>
-    
-<script type="module" src="script.js"></script>
+
+
+    <!-- =====================================
+         ドラッグ一括変更 確定画面
+    ====================================== -->
+
+    <div
+        id="bulkActionBar"
+        class="bulk-action-bar"
+    >
+
+        <div
+            id="bulkActionText"
+            class="bulk-action-text"
+        >
+            0席選択中
+        </div>
+
+
+        <div class="bulk-action-buttons">
+
+            <button
+                id="bulkConfirmButton"
+                class="bulk-confirm-button"
+            >
+                確定
+            </button>
+
+            <button
+                id="bulkCancelButton"
+                class="bulk-cancel-button"
+            >
+                キャンセル
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <script
+        type="module"
+        src="script.js"
+    ></script>
 
 </body>
+
 </html>
