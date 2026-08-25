@@ -9,6 +9,7 @@ import {
     remove
 } from
 "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
+
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyBSUuyyxr5Duvm_sp0x7lSCNC-o9lGrUpg",
