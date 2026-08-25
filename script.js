@@ -204,82 +204,103 @@ function createSeat(
     // 座席を押した
     // =================================
 
-    button.addEventListener(
-        "pointerdown",
-        function (event) {
+button.addEventListener(
+    "pointerdown",
+    function (event) {
 
-            event.preventDefault();
+        event.preventDefault();
 
+        const groupName =
+            getGroupName(
+                button.dataset.block
+            );
 
-            const groupName =
-                getGroupName(
-                    button.dataset.block
-                );
-
-
-            const group =
-                groups[groupName];
+        const group =
+            groups[groupName];
 
 
-            // -----------------------------
-            // 案内中ではない
-            // 空席⇄使用中
-            // -----------------------------
+        // =====================================
+        // 案内中ではない
+        // → 空席/使用中をなぞって一括変更
+        // =====================================
 
-            if (
-                group.currentCustomer === null
-            ) {
+        if (
+            group.currentCustomer === null
+        ) {
 
-                manualChangeSeat(
-                    button
-                );
-
-                return;
-            }
-
-
-            // 使用中は候補にできない
-            if (
-                button.classList.contains("used")
-            ) {
-
-                return;
-            }
-
-
-            isDragging =
-                true;
-
+            isDragging = true;
 
             dragGroupName =
                 groupName;
 
+            bulkTouchedSeats.clear();
 
-            // 最初に押した席が
-            // 選択済みなら「解除モード」
+
+            // 最初に触った席でモードを決める
             if (
                 button.classList.contains(
-                    group.selectedClass
+                    "used"
                 )
             ) {
 
-                dragMode =
-                    "remove";
+                bulkSeatMode =
+                    "to-empty";
 
             } else {
 
-                dragMode =
-                    "select";
+                bulkSeatMode =
+                    "to-used";
             }
 
 
-            changeSeatByDrag(
+            applyBulkSeatChange(
                 button
             );
 
+            return;
         }
-    );
 
+
+        // =====================================
+        // 案内中
+        // → 今まで通り候補席選択
+        // =====================================
+
+        if (
+            button.classList.contains("used")
+        ) {
+            return;
+        }
+
+
+        isDragging =
+            true;
+
+        dragGroupName =
+            groupName;
+
+
+        if (
+            button.classList.contains(
+                group.selectedClass
+            )
+        ) {
+
+            dragMode =
+                "remove";
+
+        } else {
+
+            dragMode =
+                "select";
+        }
+
+
+        changeSeatByDrag(
+            button
+        );
+    }
+);
 
     return button;
 }
