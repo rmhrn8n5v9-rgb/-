@@ -868,3 +868,132 @@ h1 {
 .reset-cancel-button {
     background: #777;
 }
+/* =========================================
+   座席入替
+========================================= */
+
+.seat-move-button {
+    width: 100%;
+    max-width: 420px;
+
+    margin-top: 8px;
+    padding: 14px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: #455a64;
+    color: white;
+
+    font-size: 18px;
+    font-weight: bold;
+}
+
+
+.seat-move-button.active {
+    background: #c62828;
+}
+
+
+.seat-move-message {
+    margin-top: 6px;
+
+    font-size: 14px;
+    font-weight: bold;
+}
+
+
+/* 移動元 */
+
+.seat.move-source {
+    outline: 4px solid #000;
+    outline-offset: -3px;
+
+    transform: scale(1.05);
+}
+
+
+/* 移動先 */
+
+.seat.move-target {
+    background: #ffd54f !important;
+    color: #222 !important;
+
+    outline: 4px solid #f57f17;
+    outline-offset: -3px;
+}
+
+
+/* 下の確定バー */
+
+.seat-move-bar {
+    display: none;
+
+    position: fixed;
+
+    left: 50%;
+    bottom: 15px;
+
+    transform: translateX(-50%);
+
+    z-index: 12000;
+
+    width: min(600px, calc(100% - 20px));
+
+    padding: 15px;
+
+    background: white;
+
+    border-radius: 15px;
+
+    box-shadow:
+        0 4px 20px rgba(0,0,0,0.3);
+
+    font-size: 18px;
+    font-weight: bold;
+}
+
+
+.seat-move-bar.show {
+    display: block;
+}
+
+
+.seat-move-actions {
+    display: flex;
+
+    gap: 10px;
+
+    margin-top: 10px;
+}
+
+
+.seat-move-confirm,
+.seat-move-cancel {
+    flex: 1;
+
+    padding: 15px;
+
+    border: none;
+    border-radius: 10px;
+
+    color: white;
+
+    font-size: 17px;
+    font-weight: bold;
+}
+
+
+.seat-move-confirm {
+    background: #4caf50;
+}
+
+
+.seat-move-confirm:disabled {
+    background: #aaa;
+}
+
+
+.seat-move-cancel {
+    background: #777;
+}
