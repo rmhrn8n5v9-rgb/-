@@ -44,6 +44,8 @@ let bulkSeatMode = null;
 
 let bulkTouchedSeats = new Set();
 
+let bulkPendingSeats = [];
+
 // =====================================
 // 受付グループ
 // =====================================
