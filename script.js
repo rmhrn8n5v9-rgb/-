@@ -2499,21 +2499,64 @@ function updateWaitingList(
                     );
 
 
-            item.textContent =
-                (index + 1) +
-                "番目　受付番号 " +
-                group.prefix +
-                "-" +
-                customer.number +
-                "　" +
-                customer.count +
-                "名様　" +
-                time;
+            const text =
+    document.createElement(
+        "span"
+    );
 
 
-            list.appendChild(
-                item
-            );
+text.textContent =
+    (index + 1) +
+    "番目　受付番号 " +
+    group.prefix +
+    "-" +
+    customer.number +
+    "　" +
+    customer.count +
+    "名様　" +
+    time;
+
+
+const editButton =
+    document.createElement(
+        "button"
+    );
+
+
+editButton.textContent =
+    "人数変更";
+
+
+editButton.className =
+    "waiting-edit-button";
+
+
+editButton.addEventListener(
+    "click",
+    function () {
+
+        changeWaitingCustomerCount(
+            groupName,
+            customer.number
+        );
+
+    }
+);
+
+
+item.appendChild(
+    text
+);
+
+
+item.appendChild(
+    editButton
+);
+
+
+list.appendChild(
+    item
+);
         }
     );
 }
@@ -2791,3 +2834,108 @@ onValue(
             );
     }
 );
+// =====================================
+// 受付済み人数を変更
+// =====================================
+
+function changeWaitingCustomerCount(
+    groupName,
+    receptionNumber
+) {
+
+    const group =
+        groups[groupName];
+
+
+    const customer =
+        group.waiting.find(
+            item =>
+                item.number ===
+                receptionNumber
+        );
+
+
+    if (!customer) {
+
+        alert(
+            "受付情報が見つかりません。"
+        );
+
+        return;
+    }
+
+
+    const input =
+        prompt(
+            "受付番号 " +
+            group.prefix +
+            "-" +
+            customer.number +
+            "\n\n" +
+            "現在：" +
+            customer.count +
+            "名\n\n" +
+            "新しい人数を入力してください。",
+            customer.count
+        );
+
+
+    // キャンセル
+    if (
+        input === null
+    ) {
+
+        return;
+    }
+
+
+    const newCount =
+        Number(input);
+
+
+    if (
+        !Number.isInteger(
+            newCount
+        ) ||
+        newCount < 1
+    ) {
+
+        alert(
+            "1名以上の整数を入力してください。"
+        );
+
+        return;
+    }
+
+
+    customer.count =
+        newCount;
+
+
+    // 画面更新
+    updateWaitingList(
+        groupName
+    );
+
+
+    updatePeopleSummary(
+        groupName
+    );
+
+
+    // Firebaseへ保存
+    saveReceptionState(
+        groupName
+    );
+
+
+    alert(
+        "受付番号 " +
+        group.prefix +
+        "-" +
+        customer.number +
+        " を\n" +
+        newCount +
+        "名に変更しました。"
+    );
+}
