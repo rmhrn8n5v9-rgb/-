@@ -1512,7 +1512,18 @@ function confirmSeats(
                 .querySelector("small")
                 .textContent =
                 "使用中";
+const seatNumber =
+    seat
+        .querySelector("span")
+        .textContent;
 
+set(
+    ref(
+        database,
+        "seats/" + seatNumber
+    ),
+    true
+);
 
             seatNames.push(
                 seat
