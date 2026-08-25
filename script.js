@@ -316,7 +316,12 @@ function manualChangeSeat(seat) {
             .querySelector("small")
             .textContent =
             "空席";
-
+remove(
+    ref(
+        database,
+        "seats/" + seatNumber
+    )
+);
 
         return;
     }
@@ -348,6 +353,13 @@ function manualChangeSeat(seat) {
         .querySelector("small")
         .textContent =
         "使用中";
+set(
+    ref(
+        database,
+        "seats/" + seatNumber
+    ),
+    true
+);
 }
 
 
@@ -1910,4 +1922,54 @@ updateConfirmButton(
 
 updateConfirmButton(
     "BDFH"
+);
+// =====================================
+// Firebaseから座席状態をリアルタイム受信
+// =====================================
+
+onValue(
+    ref(database, "seats"),
+    function (snapshot) {
+
+        const data =
+            snapshot.val() || {};
+
+
+        document
+            .querySelectorAll(".seat")
+            .forEach(
+                seat => {
+
+                    const seatNumber =
+                        seat
+                            .querySelector("span")
+                            .textContent;
+
+
+                    if (data[seatNumber]) {
+
+                        seat.classList.add(
+                            "used"
+                        );
+
+                        seat
+                            .querySelector("small")
+                            .textContent =
+                            "使用中";
+
+                    } else {
+
+                        seat.classList.remove(
+                            "used"
+                        );
+
+                        seat
+                            .querySelector("small")
+                            .textContent =
+                            "空席";
+                    }
+
+                }
+            );
+    }
 );
