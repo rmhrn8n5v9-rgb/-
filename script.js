@@ -606,7 +606,154 @@ if (
 
 function endDragging() {
 
+    if (!isDragging) {
+        return;
+    }
+
+
     isDragging = false;
+
+
+    // =================================
+    // ドラッグ変更の確認
+    // =================================
+
+    if (
+        bulkPendingSeats.length > 0
+    ) {
+
+        const count =
+            bulkPendingSeats.length;
+
+
+        let message = "";
+
+
+        if (
+            bulkSeatMode === "to-used"
+        ) {
+
+            message =
+                count +
+                "席を使用中に変更しますか？";
+
+        } else if (
+            bulkSeatMode === "to-empty"
+        ) {
+
+            message =
+                count +
+                "席を空席に戻しますか？";
+        }
+
+
+        const result =
+            confirm(message);
+
+
+        // =================================
+        // OK → 確定
+        // =================================
+
+        if (result) {
+
+            bulkPendingSeats.forEach(
+                seat => {
+
+                    const seatNumber =
+                        seat
+                            .querySelector("span")
+                            .textContent;
+
+
+                    // 空席 → 使用中
+                    if (
+                        bulkSeatMode ===
+                        "to-used"
+                    ) {
+
+                        seat.classList.remove(
+                            "bulk-pending-used"
+                        );
+
+                        seat.classList.add(
+                            "used"
+                        );
+
+                        seat
+                            .querySelector("small")
+                            .textContent =
+                            "使用中";
+
+
+                        set(
+                            ref(
+                                database,
+                                "seats/" +
+                                seatNumber
+                            ),
+                            true
+                        );
+                    }
+
+
+                    // 使用中 → 空席
+                    if (
+                        bulkSeatMode ===
+                        "to-empty"
+                    ) {
+
+                        seat.classList.remove(
+                            "bulk-pending-empty"
+                        );
+
+                        seat.classList.remove(
+                            "used"
+                        );
+
+                        seat
+                            .querySelector("small")
+                            .textContent =
+                            "空席";
+
+
+                        remove(
+                            ref(
+                                database,
+                                "seats/" +
+                                seatNumber
+                            )
+                        );
+                    }
+
+                }
+            );
+
+        }
+
+        // =================================
+        // キャンセル
+        // → 仮選択解除
+        // =================================
+
+        else {
+
+            bulkPendingSeats.forEach(
+                seat => {
+
+                    seat.classList.remove(
+                        "bulk-pending-used"
+                    );
+
+                    seat.classList.remove(
+                        "bulk-pending-empty"
+                    );
+
+                }
+            );
+        }
+    }
+
 
     dragGroupName = null;
 
@@ -615,19 +762,9 @@ function endDragging() {
     bulkSeatMode = null;
 
     bulkTouchedSeats.clear();
+
+    bulkPendingSeats = [];
 }
-
-
-document.addEventListener(
-    "pointerup",
-    endDragging
-);
-
-
-document.addEventListener(
-    "pointercancel",
-    endDragging
-);
 
 
 // =====================================
@@ -2054,48 +2191,30 @@ function applyBulkSeatChange(seat) {
         return;
     }
 
-
-    if (
-        !seat.classList.contains("seat")
-    ) {
+    if (!seat.classList.contains("seat")) {
         return;
     }
 
-
-    if (
-        bulkTouchedSeats.has(seat)
-    ) {
+    if (bulkTouchedSeats.has(seat)) {
         return;
     }
-
 
     const groupName =
         getGroupName(
             seat.dataset.block
         );
 
-
     if (
-        groupName !==
-        dragGroupName
+        groupName !== dragGroupName
     ) {
         return;
     }
 
-
-    bulkTouchedSeats.add(
-        seat
-    );
-
-
-    const seatNumber =
-        seat
-            .querySelector("span")
-            .textContent;
+    bulkTouchedSeats.add(seat);
 
 
     // =================================
-    // 空席 → 使用中
+    // 空席 → 使用中 の仮選択
     // =================================
 
     if (
@@ -2108,33 +2227,20 @@ function applyBulkSeatChange(seat) {
             return;
         }
 
-
         seat.classList.add(
-            "used"
+            "bulk-pending-used"
         );
 
-
-        seat
-            .querySelector("small")
-            .textContent =
-            "使用中";
-
-
-        set(
-            ref(
-                database,
-                "seats/" + seatNumber
-            ),
-            true
+        bulkPendingSeats.push(
+            seat
         );
-
 
         return;
     }
 
 
     // =================================
-    // 使用中 → 空席
+    // 使用中 → 空席 の仮選択
     // =================================
 
     if (
@@ -2147,23 +2253,12 @@ function applyBulkSeatChange(seat) {
             return;
         }
 
-
-        seat.classList.remove(
-            "used"
+        seat.classList.add(
+            "bulk-pending-empty"
         );
 
-
-        seat
-            .querySelector("small")
-            .textContent =
-            "空席";
-
-
-        remove(
-            ref(
-                database,
-                "seats/" + seatNumber
-            )
+        bulkPendingSeats.push(
+            seat
         );
     }
 }
