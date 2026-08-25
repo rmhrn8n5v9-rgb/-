@@ -1,0 +1,796 @@
+/* =========================================
+   全体
+========================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+
+:root {
+    --seat-width: 55px;
+    --seat-height: 48px;
+    --seat-gap: 4px;
+}
+
+
+body {
+    margin: 0;
+    padding: 20px;
+
+    font-family: Arial, sans-serif;
+
+    background: #f2f2f2;
+
+    text-align: center;
+}
+
+
+h1 {
+    margin-top: 5px;
+    margin-bottom: 25px;
+}
+
+
+/* =========================================
+   受付エリア
+========================================= */
+
+.reception-wrapper {
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: flex-start;
+
+    gap: 20px;
+
+    max-width: 1400px;
+
+    margin: 0 auto 30px;
+}
+
+
+/* 各受付 */
+
+.reception {
+
+    width: 50%;
+
+    max-width: 650px;
+
+    padding: 20px;
+
+    background: white;
+
+    border-radius: 15px;
+
+    box-shadow:
+        0 2px 8px rgba(0,0,0,0.15);
+}
+
+
+/* ACEG */
+
+.aceg-reception {
+    border-top: 6px solid #1976d2;
+}
+
+
+/* BDFH */
+
+.bdfh-reception {
+    border-top: 6px solid #7b1fa2;
+}
+
+
+.reception h2 {
+
+    margin-top: 0;
+    margin-bottom: 20px;
+
+    font-size: 24px;
+}
+
+
+/* =========================================
+   人数入力
+========================================= */
+
+.reception-area {
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin-bottom: 15px;
+
+    font-size: 22px;
+
+    font-weight: bold;
+}
+
+
+.customer-count {
+
+    width: 100px;
+
+    height: 55px;
+
+    padding: 5px;
+
+    font-size: 24px;
+
+    font-weight: bold;
+
+    text-align: center;
+
+    border: 2px solid #ccc;
+
+    border-radius: 10px;
+}
+
+
+/* =========================================
+   受付ボタン
+========================================= */
+
+.reception-button {
+
+    height: 55px;
+
+    padding: 0 35px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #1976d2;
+
+    color: white;
+
+    font-size: 20px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+
+.bdfh-reception .reception-button {
+    background: #7b1fa2;
+}
+
+
+/* =========================================
+   人数集計
+========================================= */
+
+.people-summary {
+
+    margin: 15px 0;
+
+    padding: 15px;
+
+    background: #f7f7f7;
+
+    border-radius: 10px;
+
+    font-size: 20px;
+
+    font-weight: bold;
+
+    line-height: 1.8;
+}
+
+
+.people-summary div {
+
+    padding: 2px 0;
+}
+
+
+.total-count {
+
+    margin-top: 5px;
+
+    padding-top: 7px !important;
+
+    border-top: 2px solid #ddd;
+
+    font-size: 24px;
+}
+
+
+/* =========================================
+   次のお客様を案内
+========================================= */
+
+.next-button {
+
+    width: 90%;
+
+    max-width: 500px;
+
+    padding: 18px;
+
+    margin: 8px 5px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #ff9800;
+
+    color: white;
+
+    font-size: 20px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+
+/* =========================================
+   現在案内中
+========================================= */
+
+.current-customer {
+
+    margin: 15px 0;
+
+    padding: 15px;
+
+    background: #fff3e0;
+
+    border-radius: 10px;
+
+    font-size: 18px;
+
+    font-weight: bold;
+
+    line-height: 1.7;
+}
+
+
+/* =========================================
+   座席確定ボタン
+========================================= */
+
+.confirm-button {
+
+    width: 90%;
+
+    max-width: 500px;
+
+    padding: 18px;
+
+    margin: 8px 5px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #4caf50;
+
+    color: white;
+
+    font-size: 20px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+
+.confirm-button:disabled {
+
+    background: #aaa;
+
+    cursor: default;
+
+    opacity: 0.7;
+}
+
+
+/* =========================================
+   待ち一覧
+========================================= */
+
+.waiting-list {
+
+    margin-top: 20px;
+
+    padding: 10px;
+
+    text-align: left;
+
+    font-size: 17px;
+
+    background: #fafafa;
+
+    border-radius: 8px;
+}
+
+
+.waiting-item {
+
+    padding: 10px;
+
+    border-bottom: 1px solid #ddd;
+}
+
+
+.waiting-item:last-child {
+    border-bottom: none;
+}
+
+
+/* =========================================
+   舞台
+========================================= */
+
+.stage {
+
+    width: 80%;
+
+    margin: 0 auto 25px;
+
+    padding: 15px;
+
+    background: #333;
+
+    color: white;
+
+    font-size: 22px;
+
+    font-weight: bold;
+
+    border-radius: 10px;
+}
+
+
+/* =========================================
+   座席表全体
+========================================= */
+
+#seats {
+
+    width: 100%;
+
+    overflow-x: auto;
+
+    overflow-y: visible;
+
+    padding: 10px 0 30px;
+
+    -webkit-overflow-scrolling: touch;
+}
+
+
+/* =========================================
+   A-B
+   C-D
+   E-F
+   G-H
+========================================= */
+
+.block-pair {
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: flex-start;
+
+    gap: 60px;
+
+    margin-bottom: 35px;
+
+    min-width: max-content;
+}
+
+
+/* =========================================
+   各ブロック
+========================================= */
+
+.block {
+
+    width: max-content;
+
+    padding: 12px;
+
+    background: white;
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 2px 8px rgba(0,0,0,0.15);
+}
+
+
+/* =========================================
+   ブロック名
+========================================= */
+
+.block-title {
+
+    margin-bottom: 12px;
+
+    padding: 8px;
+
+    background: #eeeeee;
+
+    border-radius: 8px;
+
+    font-size: 20px;
+
+    font-weight: bold;
+
+    text-align: center;
+}
+
+
+/* =========================================
+   1列分
+
+   gridにすることで
+   座席番号の縦位置を揃える
+========================================= */
+
+.seat-row {
+
+    display: grid;
+
+    gap: var(--seat-gap);
+
+    width: max-content;
+
+    min-height: var(--seat-height);
+
+    margin-bottom: 5px;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================
+   座席
+========================================= */
+
+.seat {
+
+    width: var(--seat-width);
+
+    height: var(--seat-height);
+
+    padding: 3px;
+
+    border: none;
+
+    border-radius: 6px;
+
+    background: #4caf50;
+
+    color: white;
+
+    cursor: pointer;
+
+    flex-shrink: 0;
+
+
+    /*
+       ★重要
+
+       iPad・スマホで
+       指をなぞって座席選択
+    */
+
+    touch-action: none;
+
+
+    /*
+       ★重要
+
+       PCでドラッグした時に
+       座席番号の文字が
+       選択されるのを防ぐ
+    */
+
+    user-select: none;
+
+    -webkit-user-select: none;
+
+
+    /*
+       長押しメニュー対策
+    */
+
+    -webkit-touch-callout: none;
+}
+
+
+/* PCでマウスを乗せた時 */
+
+.seat:hover {
+
+    filter: brightness(0.92);
+}
+
+
+/* =========================================
+   座席番号
+========================================= */
+
+.seat span {
+
+    display: block;
+
+    font-size: 10px;
+
+    line-height: 12px;
+
+    pointer-events: none;
+
+    user-select: none;
+}
+
+
+/* =========================================
+   空席 / 使用中
+========================================= */
+
+.seat small {
+
+    display: block;
+
+    margin-top: 2px;
+
+    font-size: 9px;
+
+    pointer-events: none;
+
+    user-select: none;
+}
+
+
+/* =========================================
+   ACEG 選択中
+========================================= */
+
+.seat.selected-aceg {
+
+    background: #2196f3;
+
+    outline: 3px solid #0d47a1;
+
+    outline-offset: -2px;
+}
+
+
+/* =========================================
+   BDFH 選択中
+========================================= */
+
+.seat.selected-bdfh {
+
+    background: #9c27b0;
+
+    outline: 3px solid #4a148c;
+
+    outline-offset: -2px;
+}
+
+
+/* =========================================
+   使用中
+========================================= */
+
+.seat.used {
+
+    background: #e53935;
+
+    outline: none;
+}
+
+
+/* =========================================
+   後方
+========================================= */
+
+.back {
+
+    width: 80%;
+
+    margin: 10px auto;
+
+    padding: 10px;
+
+    font-size: 18px;
+
+    color: #555;
+}
+
+
+/* =========================================
+   iPad・小さめPC
+========================================= */
+
+@media (max-width: 1100px) {
+
+    body {
+        padding: 10px;
+    }
+
+
+    .reception-wrapper {
+
+        gap: 10px;
+    }
+
+
+    .reception {
+
+        padding: 15px;
+    }
+
+
+    .block-pair {
+
+        justify-content: flex-start;
+
+        gap: 40px;
+    }
+
+
+    #seats {
+
+        overflow-x: auto;
+    }
+}
+
+
+/* =========================================
+   スマホ
+========================================= */
+
+@media (max-width: 700px) {
+
+    body {
+        padding: 8px;
+    }
+
+
+    h1 {
+
+        font-size: 24px;
+    }
+
+
+    /* 受付を上下にする */
+
+    .reception-wrapper {
+
+        display: block;
+    }
+
+
+    .reception {
+
+        width: 100%;
+
+        max-width: none;
+
+        margin-bottom: 20px;
+    }
+
+
+    .reception h2 {
+
+        font-size: 21px;
+    }
+
+
+    .reception-area {
+
+        font-size: 18px;
+    }
+
+
+    .customer-count {
+
+        width: 80px;
+
+        height: 50px;
+
+        font-size: 21px;
+    }
+
+
+    .reception-button {
+
+        height: 50px;
+
+        padding: 0 25px;
+
+        font-size: 18px;
+    }
+
+
+    .next-button,
+    .confirm-button {
+
+        width: 100%;
+
+        font-size: 18px;
+    }
+
+
+    .people-summary {
+
+        font-size: 18px;
+    }
+
+
+    .total-count {
+
+        font-size: 21px;
+    }
+
+
+    /* 舞台 */
+
+    .stage {
+
+        width: 95%;
+
+        font-size: 18px;
+    }
+
+
+    /* 座席ブロック */
+
+    .block-pair {
+
+        justify-content: flex-start;
+
+        gap: 25px;
+    }
+
+
+    .block {
+
+        padding: 7px;
+    }
+
+
+    /* 座席 */
+
+    :root {
+
+        --seat-width: 48px;
+
+        --seat-height: 45px;
+
+        --seat-gap: 3px;
+    }
+
+
+    .seat span {
+
+        font-size: 9px;
+    }
+
+
+    .seat small {
+
+        font-size: 8px;
+    }
+}

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>座席管理システム</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <h1>座席管理システム</h1>
+
+    <div class="reception-wrapper">
+
+        <!-- ACEG受付 -->
+        <div class="reception aceg-reception">
+
+            <h2>ACEGブロック受付</h2>
+
+            <div class="reception-area">
+                <input
+                    id="acegCustomerCount"
+                    class="customer-count"
+                    type="number"
+                    min="1"
+                    value="1"
+                >
+
+                <span>名</span>
+
+                <button
+                    id="acegReceptionButton"
+                    class="reception-button"
+                >
+                    受付
+                </button>
+            </div>
+
+            <div class="people-summary">
+
+    <div>
+        確定人数：
+        <span id="acegConfirmedCount">0</span>人
+    </div>
+
+    <div>
+        待ち人数：
+        <span id="acegWaitingCount">0</span>人
+    </div>
+
+    <div class="total-count">
+        合計人数：
+        <span id="acegTotalCount">0</span>人
+    </div>
+
+</div>
+            <button
+                id="acegNextButton"
+                class="next-button"
+            >
+                次のお客様を案内
+            </button>
+
+            <div
+                id="acegCurrentCustomer"
+                class="current-customer"
+            >
+                現在案内中のお客様はいません
+            </div>
+
+            <button
+                id="acegConfirmButton"
+                class="confirm-button"
+                disabled
+            >
+                座席を確定
+            </button>
+
+            <div
+                id="acegWaitingList"
+                class="waiting-list"
+            >
+                待ちはありません
+            </div>
+
+        </div>
+
+
+        <!-- BDFH受付 -->
+        <div class="reception bdfh-reception">
+
+            <h2>BDFHブロック受付</h2>
+
+            <div class="reception-area">
+                <input
+                    id="bdfhCustomerCount"
+                    class="customer-count"
+                    type="number"
+                    min="1"
+                    value="1"
+                >
+
+                <span>名</span>
+
+                <button
+                    id="bdfhReceptionButton"
+                    class="reception-button"
+                >
+                    受付
+                </button>
+            </div>
+
+           <div class="people-summary">
+
+    <div>
+        確定人数：
+        <span id="bdfhConfirmedCount">0</span>人
+    </div>
+
+    <div>
+        待ち人数：
+        <span id="bdfhWaitingCount">0</span>人
+    </div>
+
+    <div class="total-count">
+        合計人数：
+        <span id="bdfhTotalCount">0</span>人
+    </div>
+
+</div>
+
+            <button
+                id="bdfhNextButton"
+                class="next-button"
+            >
+                次のお客様を案内
+            </button>
+
+            <div
+                id="bdfhCurrentCustomer"
+                class="current-customer"
+            >
+                現在案内中のお客様はいません
+            </div>
+
+            <button
+                id="bdfhConfirmButton"
+                class="confirm-button"
+                disabled
+            >
+                座席を確定
+            </button>
+
+            <div
+                id="bdfhWaitingList"
+                class="waiting-list"
+            >
+                待ちはありません
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="stage">
+        舞台側
+    </div>
+
+
+    <div id="seats"></div>
+
+
+    <div class="back">
+        後方
+    </div>
+
+
+    <script src="script.js" defer></script>
+
+</body>
+</html>
