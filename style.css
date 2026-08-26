@@ -1556,13 +1556,124 @@ h1 {
     }
 
 }
-/* =====================================
-   受付エリアをスクロールについてこさせる
-===================================== */
+/* =========================================
+   受付ボタンをスクロールについてこさせる
+========================================= */
 
-.reception-area {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    background: white;
+/* ACEG受付 */
+.aceg-reception .reception-area {
+    position: fixed;
+
+    top: 10px;
+    left: 10px;
+
+    z-index: 15000;
+
+    margin: 0;
+    padding: 8px 10px;
+
+    background: rgba(255, 255, 255, 0.96);
+
+    border: 3px solid #1976d2;
+    border-radius: 12px;
+
+    box-shadow:
+        0 3px 12px rgba(0,0,0,0.25);
+}
+
+
+/* BDFH受付 */
+.bdfh-reception .reception-area {
+    position: fixed;
+
+    top: 10px;
+    right: 10px;
+
+    z-index: 15000;
+
+    margin: 0;
+    padding: 8px 10px;
+
+    background: rgba(255, 255, 255, 0.96);
+
+    border: 3px solid #7b1fa2;
+    border-radius: 12px;
+
+    box-shadow:
+        0 3px 12px rgba(0,0,0,0.25);
+}
+
+
+/* 固定受付の入力欄 */
+.aceg-reception .reception-area .customer-count,
+.bdfh-reception .reception-area .customer-count {
+    width: 85px;
+    height: 46px;
+
+    font-size: 21px;
+}
+
+
+/* 固定受付のボタン */
+.aceg-reception .reception-area .reception-button,
+.bdfh-reception .reception-area .reception-button {
+    height: 46px;
+
+    padding: 0 22px;
+
+    font-size: 18px;
+}
+
+
+/* =========================================
+   スマホ
+========================================= */
+
+@media (max-width: 700px) {
+
+    .aceg-reception .reception-area,
+    .bdfh-reception .reception-area {
+        top: 6px;
+
+        width: calc(50% - 9px);
+
+        padding: 5px;
+
+        gap: 4px;
+    }
+
+
+    .aceg-reception .reception-area {
+        left: 6px;
+    }
+
+
+    .bdfh-reception .reception-area {
+        right: 6px;
+    }
+
+
+    .aceg-reception .reception-area .customer-count,
+    .bdfh-reception .reception-area .customer-count {
+        width: 55px;
+        height: 42px;
+
+        font-size: 18px;
+    }
+
+
+    .aceg-reception .reception-area .reception-button,
+    .bdfh-reception .reception-area .reception-button {
+        height: 42px;
+
+        padding: 0 10px;
+
+        font-size: 16px;
+    }
+
+
+    .aceg-reception .reception-area span,
+    .bdfh-reception .reception-area span {
+        font-size: 14px;
+    }
 }
