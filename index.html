@@ -2,35 +2,54 @@
 <html lang="ja">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
         name="viewport"
-        content="width=device-width, initial-scale=1.0"
+        content="
+            width=device-width,
+            initial-scale=1.0,
+            maximum-scale=5.0,
+            user-scalable=yes
+        "
     >
 
-    <title>座席管理システム</title>
+    <title>
+        座席管理システム
+    </title>
 
     <link
         rel="stylesheet"
-        href="style.css?v=20"
+        href="style.css?v=30"
     >
+
 </head>
+
 
 <body>
 
-    <h1>座席管理システム</h1>
 
+    <h1>
+        座席管理システム
+    </h1>
+
+
+    <!-- =====================================
+         受付
+    ====================================== -->
 
     <div class="reception-wrapper">
 
-        <!-- =========================
-             ACEG受付
-        ========================== -->
+
+        <!-- ACEG -->
 
         <div class="reception aceg-reception">
 
-            <h2>ACEGブロック受付</h2>
+            <h2>
+                ACEGブロック受付
+            </h2>
+
 
             <div class="reception-area">
 
@@ -39,10 +58,13 @@
                     class="customer-count"
                     type="number"
                     min="1"
+                    inputmode="numeric"
                     placeholder="人数"
                 >
 
-                <span>名</span>
+                <span>
+                    名
+                </span>
 
                 <button
                     id="acegReceptionButton"
@@ -58,17 +80,26 @@
 
                 <div>
                     座席使用中人数：
-                    <span id="acegConfirmedCount">0</span>人
+                    <span id="acegConfirmedCount">
+                        0
+                    </span>
+                    人
                 </div>
 
                 <div>
                     待ち人数：
-                    <span id="acegWaitingCount">0</span>人
+                    <span id="acegWaitingCount">
+                        0
+                    </span>
+                    人
                 </div>
 
                 <div class="total-count">
                     合計人数：
-                    <span id="acegTotalCount">0</span>人
+                    <span id="acegTotalCount">
+                        0
+                    </span>
+                    人
                 </div>
 
             </div>
@@ -109,9 +140,9 @@
         </div>
 
 
-        <!-- =========================
+        <!-- =====================================
              人数差
-        ========================== -->
+        ====================================== -->
 
         <div class="people-difference">
 
@@ -136,13 +167,14 @@
         </div>
 
 
-        <!-- =========================
-             BDFH受付
-        ========================== -->
+        <!-- BDFH -->
 
         <div class="reception bdfh-reception">
 
-            <h2>BDFHブロック受付</h2>
+            <h2>
+                BDFHブロック受付
+            </h2>
+
 
             <div class="reception-area">
 
@@ -151,10 +183,13 @@
                     class="customer-count"
                     type="number"
                     min="1"
+                    inputmode="numeric"
                     placeholder="人数"
                 >
 
-                <span>名</span>
+                <span>
+                    名
+                </span>
 
                 <button
                     id="bdfhReceptionButton"
@@ -170,17 +205,26 @@
 
                 <div>
                     座席使用中人数：
-                    <span id="bdfhConfirmedCount">0</span>人
+                    <span id="bdfhConfirmedCount">
+                        0
+                    </span>
+                    人
                 </div>
 
                 <div>
                     待ち人数：
-                    <span id="bdfhWaitingCount">0</span>人
+                    <span id="bdfhWaitingCount">
+                        0
+                    </span>
+                    人
                 </div>
 
                 <div class="total-count">
                     合計人数：
-                    <span id="bdfhTotalCount">0</span>人
+                    <span id="bdfhTotalCount">
+                        0
+                    </span>
+                    人
                 </div>
 
             </div>
@@ -220,12 +264,13 @@
 
         </div>
 
+
     </div>
 
 
-    <!-- =========================
+    <!-- =====================================
          座席操作
-    ========================== -->
+    ====================================== -->
 
     <div class="seat-mode-area">
 
@@ -236,11 +281,12 @@
             範囲選択を開始
         </button>
 
+
         <div
             id="seatModeMessage"
             class="seat-mode-message"
         >
-            通常モード：座席の上からスクロールできます
+            通常モード：1本指でスクロール・2本指で拡大縮小できます
         </div>
 
 
@@ -250,6 +296,7 @@
         >
             座席入替を開始
         </button>
+
 
         <div
             id="seatMoveMessage"
@@ -261,10 +308,18 @@
     </div>
 
 
+    <!-- =====================================
+         舞台
+    ====================================== -->
+
     <div class="stage">
         舞台側
     </div>
 
+
+    <!-- =====================================
+         座席
+    ====================================== -->
 
     <div id="seats"></div>
 
@@ -274,10 +329,10 @@
     </div>
 
 
-    <!-- =========================
-         完全リセット
+    <!-- =====================================
+         全データリセット
          一番下
-    ========================== -->
+    ====================================== -->
 
     <div class="reset-area">
 
@@ -291,9 +346,9 @@
     </div>
 
 
-    <!-- =========================
-         手動範囲変更確認
-    ========================== -->
+    <!-- =====================================
+         手動範囲変更 確認バー
+    ====================================== -->
 
     <div
         id="bulkActionBar"
@@ -306,6 +361,7 @@
         >
             0席選択中
         </div>
+
 
         <div class="bulk-action-buttons">
 
@@ -328,9 +384,9 @@
     </div>
 
 
-    <!-- =========================
-         座席入替
-    ========================== -->
+    <!-- =====================================
+         座席入替 確認バー
+    ====================================== -->
 
     <div
         id="seatMoveBar"
@@ -341,6 +397,7 @@
             移動元 0席 ／ 移動先 0席
         </div>
 
+
         <div class="seat-move-actions">
 
             <button
@@ -350,6 +407,7 @@
             >
                 入替を確定
             </button>
+
 
             <button
                 id="seatMoveCancelButton"
@@ -363,9 +421,9 @@
     </div>
 
 
-    <!-- =========================
-         完全リセット確認
-    ========================== -->
+    <!-- =====================================
+         リセット確認
+    ====================================== -->
 
     <div
         id="resetConfirmArea"
@@ -378,10 +436,14 @@
                 ⚠️ 本当に全データをリセットしますか？
             </div>
 
+
             <div class="reset-description">
+
                 受付番号・待ち人数・案内中・
                 全座席の使用状況がすべて消えます。
+
             </div>
+
 
             <div class="reset-buttons">
 
@@ -391,6 +453,7 @@
                 >
                     完全リセットを確定
                 </button>
+
 
                 <button
                     id="resetCancelButton"
@@ -408,8 +471,9 @@
 
     <script
         type="module"
-        src="script.js?v=21"
+        src="script.js?v=30"
     ></script>
+
 
 </body>
 
