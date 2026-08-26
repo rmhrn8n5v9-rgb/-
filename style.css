@@ -19,8 +19,8 @@ body {
     margin: 0;
 
     padding:
-        20px
-        20px
+        10px
+        10px
         150px;
 
     font-family:
@@ -35,72 +35,95 @@ body {
 }
 
 
-h1 {
-    margin:
+/* =========================================
+   上部追従エリア
+========================================= */
+
+.top-control-panel {
+    position: sticky;
+
+    top: 0;
+
+    z-index: 10000;
+
+    padding:
+        8px
         5px
+        10px;
+
+    background:
+        rgba(242, 242, 242, 0.97);
+
+    backdrop-filter:
+        blur(8px);
+
+    -webkit-backdrop-filter:
+        blur(8px);
+
+    box-shadow:
+        0 5px 14px
+        rgba(0, 0, 0, 0.12);
+}
+
+
+.top-control-panel h1 {
+    margin:
         0
-        25px;
+        0
+        12px;
+
+    font-size: 24px;
 }
 
 
 /* =========================================
-   受付
+   受付全体
 ========================================= */
 
 .reception-wrapper {
-    display: flex;
+    display: grid;
 
-    justify-content:
-        center;
+    grid-template-columns:
+        minmax(330px, 1fr)
+        150px
+        minmax(330px, 1fr);
 
     align-items:
-        flex-start;
+        start;
 
-    gap:
-        18px;
+    gap: 18px;
 
-    max-width:
-        1500px;
+    max-width: 1500px;
 
     margin:
         0
         auto
-        25px;
+        10px;
 }
 
 
+/* =========================================
+   受付カード
+========================================= */
+
 .reception {
-    width:
-        44%;
+    padding: 15px;
 
-    max-width:
-        650px;
+    background: white;
 
-    padding:
-        20px;
-
-    background:
-        white;
-
-    border-radius:
-        15px;
+    border-radius: 15px;
 
     box-shadow:
         0
         2px
         8px
-        rgba(
-            0,
-            0,
-            0,
-            0.15
-        );
+        rgba(0, 0, 0, 0.15);
 }
 
 
 .aceg-reception {
     border-top:
-        6px
+        5px
         solid
         #1976d2;
 }
@@ -108,106 +131,87 @@ h1 {
 
 .bdfh-reception {
     border-top:
-        6px
+        5px
         solid
         #7b1fa2;
 }
 
 
 .reception h2 {
-    margin-top:
-        0;
+    margin:
+        0
+        0
+        10px;
 
-    font-size:
-        24px;
+    font-size: 21px;
 }
 
 
 /* =========================================
-   受付人数入力
+   人数入力
 ========================================= */
 
 .reception-area {
     display: flex;
 
-    justify-content:
-        center;
+    justify-content: center;
 
-    align-items:
-        center;
+    align-items: center;
 
-    gap:
-        10px;
+    gap: 8px;
 
-    margin-bottom:
-        15px;
+    margin-bottom: 10px;
 
-    font-size:
-        22px;
+    font-size: 18px;
 
-    font-weight:
-        bold;
+    font-weight: bold;
 }
 
 
 .customer-count {
-    width:
-        105px;
+    width: 90px;
 
-    height:
-        55px;
+    height: 45px;
 
-    font-size:
-        24px;
+    font-size: 20px;
 
-    font-weight:
-        bold;
+    font-weight: bold;
 
-    text-align:
-        center;
+    text-align: center;
 
     border:
         2px
         solid
         #ccc;
 
-    border-radius:
-        10px;
+    border-radius: 8px;
 }
 
 
 .reception-button {
-    height:
-        55px;
+    height: 45px;
 
     padding:
         0
-        35px;
+        26px;
 
-    border:
-        none;
+    border: none;
 
-    border-radius:
-        10px;
+    border-radius: 8px;
 
-    background:
-        #1976d2;
+    background: #1976d2;
 
-    color:
-        white;
+    color: white;
 
-    font-size:
-        20px;
+    font-size: 17px;
 
-    font-weight:
-        bold;
+    font-weight: bold;
 }
 
 
 .bdfh-reception
 .reception-button {
-    background:
-        #7b1fa2;
+    background: #7b1fa2;
 }
 
 
@@ -217,43 +221,34 @@ h1 {
 
 .people-summary {
     margin:
-        15px
+        10px
         0;
 
-    padding:
-        15px;
+    padding: 10px;
 
-    background:
-        #f7f7f7;
+    background: #f7f7f7;
 
-    border-radius:
-        10px;
+    border-radius: 9px;
 
-    font-size:
-        20px;
+    font-size: 17px;
 
-    font-weight:
-        bold;
+    font-weight: bold;
 
-    line-height:
-        1.8;
+    line-height: 1.6;
 }
 
 
 .total-count {
-    margin-top:
-        5px;
+    margin-top: 4px;
 
-    padding-top:
-        7px;
+    padding-top: 4px;
 
     border-top:
-        2px
+        1px
         solid
         #ddd;
 
-    font-size:
-        24px;
+    font-size: 20px;
 }
 
 
@@ -262,126 +257,90 @@ h1 {
 ========================================= */
 
 .people-difference {
-    align-self:
-        center;
-
-    min-width:
-        155px;
+    align-self: center;
 
     padding:
-        16px
-        12px;
+        15px
+        8px;
 
-    background:
-        white;
+    background: white;
 
-    border-radius:
-        12px;
+    border-radius: 12px;
 
     box-shadow:
         0
         2px
         8px
-        rgba(
-            0,
-            0,
-            0,
-            0.15
-        );
+        rgba(0, 0, 0, 0.15);
 }
 
 
 .difference-title {
-    font-size:
-        14px;
+    font-size: 13px;
 
-    font-weight:
-        bold;
+    font-weight: bold;
 
-    color:
-        #555;
+    color: #555;
 }
 
 
 .difference-count {
     margin:
-        6px
+        5px
         0;
 
-    font-size:
-        32px;
+    font-size: 29px;
 
-    font-weight:
-        bold;
+    font-weight: bold;
 }
 
 
 .difference-message {
-    font-size:
-        13px;
+    font-size: 12px;
 
-    font-weight:
-        bold;
-
-    line-height:
-        1.5;
+    font-weight: bold;
 }
 
 
 /* =========================================
-   受付ボタン
+   次のお客様・確定
 ========================================= */
 
 .next-button,
 .confirm-button {
-    width:
-        90%;
+    width: 90%;
 
-    max-width:
-        500px;
-
-    padding:
-        18px;
+    padding: 12px;
 
     margin:
-        8px
         5px;
 
-    border:
-        none;
+    border: none;
 
-    border-radius:
-        10px;
+    border-radius: 8px;
 
-    color:
-        white;
+    color: white;
 
-    font-size:
-        20px;
+    font-size: 17px;
 
-    font-weight:
-        bold;
+    font-weight: bold;
 }
 
 
 .next-button {
-    background:
-        #ff9800;
+    background: #ff9800;
 }
 
 
 .confirm-button {
-    background:
-        #4caf50;
+    background: #4caf50;
 }
 
 
 .confirm-button:disabled {
-    background:
-        #aaa;
+    background: #aaa;
 
-    opacity:
-        0.7;
+    opacity: 0.7;
 }
 
 
@@ -391,49 +350,42 @@ h1 {
 
 .current-customer {
     margin:
-        15px
+        8px
         0;
 
-    padding:
-        15px;
+    padding: 9px;
 
-    background:
-        #fff3e0;
+    background: #fff3e0;
 
-    border-radius:
-        10px;
+    border-radius: 8px;
 
-    font-size:
-        18px;
+    font-size: 14px;
 
-    font-weight:
-        bold;
+    font-weight: bold;
 
-    line-height:
-        1.7;
+    line-height: 1.5;
 }
 
 
 /* =========================================
-   案内待ち一覧
-   6件まで表示・7件目以降スクロール
+   待ち一覧
+   6件まで表示
 ========================================= */
 
 .waiting-list {
-    margin-top: 20px;
+    margin-top: 10px;
 
-    padding: 10px;
+    padding: 5px;
 
     text-align: left;
 
-    font-size: 17px;
+    font-size: 14px;
 
     background: #fafafa;
 
     border-radius: 8px;
 
-    /* 6件分を超えたらスクロール */
-    max-height: 390px;
+    max-height: 360px;
 
     overflow-y: auto;
 
@@ -446,151 +398,151 @@ h1 {
 .waiting-item {
     display: flex;
 
-    justify-content: space-between;
+    justify-content:
+        space-between;
 
-    align-items: center;
+    align-items:
+        center;
 
-    gap: 10px;
+    gap: 8px;
+
+    height: 58px;
 
     min-height: 58px;
 
-    padding: 10px;
+    padding:
+        7px
+        8px;
 
-    border-bottom: 1px solid #ddd;
+    border-bottom:
+        1px
+        solid
+        #ddd;
 }
 
 
-/* 最後の1件は線なし */
 .waiting-item:last-child {
     border-bottom: none;
 }
+
+
+.waiting-item span {
+    flex: 1;
+}
+
+
+.waiting-edit-button {
+    flex-shrink: 0;
+
+    min-height: 32px;
+
+    padding:
+        4px
+        8px;
+
+    border: none;
+
+    border-radius: 6px;
+
+    background: #607d8b;
+
+    color: white;
+
+    font-size: 11px;
+
+    font-weight: bold;
+}
+
+
 /* =========================================
-   操作モード
+   座席操作
 ========================================= */
 
 .seat-mode-area {
-    position:
-        sticky;
-
-    top:
-        0;
-
-    z-index:
-        5000;
+    position: static;
 
     width:
         min(
-            700px,
-            calc(
-                100% -
-                20px
-            )
+            620px,
+            calc(100% - 20px)
         );
 
     margin:
-        15px
-        auto;
+        8px
+        auto
+        0;
 
-    padding:
-        10px;
+    padding: 8px;
 
-    background:
-        rgba(
-            255,
-            255,
-            255,
-            0.95
-        );
+    background: white;
 
-    border-radius:
-        12px;
+    border-radius: 10px;
 
     box-shadow:
         0
         2px
         8px
-        rgba(
-            0,
-            0,
-            0,
-            0.2
-        );
+        rgba(0, 0, 0, 0.15);
 }
 
 
 .seat-mode-button,
 .seat-move-button {
-    width:
-        100%;
+    width: 100%;
 
-    max-width:
-        420px;
+    max-width: 420px;
 
-    min-height:
-        48px;
+    min-height: 40px;
 
-    padding:
-        14px;
+    padding: 8px;
 
     margin:
-        4px
+        3px
         0;
 
-    border:
-        none;
+    border: none;
 
-    border-radius:
-        10px;
+    border-radius: 8px;
 
-    color:
-        white;
+    color: white;
 
-    font-size:
-        18px;
+    font-size: 15px;
 
-    font-weight:
-        bold;
+    font-weight: bold;
 }
 
 
 .seat-mode-button {
-    background:
-        #1565c0;
+    background: #1565c0;
 }
 
 
 .seat-mode-button.active {
-    background:
-        #d32f2f;
+    background: #d32f2f;
 }
 
 
 .seat-move-button {
-    background:
-        #455a64;
+    background: #37474f;
 }
 
 
 .seat-move-button.active {
-    background:
-        #c62828;
+    background: #c62828;
 }
 
 
 .seat-mode-message,
 .seat-move-message {
     margin:
-        7px
+        3px
         0;
 
-    font-size:
-        14px;
+    font-size: 11px;
 
-    font-weight:
-        bold;
+    font-weight: bold;
 
-    color:
-        #555;
+    color: #555;
 }
 
 
@@ -599,56 +551,42 @@ h1 {
 ========================================= */
 
 .stage {
-    width:
-        80%;
+    width: 80%;
 
     margin:
         20px
         auto
         25px;
 
-    padding:
-        15px;
+    padding: 15px;
 
-    background:
-        #333;
+    background: #333;
 
-    color:
-        white;
+    color: white;
 
-    font-size:
-        22px;
+    font-size: 22px;
 
-    font-weight:
-        bold;
+    font-weight: bold;
 
-    border-radius:
-        10px;
+    border-radius: 10px;
 }
 
 
 /* =========================================
    座席エリア
-
-   通常：
-   1本指スクロール
-   2本指拡大縮小
 ========================================= */
 
 #seats {
-    width:
-        100%;
+    width: 100%;
 
-    overflow-x:
-        auto;
+    overflow-x: auto;
 
     padding:
         10px
         0
         30px;
 
-    -webkit-overflow-scrolling:
-        touch;
+    -webkit-overflow-scrolling: touch;
 
     touch-action:
         pan-x
@@ -657,16 +595,8 @@ h1 {
 }
 
 
-/*
-   選択・入替中は
-   1本指をJSで使用。
-
-   2本指のpinch-zoomは許可。
-*/
-
 #seats.selection-mode {
-    touch-action:
-        pinch-zoom;
+    touch-action: pinch-zoom;
 }
 
 
@@ -675,92 +605,62 @@ h1 {
 ========================================= */
 
 .block-pair {
-    display:
-        flex;
+    display: flex;
 
-    justify-content:
-        center;
+    justify-content: center;
 
-    align-items:
-        flex-start;
+    align-items: flex-start;
 
-    gap:
-        60px;
+    gap: 60px;
 
-    margin-bottom:
-        35px;
+    margin-bottom: 35px;
 
-    min-width:
-        max-content;
+    min-width: max-content;
 }
 
 
 .block {
-    width:
-        max-content;
+    width: max-content;
 
-    padding:
-        12px;
+    padding: 12px;
 
-    background:
-        white;
+    background: white;
 
-    border-radius:
-        12px;
+    border-radius: 12px;
 
     box-shadow:
         0
         2px
         8px
-        rgba(
-            0,
-            0,
-            0,
-            0.15
-        );
+        rgba(0, 0, 0, 0.15);
 }
 
 
 .block-title {
-    margin-bottom:
-        12px;
+    margin-bottom: 12px;
 
-    padding:
-        8px;
+    padding: 8px;
 
-    background:
-        #eee;
+    background: #eee;
 
-    border-radius:
-        8px;
+    border-radius: 8px;
 
-    font-size:
-        20px;
+    font-size: 20px;
 
-    font-weight:
-        bold;
+    font-weight: bold;
 }
 
 
 .seat-row {
-    display:
-        grid;
+    display: grid;
 
-    gap:
-        var(
-            --seat-gap
-        );
+    gap: var(--seat-gap);
 
-    width:
-        max-content;
+    width: max-content;
 
-    min-height:
-        var(
-            --seat-height
-        );
+    min-height: var(--seat-height);
 
-    margin-bottom:
-        5px;
+    margin-bottom: 5px;
 }
 
 
@@ -769,81 +669,58 @@ h1 {
 ========================================= */
 
 .seat {
-    width:
-        var(
-            --seat-width
-        );
+    width: var(--seat-width);
 
-    height:
-        var(
-            --seat-height
-        );
+    height: var(--seat-height);
 
-    padding:
-        3px;
+    padding: 3px;
 
-    border:
-        none;
+    border: none;
 
-    border-radius:
-        6px;
+    border-radius: 6px;
 
-    background:
-        #4caf50;
+    background: #4caf50;
 
-    color:
-        white;
+    color: white;
 
     touch-action:
         pan-x
         pan-y
         pinch-zoom;
 
-    user-select:
-        none;
+    user-select: none;
 
-    -webkit-user-select:
-        none;
+    -webkit-user-select: none;
 
-    -webkit-touch-callout:
-        none;
+    -webkit-touch-callout: none;
 }
 
 
 #seats.selection-mode
 .seat {
-    touch-action:
-        pinch-zoom;
+    touch-action: pinch-zoom;
 }
 
 
 .seat span {
-    display:
-        block;
+    display: block;
 
-    font-size:
-        10px;
+    font-size: 10px;
 
-    line-height:
-        12px;
+    line-height: 12px;
 
-    pointer-events:
-        none;
+    pointer-events: none;
 }
 
 
 .seat small {
-    display:
-        block;
+    display: block;
 
-    margin-top:
-        2px;
+    margin-top: 2px;
 
-    font-size:
-        9px;
+    font-size: 9px;
 
-    pointer-events:
-        none;
+    pointer-events: none;
 }
 
 
@@ -852,14 +729,12 @@ h1 {
 ========================================= */
 
 .seat.used {
-    color:
-        white;
+    color: white;
 }
 
 
 .seat.used-manual {
-    background:
-        #e53935;
+    background: #e53935;
 }
 
 
@@ -892,7 +767,7 @@ h1 {
 
 
 /* =========================================
-   手動範囲選択
+   手動範囲変更
 ========================================= */
 
 .seat.bulk-pending-used {
@@ -912,8 +787,7 @@ h1 {
         #ffeb3b
         !important;
 
-    color:
-        #333;
+    color: #333;
 
     outline:
         3px
@@ -932,13 +806,7 @@ h1 {
         solid
         #000;
 
-    outline-offset:
-        -3px;
-
-    transform:
-        scale(
-            1.05
-        );
+    outline-offset: -3px;
 }
 
 
@@ -956,257 +824,107 @@ h1 {
         solid
         #f57f17;
 
-    outline-offset:
-        -3px;
+    outline-offset: -3px;
 }
 
 
 /* =========================================
-   手動変更確認バー
+   下部確認バー
 ========================================= */
 
-.bulk-action-bar {
-    display:
-        none;
+.bulk-action-bar,
+.seat-move-bar {
+    display: none;
 
-    position:
-        fixed;
+    position: fixed;
 
-    left:
-        50%;
+    left: 50%;
 
-    bottom:
-        15px;
+    bottom: 15px;
 
     transform:
-        translateX(
-            -50%
-        );
+        translateX(-50%);
 
-    z-index:
-        9999;
+    z-index: 20000;
 
     width:
         min(
             600px,
-            calc(
-                100% -
-                20px
-            )
+            calc(100% - 20px)
         );
 
-    padding:
-        15px;
+    padding: 15px;
 
-    background:
-        white;
+    background: white;
 
-    border-radius:
-        15px;
+    border-radius: 15px;
 
     box-shadow:
         0
         4px
         20px
-        rgba(
-            0,
-            0,
-            0,
-            0.3
-        );
+        rgba(0, 0, 0, 0.3);
 }
 
 
-.bulk-action-bar.show {
-    display:
-        block;
+.bulk-action-bar.show,
+.seat-move-bar.show {
+    display: block;
 }
 
 
-.bulk-action-text {
-    margin-bottom:
-        10px;
+.bulk-action-text,
+#seatMoveStatus {
+    margin-bottom: 10px;
 
-    font-size:
-        19px;
+    font-size: 18px;
 
-    font-weight:
-        bold;
+    font-weight: bold;
 }
 
 
-.bulk-action-buttons {
-    display:
-        flex;
+.bulk-action-buttons,
+.seat-move-actions {
+    display: flex;
 
-    gap:
-        10px;
+    gap: 10px;
 }
 
 
 .bulk-confirm-button,
-.bulk-cancel-button {
-    flex:
-        1;
-
-    min-height:
-        48px;
-
-    padding:
-        15px;
-
-    border:
-        none;
-
-    border-radius:
-        10px;
-
-    color:
-        white;
-
-    font-size:
-        18px;
-
-    font-weight:
-        bold;
-}
-
-
-.bulk-confirm-button {
-    background:
-        #4caf50;
-}
-
-
-.bulk-cancel-button {
-    background:
-        #777;
-}
-
-
-/* =========================================
-   座席入替バー
-========================================= */
-
-.seat-move-bar {
-    display:
-        none;
-
-    position:
-        fixed;
-
-    left:
-        50%;
-
-    bottom:
-        15px;
-
-    transform:
-        translateX(
-            -50%
-        );
-
-    z-index:
-        12000;
-
-    width:
-        min(
-            600px,
-            calc(
-                100% -
-                20px
-            )
-        );
-
-    padding:
-        15px;
-
-    background:
-        white;
-
-    border-radius:
-        15px;
-
-    box-shadow:
-        0
-        4px
-        20px
-        rgba(
-            0,
-            0,
-            0,
-            0.3
-        );
-
-    font-size:
-        18px;
-
-    font-weight:
-        bold;
-}
-
-
-.seat-move-bar.show {
-    display:
-        block;
-}
-
-
-.seat-move-actions {
-    display:
-        flex;
-
-    gap:
-        10px;
-
-    margin-top:
-        10px;
-}
-
-
+.bulk-cancel-button,
 .seat-move-confirm,
 .seat-move-cancel {
-    flex:
-        1;
+    flex: 1;
 
-    min-height:
-        48px;
+    min-height: 45px;
 
-    padding:
-        15px;
+    border: none;
 
-    border:
-        none;
+    border-radius: 8px;
 
-    border-radius:
-        10px;
+    color: white;
 
-    color:
-        white;
+    font-size: 16px;
 
-    font-size:
-        17px;
-
-    font-weight:
-        bold;
+    font-weight: bold;
 }
 
 
+.bulk-confirm-button,
 .seat-move-confirm {
-    background:
-        #4caf50;
+    background: #4caf50;
+}
+
+
+.bulk-cancel-button,
+.seat-move-cancel {
+    background: #777;
 }
 
 
 .seat-move-confirm:disabled {
-    background:
-        #aaa;
-}
-
-
-.seat-move-cancel {
-    background:
-        #777;
+    background: #aaa;
 }
 
 
@@ -1215,51 +933,35 @@ h1 {
 ========================================= */
 
 .back {
-    width:
-        80%;
+    width: 80%;
 
     margin:
         10px
         auto;
 
-    padding:
-        10px;
+    padding: 10px;
 
-    font-size:
-        18px;
-
-    color:
-        #555;
+    color: #555;
 }
 
 
 /* =========================================
-   完全リセット
+   リセット
 ========================================= */
 
 .reset-area {
-    width:
-        100%;
-
-    max-width:
-        700px;
-
     margin:
         45px
         auto
         10px;
-
-    text-align:
-        center;
 }
 
 
 .reset-open-button {
-    min-height:
-        48px;
+    min-height: 46px;
 
     padding:
-        12px
+        10px
         25px;
 
     border:
@@ -1267,20 +969,15 @@ h1 {
         solid
         #d32f2f;
 
-    border-radius:
-        10px;
+    border-radius: 9px;
 
-    background:
-        white;
+    background: white;
 
-    color:
-        #d32f2f;
+    color: #d32f2f;
 
-    font-size:
-        16px;
+    font-size: 15px;
 
-    font-weight:
-        bold;
+    font-weight: bold;
 }
 
 
@@ -1289,40 +986,27 @@ h1 {
 ========================================= */
 
 .reset-confirm-area {
-    display:
-        none;
+    display: none;
 
-    position:
-        fixed;
+    position: fixed;
 
-    inset:
-        0;
+    inset: 0;
 
-    z-index:
-        20000;
+    z-index: 30000;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 20px;
 
     background:
-        rgba(
-            0,
-            0,
-            0,
-            0.55
-        );
-
-    align-items:
-        center;
-
-    justify-content:
-        center;
-
-    padding:
-        20px;
+        rgba(0, 0, 0, 0.55);
 }
 
 
 .reset-confirm-area.show {
-    display:
-        flex;
+    display: flex;
 }
 
 
@@ -1333,276 +1017,62 @@ h1 {
             100%
         );
 
-    padding:
-        25px;
+    padding: 25px;
 
-    background:
-        white;
+    background: white;
 
-    border-radius:
-        15px;
-
-    box-shadow:
-        0
-        5px
-        30px
-        rgba(
-            0,
-            0,
-            0,
-            0.35
-        );
+    border-radius: 15px;
 }
 
 
 .reset-warning {
-    margin-bottom:
-        15px;
+    margin-bottom: 15px;
 
-    color:
-        #d32f2f;
+    color: #d32f2f;
 
-    font-size:
-        22px;
+    font-size: 21px;
 
-    font-weight:
-        bold;
+    font-weight: bold;
 }
 
 
 .reset-description {
-    margin-bottom:
-        20px;
+    margin-bottom: 20px;
 
-    line-height:
-        1.7;
-
-    font-size:
-        16px;
+    line-height: 1.6;
 }
 
 
 .reset-buttons {
-    display:
-        flex;
+    display: flex;
 
-    gap:
-        10px;
+    gap: 10px;
 }
 
 
 .reset-execute-button,
 .reset-cancel-button {
-    flex:
-        1;
+    flex: 1;
 
-    min-height:
-        48px;
+    min-height: 45px;
 
-    padding:
-        15px;
+    border: none;
 
-    border:
-        none;
+    border-radius: 8px;
 
-    border-radius:
-        10px;
+    color: white;
 
-    color:
-        white;
-
-    font-size:
-        16px;
-
-    font-weight:
-        bold;
+    font-weight: bold;
 }
 
 
 .reset-execute-button {
-    background:
-        #d32f2f;
+    background: #d32f2f;
 }
 
 
 .reset-cancel-button {
-    background:
-        #777;
-}
-
-
-/* =========================================
-   スマホ
-========================================= */
-
-@media (
-    max-width:
-        700px
-) {
-.waiting-list {
-    max-height: 330px;
-}
-
-
-.waiting-item {
-    min-height: 50px;
-
-    padding: 8px;
-}
-    :root {
-        --seat-width:
-            48px;
-
-        --seat-height:
-            45px;
-
-        --seat-gap:
-            3px;
-    }
-
-
-    body {
-        padding:
-            8px
-            8px
-            160px;
-    }
-
-
-    h1 {
-        font-size:
-            24px;
-    }
-
-
-    .reception-wrapper {
-        display:
-            block;
-    }
-
-
-    .reception {
-        width:
-            100%;
-
-        max-width:
-            none;
-
-        margin-bottom:
-            15px;
-    }
-
-
-    .people-difference {
-        width:
-            100%;
-
-        margin:
-            10px
-            0
-            20px;
-    }
-
-
-    .stage {
-        width:
-            95%;
-    }
-
-
-    .block-pair {
-        justify-content:
-            flex-start;
-
-        gap:
-            25px;
-    }
-
-
-    .block {
-        padding:
-            7px;
-    }
-
-
-    .seat span {
-        font-size:
-            9px;
-    }
-
-
-    .seat small {
-        font-size:
-            8px;
-    }
-
-}
-/* =========================================
-   受付ボタンをスクロールについてこさせる
-========================================= */
-
-/* ACEG受付 */
-.aceg-reception .reception-area {
-    position: fixed;
-
-    top: 10px;
-    left: 10px;
-
-    z-index: 15000;
-
-    margin: 0;
-    padding: 8px 10px;
-
-    background: rgba(255, 255, 255, 0.96);
-
-    border: 3px solid #1976d2;
-    border-radius: 12px;
-
-    box-shadow:
-        0 3px 12px rgba(0,0,0,0.25);
-}
-
-
-/* BDFH受付 */
-.bdfh-reception .reception-area {
-    position: fixed;
-
-    top: 10px;
-    right: 10px;
-
-    z-index: 15000;
-
-    margin: 0;
-    padding: 8px 10px;
-
-    background: rgba(255, 255, 255, 0.96);
-
-    border: 3px solid #7b1fa2;
-    border-radius: 12px;
-
-    box-shadow:
-        0 3px 12px rgba(0,0,0,0.25);
-}
-
-
-/* 固定受付の入力欄 */
-.aceg-reception .reception-area .customer-count,
-.bdfh-reception .reception-area .customer-count {
-    width: 85px;
-    height: 46px;
-
-    font-size: 21px;
-}
-
-
-/* 固定受付のボタン */
-.aceg-reception .reception-area .reception-button,
-.bdfh-reception .reception-area .reception-button {
-    height: 46px;
-
-    padding: 0 22px;
-
-    font-size: 18px;
+    background: #777;
 }
 
 
@@ -1612,49 +1082,251 @@ h1 {
 
 @media (max-width: 700px) {
 
-    .aceg-reception .reception-area,
-    .bdfh-reception .reception-area {
-        top: 6px;
+    :root {
+        --seat-width: 48px;
+        --seat-height: 45px;
+        --seat-gap: 3px;
+    }
 
-        width: calc(50% - 9px);
+
+    body {
+        padding:
+            4px
+            4px
+            150px;
+    }
+
+
+    /*
+       上の受付エリア自体を
+       スクロールできるようにする
+    */
+
+    .top-control-panel {
+        max-height: 58vh;
+
+        overflow-y: auto;
+
+        padding: 4px;
+
+        -webkit-overflow-scrolling: touch;
+    }
+
+
+    .top-control-panel h1 {
+        font-size: 18px;
+
+        margin-bottom: 5px;
+    }
+
+
+    .reception-wrapper {
+        grid-template-columns:
+            minmax(0, 1fr)
+            70px
+            minmax(0, 1fr);
+
+        gap: 5px;
+
+        width: 100%;
+    }
+
+
+    .reception {
+        padding: 6px;
+
+        border-radius: 8px;
+    }
+
+
+    .reception h2 {
+        font-size: 13px;
+
+        margin-bottom: 5px;
+    }
+
+
+    .reception-area {
+        gap: 3px;
+
+        margin-bottom: 5px;
+
+        font-size: 11px;
+    }
+
+
+    .customer-count {
+        width: 48px;
+
+        height: 34px;
+
+        font-size: 14px;
+    }
+
+
+    .reception-button {
+        height: 34px;
+
+        padding:
+            0
+            8px;
+
+        font-size: 12px;
+    }
+
+
+    .people-summary {
+        margin:
+            5px
+            0;
 
         padding: 5px;
 
-        gap: 4px;
+        font-size: 10px;
+
+        line-height: 1.4;
     }
 
 
-    .aceg-reception .reception-area {
-        left: 6px;
+    .total-count {
+        font-size: 12px;
     }
 
 
-    .bdfh-reception .reception-area {
-        right: 6px;
+    .next-button,
+    .confirm-button {
+        width: 100%;
+
+        padding: 7px;
+
+        margin:
+            3px
+            0;
+
+        font-size: 11px;
     }
 
 
-    .aceg-reception .reception-area .customer-count,
-    .bdfh-reception .reception-area .customer-count {
-        width: 55px;
-        height: 42px;
+    .current-customer {
+        margin:
+            4px
+            0;
 
-        font-size: 18px;
+        padding: 5px;
+
+        font-size: 9px;
     }
 
 
-    .aceg-reception .reception-area .reception-button,
-    .bdfh-reception .reception-area .reception-button {
-        height: 42px;
+    /*
+       待ち一覧
+       6件 × 40px
+    */
 
-        padding: 0 10px;
+    .waiting-list {
+        max-height: 240px;
 
-        font-size: 16px;
+        padding: 2px;
+
+        font-size: 9px;
     }
 
 
-    .aceg-reception .reception-area span,
-    .bdfh-reception .reception-area span {
-        font-size: 14px;
+    .waiting-item {
+        height: 40px;
+
+        min-height: 40px;
+
+        padding:
+            3px
+            2px;
+
+        gap: 2px;
     }
+
+
+    .waiting-edit-button {
+        min-height: 24px;
+
+        padding:
+            2px
+            3px;
+
+        font-size: 8px;
+    }
+
+
+    .people-difference {
+        padding:
+            8px
+            2px;
+    }
+
+
+    .difference-title {
+        font-size: 8px;
+    }
+
+
+    .difference-count {
+        font-size: 17px;
+    }
+
+
+    .difference-message {
+        font-size: 7px;
+    }
+
+
+    .seat-mode-area {
+        width: 100%;
+
+        margin-top: 5px;
+
+        padding: 4px;
+    }
+
+
+    .seat-mode-button,
+    .seat-move-button {
+        min-height: 31px;
+
+        padding: 4px;
+
+        font-size: 11px;
+    }
+
+
+    .seat-mode-message,
+    .seat-move-message {
+        font-size: 8px;
+    }
+
+
+    .stage {
+        width: 95%;
+    }
+
+
+    .block-pair {
+        justify-content: flex-start;
+
+        gap: 25px;
+    }
+
+
+    .block {
+        padding: 7px;
+    }
+
+
+    .seat span {
+        font-size: 9px;
+    }
+
+
+    .seat small {
+        font-size: 8px;
+    }
+
 }
