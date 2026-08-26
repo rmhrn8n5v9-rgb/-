@@ -12,7 +12,8 @@
 
 body {
     margin: 0;
-    padding: 20px 20px 130px;
+
+    padding: 20px 20px 140px;
 
     font-family: Arial, sans-serif;
 
@@ -35,18 +36,19 @@ h1 {
     display: flex;
 
     justify-content: center;
+
     align-items: flex-start;
 
-    gap: 20px;
+    gap: 18px;
 
-    max-width: 1400px;
+    max-width: 1500px;
 
     margin: 0 auto 25px;
 }
 
 
 .reception {
-    width: 50%;
+    width: 44%;
 
     max-width: 650px;
 
@@ -78,14 +80,11 @@ h1 {
 }
 
 
-/* =========================================
-   人数入力
-========================================= */
-
 .reception-area {
     display: flex;
 
     justify-content: center;
+
     align-items: center;
 
     gap: 10px;
@@ -93,15 +92,18 @@ h1 {
     margin-bottom: 15px;
 
     font-size: 22px;
+
     font-weight: bold;
 }
 
 
 .customer-count {
     width: 100px;
+
     height: 55px;
 
     font-size: 24px;
+
     font-weight: bold;
 
     text-align: center;
@@ -126,6 +128,7 @@ h1 {
     color: white;
 
     font-size: 20px;
+
     font-weight: bold;
 }
 
@@ -134,10 +137,6 @@ h1 {
     background: #7b1fa2;
 }
 
-
-/* =========================================
-   人数集計
-========================================= */
 
 .people-summary {
     margin: 15px 0;
@@ -149,6 +148,7 @@ h1 {
     border-radius: 10px;
 
     font-size: 20px;
+
     font-weight: bold;
 
     line-height: 1.8;
@@ -165,10 +165,6 @@ h1 {
     font-size: 24px;
 }
 
-
-/* =========================================
-   ボタン
-========================================= */
 
 .next-button,
 .confirm-button {
@@ -187,6 +183,7 @@ h1 {
     color: white;
 
     font-size: 20px;
+
     font-weight: bold;
 }
 
@@ -208,10 +205,6 @@ h1 {
 }
 
 
-/* =========================================
-   案内中
-========================================= */
-
 .current-customer {
     margin: 15px 0;
 
@@ -222,15 +215,12 @@ h1 {
     border-radius: 10px;
 
     font-size: 18px;
+
     font-weight: bold;
 
     line-height: 1.7;
 }
 
-
-/* =========================================
-   待ち一覧
-========================================= */
 
 .waiting-list {
     margin-top: 20px;
@@ -248,14 +238,86 @@ h1 {
 
 
 .waiting-item {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 10px;
+
     padding: 10px;
 
     border-bottom: 1px solid #ddd;
 }
 
 
+.waiting-edit-button {
+    flex-shrink: 0;
+
+    padding: 7px 12px;
+
+    border: none;
+
+    border-radius: 7px;
+
+    background: #607d8b;
+
+    color: white;
+
+    font-size: 14px;
+
+    font-weight: bold;
+}
+
+
 /* =========================================
-   範囲選択モード
+   人数差
+========================================= */
+
+.people-difference {
+    align-self: center;
+
+    min-width: 150px;
+
+    padding: 15px 12px;
+
+    background: white;
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 2px 8px rgba(0,0,0,0.15);
+}
+
+
+.difference-title {
+    font-size: 14px;
+
+    font-weight: bold;
+
+    color: #555;
+}
+
+
+.difference-count {
+    margin: 5px 0;
+
+    font-size: 30px;
+
+    font-weight: bold;
+}
+
+
+.difference-message {
+    font-size: 13px;
+
+    font-weight: bold;
+}
+
+
+/* =========================================
+   操作モード
 ========================================= */
 
 .seat-mode-area {
@@ -280,23 +342,30 @@ h1 {
 }
 
 
-.seat-mode-button {
+.seat-mode-button,
+.seat-move-button {
     width: 100%;
 
     max-width: 420px;
 
     padding: 14px;
 
+    margin: 4px 0;
+
     border: none;
 
     border-radius: 10px;
 
-    background: #1565c0;
-
     color: white;
 
     font-size: 18px;
+
     font-weight: bold;
+}
+
+
+.seat-mode-button {
+    background: #1565c0;
 }
 
 
@@ -305,8 +374,19 @@ h1 {
 }
 
 
-.seat-mode-message {
-    margin-top: 8px;
+.seat-move-button {
+    background: #455a64;
+}
+
+
+.seat-move-button.active {
+    background: #c62828;
+}
+
+
+.seat-mode-message,
+.seat-move-message {
+    margin: 6px 0;
 
     font-size: 14px;
 
@@ -332,6 +412,7 @@ h1 {
     color: white;
 
     font-size: 22px;
+
     font-weight: bold;
 
     border-radius: 10px;
@@ -339,7 +420,7 @@ h1 {
 
 
 /* =========================================
-   座席エリア
+   座席
 ========================================= */
 
 #seats {
@@ -354,9 +435,6 @@ h1 {
     touch-action: pan-x pan-y;
 }
 
-
-/* 範囲選択モードの時だけ
-   スクロール操作を止める */
 
 #seats.selection-mode {
     touch-action: none;
@@ -420,10 +498,6 @@ h1 {
 }
 
 
-/* =========================================
-   座席
-========================================= */
-
 .seat {
     width: var(--seat-width);
 
@@ -439,24 +513,15 @@ h1 {
 
     color: white;
 
-    cursor: pointer;
-
-    /*
-       通常モードでは
-       座席の上からスクロール可能
-    */
     touch-action: pan-x pan-y;
 
     user-select: none;
+
     -webkit-user-select: none;
+
     -webkit-touch-callout: none;
 }
 
-
-/*
- 範囲選択モードのみ
- 座席ドラッグを優先
-*/
 
 #seats.selection-mode .seat {
     touch-action: none;
@@ -485,70 +550,39 @@ h1 {
 }
 
 
-/* =========================================
-   使用中
-========================================= */
-
 .seat.used {
     color: white;
 }
-/* ACEGで確定した使用中席 */
-.seat.used-aceg {
-    background: #1565c0;
-    color: white;
-}
 
-/* BDFHで確定した使用中席 */
-.seat.used-bdfh {
-    background: #7b1fa2;
-    color: white;
-}
-
-/* 手動で使用中にした席 */
-.seat.used-manual {
-    background: #e53935;
-    color: white;
-}
-
-/* =========================================
-   ACEG案内候補
-========================================= */
 
 .seat.selected-aceg {
-    background: #2196f3;
+    background: #2196f3 !important;
 
     outline: 3px solid #0d47a1;
 }
 
 
-/* =========================================
-   BDFH案内候補
-========================================= */
-
 .seat.selected-bdfh {
-    background: #9c27b0;
+    background: #9c27b0 !important;
 
     outline: 3px solid #4a148c;
 }
 
 
-/* =========================================
-   空席 → 使用中 仮選択
-========================================= */
+.seat.used-manual {
+    background: #e53935;
+}
+
 
 .seat.bulk-pending-used {
-    background: #ff9800;
+    background: #ff9800 !important;
 
     outline: 3px solid #e65100;
 }
 
 
-/* =========================================
-   使用中 → 空席 仮選択
-========================================= */
-
 .seat.bulk-pending-empty {
-    background: #ffeb3b;
+    background: #ffeb3b !important;
 
     color: #333;
 
@@ -557,7 +591,108 @@ h1 {
 
 
 /* =========================================
-   確定バー
+   座席入替
+========================================= */
+
+.seat.move-source {
+    outline: 4px solid #000;
+
+    outline-offset: -3px;
+
+    transform: scale(1.05);
+}
+
+
+.seat.move-target {
+    background: #ffd54f !important;
+
+    color: #222 !important;
+
+    outline: 4px solid #f57f17;
+
+    outline-offset: -3px;
+}
+
+
+.seat-move-bar {
+    display: none;
+
+    position: fixed;
+
+    left: 50%;
+
+    bottom: 15px;
+
+    transform: translateX(-50%);
+
+    z-index: 12000;
+
+    width: min(600px, calc(100% - 20px));
+
+    padding: 15px;
+
+    background: white;
+
+    border-radius: 15px;
+
+    box-shadow:
+        0 4px 20px rgba(0,0,0,0.3);
+
+    font-size: 18px;
+
+    font-weight: bold;
+}
+
+
+.seat-move-bar.show {
+    display: block;
+}
+
+
+.seat-move-actions {
+    display: flex;
+
+    gap: 10px;
+
+    margin-top: 10px;
+}
+
+
+.seat-move-confirm,
+.seat-move-cancel {
+    flex: 1;
+
+    padding: 15px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    color: white;
+
+    font-size: 17px;
+
+    font-weight: bold;
+}
+
+
+.seat-move-confirm {
+    background: #4caf50;
+}
+
+
+.seat-move-confirm:disabled {
+    background: #aaa;
+}
+
+
+.seat-move-cancel {
+    background: #777;
+}
+
+
+/* =========================================
+   手動変更確認
 ========================================= */
 
 .bulk-action-bar {
@@ -566,14 +701,14 @@ h1 {
     position: fixed;
 
     left: 50%;
+
     bottom: 15px;
 
     transform: translateX(-50%);
 
     z-index: 9999;
 
-    width:
-        min(600px, calc(100% - 20px));
+    width: min(600px, calc(100% - 20px));
 
     padding: 15px;
 
@@ -653,6 +788,131 @@ h1 {
 
 
 /* =========================================
+   完全リセット
+========================================= */
+
+.reset-area {
+    width: 100%;
+
+    max-width: 700px;
+
+    margin: 40px auto 10px;
+
+    text-align: center;
+}
+
+
+.reset-open-button {
+    padding: 12px 25px;
+
+    border: 2px solid #d32f2f;
+
+    border-radius: 10px;
+
+    background: white;
+
+    color: #d32f2f;
+
+    font-size: 16px;
+
+    font-weight: bold;
+}
+
+
+.reset-confirm-area {
+    display: none;
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 20000;
+
+    background: rgba(0,0,0,0.55);
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 20px;
+}
+
+
+.reset-confirm-area.show {
+    display: flex;
+}
+
+
+.reset-confirm-box {
+    width: min(500px, 100%);
+
+    padding: 25px;
+
+    background: white;
+
+    border-radius: 15px;
+
+    box-shadow:
+        0 5px 30px rgba(0,0,0,0.35);
+}
+
+
+.reset-warning {
+    margin-bottom: 15px;
+
+    color: #d32f2f;
+
+    font-size: 22px;
+
+    font-weight: bold;
+}
+
+
+.reset-description {
+    margin-bottom: 20px;
+
+    line-height: 1.7;
+
+    font-size: 16px;
+}
+
+
+.reset-buttons {
+    display: flex;
+
+    gap: 10px;
+}
+
+
+.reset-execute-button,
+.reset-cancel-button {
+    flex: 1;
+
+    padding: 15px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    color: white;
+
+    font-size: 16px;
+
+    font-weight: bold;
+}
+
+
+.reset-execute-button {
+    background: #d32f2f;
+}
+
+
+.reset-cancel-button {
+    background: #777;
+}
+
+
+/* =========================================
    スマホ
 ========================================= */
 
@@ -666,13 +926,7 @@ h1 {
 
 
     body {
-        padding:
-            8px 8px 140px;
-    }
-
-
-    h1 {
-        font-size: 24px;
+        padding: 8px 8px 150px;
     }
 
 
@@ -686,7 +940,14 @@ h1 {
 
         max-width: none;
 
-        margin-bottom: 20px;
+        margin-bottom: 15px;
+    }
+
+
+    .people-difference {
+        width: 100%;
+
+        margin: 10px 0 20px;
     }
 
 
@@ -715,285 +976,4 @@ h1 {
     .seat small {
         font-size: 8px;
     }
-}
-.waiting-item {
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: center;
-
-    gap: 10px;
-}
-
-
-.waiting-edit-button {
-    flex-shrink: 0;
-
-    padding: 7px 12px;
-
-    border: none;
-
-    border-radius: 7px;
-
-    background: #607d8b;
-
-    color: white;
-
-    font-size: 14px;
-
-    font-weight: bold;
-
-    cursor: pointer;
-}
-/* =========================================
-   完全リセット
-========================================= */
-
-.reset-area {
-    width: 100%;
-    max-width: 700px;
-
-    margin: 20px auto;
-
-    text-align: center;
-}
-
-
-.reset-open-button {
-    padding: 12px 25px;
-
-    border: 2px solid #d32f2f;
-    border-radius: 10px;
-
-    background: white;
-
-    color: #d32f2f;
-
-    font-size: 16px;
-    font-weight: bold;
-}
-
-
-/* =========================================
-   リセット確認画面
-========================================= */
-
-.reset-confirm-area {
-    display: none;
-
-    position: fixed;
-
-    inset: 0;
-
-    z-index: 20000;
-
-    background:
-        rgba(0, 0, 0, 0.55);
-
-    align-items: center;
-    justify-content: center;
-
-    padding: 20px;
-}
-
-
-.reset-confirm-area.show {
-    display: flex;
-}
-
-
-.reset-confirm-box {
-    width: min(500px, 100%);
-
-    padding: 25px;
-
-    background: white;
-
-    border-radius: 15px;
-
-    box-shadow:
-        0 5px 30px
-        rgba(0, 0, 0, 0.35);
-}
-
-
-.reset-warning {
-    margin-bottom: 15px;
-
-    color: #d32f2f;
-
-    font-size: 22px;
-    font-weight: bold;
-}
-
-
-.reset-description {
-    margin-bottom: 20px;
-
-    line-height: 1.7;
-
-    font-size: 16px;
-}
-
-
-.reset-buttons {
-    display: flex;
-
-    gap: 10px;
-}
-
-
-.reset-execute-button,
-.reset-cancel-button {
-    flex: 1;
-
-    padding: 15px;
-
-    border: none;
-    border-radius: 10px;
-
-    color: white;
-
-    font-size: 16px;
-    font-weight: bold;
-}
-
-
-.reset-execute-button {
-    background: #d32f2f;
-}
-
-
-.reset-cancel-button {
-    background: #777;
-}
-/* =========================================
-   座席入替
-========================================= */
-
-.seat-move-button {
-    width: 100%;
-    max-width: 420px;
-
-    margin-top: 8px;
-    padding: 14px;
-
-    border: none;
-    border-radius: 10px;
-
-    background: #455a64;
-    color: white;
-
-    font-size: 18px;
-    font-weight: bold;
-}
-
-
-.seat-move-button.active {
-    background: #c62828;
-}
-
-
-.seat-move-message {
-    margin-top: 6px;
-
-    font-size: 14px;
-    font-weight: bold;
-}
-
-
-/* 移動元 */
-
-.seat.move-source {
-    outline: 4px solid #000;
-    outline-offset: -3px;
-
-    transform: scale(1.05);
-}
-
-
-/* 移動先 */
-
-.seat.move-target {
-    background: #ffd54f !important;
-    color: #222 !important;
-
-    outline: 4px solid #f57f17;
-    outline-offset: -3px;
-}
-
-
-/* 下の確定バー */
-
-.seat-move-bar {
-    display: none;
-
-    position: fixed;
-
-    left: 50%;
-    bottom: 15px;
-
-    transform: translateX(-50%);
-
-    z-index: 12000;
-
-    width: min(600px, calc(100% - 20px));
-
-    padding: 15px;
-
-    background: white;
-
-    border-radius: 15px;
-
-    box-shadow:
-        0 4px 20px rgba(0,0,0,0.3);
-
-    font-size: 18px;
-    font-weight: bold;
-}
-
-
-.seat-move-bar.show {
-    display: block;
-}
-
-
-.seat-move-actions {
-    display: flex;
-
-    gap: 10px;
-
-    margin-top: 10px;
-}
-
-
-.seat-move-confirm,
-.seat-move-cancel {
-    flex: 1;
-
-    padding: 15px;
-
-    border: none;
-    border-radius: 10px;
-
-    color: white;
-
-    font-size: 17px;
-    font-weight: bold;
-}
-
-
-.seat-move-confirm {
-    background: #4caf50;
-}
-
-
-.seat-move-confirm:disabled {
-    background: #aaa;
-}
-
-
-.seat-move-cancel {
-    background: #777;
 }
