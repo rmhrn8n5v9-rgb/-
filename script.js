@@ -3790,8 +3790,38 @@ function updatePeopleSummary(
             0;
 
 
-    const confirmedPeople =
-        group.confirmedCount;
+    // =====================================
+// 使用中座席数
+// =====================================
+
+let usedSeatCount = 0;
+
+
+group.blocks.forEach(
+    blockName => {
+
+        const block =
+            document.querySelector(
+                ".block-" +
+                blockName
+            );
+
+
+        if (!block) {
+            return;
+        }
+
+
+        usedSeatCount +=
+            block.querySelectorAll(
+                ".seat.used"
+            ).length;
+    }
+);
+
+
+const confirmedPeople =
+    usedSeatCount;
 
 
     const totalPeople =
@@ -4170,6 +4200,14 @@ onValue(
 
                     const seatNumber =
                         seat
+            // 使用中座席人数を更新
+updatePeopleSummary(
+    "ACEG"
+);
+
+updatePeopleSummary(
+    "BDFH"
+);
                             .querySelector(
                                 "span"
                             )
