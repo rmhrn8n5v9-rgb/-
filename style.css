@@ -10,21 +10,36 @@
 }
 
 
+html {
+    touch-action: manipulation;
+}
+
+
 body {
     margin: 0;
 
-    padding: 20px 20px 140px;
+    padding:
+        20px
+        20px
+        150px;
 
-    font-family: Arial, sans-serif;
+    font-family:
+        Arial,
+        sans-serif;
 
-    background: #f2f2f2;
+    background:
+        #f2f2f2;
 
-    text-align: center;
+    text-align:
+        center;
 }
 
 
 h1 {
-    margin: 5px 0 25px;
+    margin:
+        5px
+        0
+        25px;
 }
 
 
@@ -35,239 +50,210 @@ h1 {
 .reception-wrapper {
     display: flex;
 
-    justify-content: center;
+    justify-content:
+        center;
 
-    align-items: flex-start;
+    align-items:
+        flex-start;
 
-    gap: 18px;
+    gap:
+        18px;
 
-    max-width: 1500px;
+    max-width:
+        1500px;
 
-    margin: 0 auto 25px;
+    margin:
+        0
+        auto
+        25px;
 }
 
 
 .reception {
-    width: 44%;
+    width:
+        44%;
 
-    max-width: 650px;
+    max-width:
+        650px;
 
-    padding: 20px;
+    padding:
+        20px;
 
-    background: white;
+    background:
+        white;
 
-    border-radius: 15px;
+    border-radius:
+        15px;
 
     box-shadow:
-        0 2px 8px rgba(0,0,0,0.15);
+        0
+        2px
+        8px
+        rgba(
+            0,
+            0,
+            0,
+            0.15
+        );
 }
 
 
 .aceg-reception {
-    border-top: 6px solid #1976d2;
+    border-top:
+        6px
+        solid
+        #1976d2;
 }
 
 
 .bdfh-reception {
-    border-top: 6px solid #7b1fa2;
+    border-top:
+        6px
+        solid
+        #7b1fa2;
 }
 
 
 .reception h2 {
-    margin-top: 0;
+    margin-top:
+        0;
 
-    font-size: 24px;
+    font-size:
+        24px;
 }
 
+
+/* =========================================
+   受付人数入力
+========================================= */
 
 .reception-area {
     display: flex;
 
-    justify-content: center;
+    justify-content:
+        center;
 
-    align-items: center;
+    align-items:
+        center;
 
-    gap: 10px;
+    gap:
+        10px;
 
-    margin-bottom: 15px;
+    margin-bottom:
+        15px;
 
-    font-size: 22px;
+    font-size:
+        22px;
 
-    font-weight: bold;
+    font-weight:
+        bold;
 }
 
 
 .customer-count {
-    width: 100px;
+    width:
+        105px;
 
-    height: 55px;
+    height:
+        55px;
 
-    font-size: 24px;
+    font-size:
+        24px;
 
-    font-weight: bold;
+    font-weight:
+        bold;
 
-    text-align: center;
+    text-align:
+        center;
 
-    border: 2px solid #ccc;
+    border:
+        2px
+        solid
+        #ccc;
 
-    border-radius: 10px;
+    border-radius:
+        10px;
 }
 
 
 .reception-button {
-    height: 55px;
+    height:
+        55px;
 
-    padding: 0 35px;
+    padding:
+        0
+        35px;
 
-    border: none;
+    border:
+        none;
 
-    border-radius: 10px;
+    border-radius:
+        10px;
 
-    background: #1976d2;
+    background:
+        #1976d2;
 
-    color: white;
+    color:
+        white;
 
-    font-size: 20px;
+    font-size:
+        20px;
 
-    font-weight: bold;
+    font-weight:
+        bold;
 }
 
 
-.bdfh-reception .reception-button {
-    background: #7b1fa2;
+.bdfh-reception
+.reception-button {
+    background:
+        #7b1fa2;
 }
 
+
+/* =========================================
+   人数表示
+========================================= */
 
 .people-summary {
-    margin: 15px 0;
+    margin:
+        15px
+        0;
 
-    padding: 15px;
+    padding:
+        15px;
 
-    background: #f7f7f7;
+    background:
+        #f7f7f7;
 
-    border-radius: 10px;
+    border-radius:
+        10px;
 
-    font-size: 20px;
+    font-size:
+        20px;
 
-    font-weight: bold;
+    font-weight:
+        bold;
 
-    line-height: 1.8;
+    line-height:
+        1.8;
 }
 
 
 .total-count {
-    margin-top: 5px;
+    margin-top:
+        5px;
 
-    padding-top: 7px;
+    padding-top:
+        7px;
 
-    border-top: 2px solid #ddd;
+    border-top:
+        2px
+        solid
+        #ddd;
 
-    font-size: 24px;
-}
-
-
-.next-button,
-.confirm-button {
-    width: 90%;
-
-    max-width: 500px;
-
-    padding: 18px;
-
-    margin: 8px 5px;
-
-    border: none;
-
-    border-radius: 10px;
-
-    color: white;
-
-    font-size: 20px;
-
-    font-weight: bold;
-}
-
-
-.next-button {
-    background: #ff9800;
-}
-
-
-.confirm-button {
-    background: #4caf50;
-}
-
-
-.confirm-button:disabled {
-    background: #aaa;
-
-    opacity: 0.7;
-}
-
-
-.current-customer {
-    margin: 15px 0;
-
-    padding: 15px;
-
-    background: #fff3e0;
-
-    border-radius: 10px;
-
-    font-size: 18px;
-
-    font-weight: bold;
-
-    line-height: 1.7;
-}
-
-
-.waiting-list {
-    margin-top: 20px;
-
-    padding: 10px;
-
-    text-align: left;
-
-    font-size: 17px;
-
-    background: #fafafa;
-
-    border-radius: 8px;
-}
-
-
-.waiting-item {
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: center;
-
-    gap: 10px;
-
-    padding: 10px;
-
-    border-bottom: 1px solid #ddd;
-}
-
-
-.waiting-edit-button {
-    flex-shrink: 0;
-
-    padding: 7px 12px;
-
-    border: none;
-
-    border-radius: 7px;
-
-    background: #607d8b;
-
-    color: white;
-
-    font-size: 14px;
-
-    font-weight: bold;
+    font-size:
+        24px;
 }
 
 
@@ -276,43 +262,233 @@ h1 {
 ========================================= */
 
 .people-difference {
-    align-self: center;
+    align-self:
+        center;
 
-    min-width: 150px;
+    min-width:
+        155px;
 
-    padding: 15px 12px;
+    padding:
+        16px
+        12px;
 
-    background: white;
+    background:
+        white;
 
-    border-radius: 12px;
+    border-radius:
+        12px;
 
     box-shadow:
-        0 2px 8px rgba(0,0,0,0.15);
+        0
+        2px
+        8px
+        rgba(
+            0,
+            0,
+            0,
+            0.15
+        );
 }
 
 
 .difference-title {
-    font-size: 14px;
+    font-size:
+        14px;
 
-    font-weight: bold;
+    font-weight:
+        bold;
 
-    color: #555;
+    color:
+        #555;
 }
 
 
 .difference-count {
-    margin: 5px 0;
+    margin:
+        6px
+        0;
 
-    font-size: 30px;
+    font-size:
+        32px;
 
-    font-weight: bold;
+    font-weight:
+        bold;
 }
 
 
 .difference-message {
-    font-size: 13px;
+    font-size:
+        13px;
 
-    font-weight: bold;
+    font-weight:
+        bold;
+
+    line-height:
+        1.5;
+}
+
+
+/* =========================================
+   受付ボタン
+========================================= */
+
+.next-button,
+.confirm-button {
+    width:
+        90%;
+
+    max-width:
+        500px;
+
+    padding:
+        18px;
+
+    margin:
+        8px
+        5px;
+
+    border:
+        none;
+
+    border-radius:
+        10px;
+
+    color:
+        white;
+
+    font-size:
+        20px;
+
+    font-weight:
+        bold;
+}
+
+
+.next-button {
+    background:
+        #ff9800;
+}
+
+
+.confirm-button {
+    background:
+        #4caf50;
+}
+
+
+.confirm-button:disabled {
+    background:
+        #aaa;
+
+    opacity:
+        0.7;
+}
+
+
+/* =========================================
+   案内中
+========================================= */
+
+.current-customer {
+    margin:
+        15px
+        0;
+
+    padding:
+        15px;
+
+    background:
+        #fff3e0;
+
+    border-radius:
+        10px;
+
+    font-size:
+        18px;
+
+    font-weight:
+        bold;
+
+    line-height:
+        1.7;
+}
+
+
+/* =========================================
+   待ち一覧
+========================================= */
+
+.waiting-list {
+    margin-top:
+        20px;
+
+    padding:
+        10px;
+
+    text-align:
+        left;
+
+    font-size:
+        17px;
+
+    background:
+        #fafafa;
+
+    border-radius:
+        8px;
+}
+
+
+.waiting-item {
+    display: flex;
+
+    justify-content:
+        space-between;
+
+    align-items:
+        center;
+
+    gap:
+        10px;
+
+    padding:
+        10px;
+
+    border-bottom:
+        1px
+        solid
+        #ddd;
+}
+
+
+.waiting-edit-button {
+    flex-shrink:
+        0;
+
+    min-height:
+        40px;
+
+    padding:
+        7px
+        12px;
+
+    border:
+        none;
+
+    border-radius:
+        7px;
+
+    background:
+        #607d8b;
+
+    color:
+        white;
+
+    font-size:
+        14px;
+
+    font-weight:
+        bold;
 }
 
 
@@ -321,78 +497,128 @@ h1 {
 ========================================= */
 
 .seat-mode-area {
-    position: sticky;
+    position:
+        sticky;
 
-    top: 0;
+    top:
+        0;
 
-    z-index: 5000;
+    z-index:
+        5000;
 
-    width: min(700px, calc(100% - 20px));
+    width:
+        min(
+            700px,
+            calc(
+                100% -
+                20px
+            )
+        );
 
-    margin: 15px auto;
+    margin:
+        15px
+        auto;
 
-    padding: 10px;
+    padding:
+        10px;
 
-    background: rgba(255,255,255,0.95);
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.95
+        );
 
-    border-radius: 12px;
+    border-radius:
+        12px;
 
     box-shadow:
-        0 2px 8px rgba(0,0,0,0.2);
+        0
+        2px
+        8px
+        rgba(
+            0,
+            0,
+            0,
+            0.2
+        );
 }
 
 
 .seat-mode-button,
 .seat-move-button {
-    width: 100%;
+    width:
+        100%;
 
-    max-width: 420px;
+    max-width:
+        420px;
 
-    padding: 14px;
+    min-height:
+        48px;
 
-    margin: 4px 0;
+    padding:
+        14px;
 
-    border: none;
+    margin:
+        4px
+        0;
 
-    border-radius: 10px;
+    border:
+        none;
 
-    color: white;
+    border-radius:
+        10px;
 
-    font-size: 18px;
+    color:
+        white;
 
-    font-weight: bold;
+    font-size:
+        18px;
+
+    font-weight:
+        bold;
 }
 
 
 .seat-mode-button {
-    background: #1565c0;
+    background:
+        #1565c0;
 }
 
 
 .seat-mode-button.active {
-    background: #d32f2f;
+    background:
+        #d32f2f;
 }
 
 
 .seat-move-button {
-    background: #455a64;
+    background:
+        #455a64;
 }
 
 
 .seat-move-button.active {
-    background: #c62828;
+    background:
+        #c62828;
 }
 
 
 .seat-mode-message,
 .seat-move-message {
-    margin: 6px 0;
+    margin:
+        7px
+        0;
 
-    font-size: 14px;
+    font-size:
+        14px;
 
-    font-weight: bold;
+    font-weight:
+        bold;
 
-    color: #555;
+    color:
+        #555;
 }
 
 
@@ -401,21 +627,168 @@ h1 {
 ========================================= */
 
 .stage {
-    width: 80%;
+    width:
+        80%;
 
-    margin: 20px auto 25px;
+    margin:
+        20px
+        auto
+        25px;
 
-    padding: 15px;
+    padding:
+        15px;
 
-    background: #333;
+    background:
+        #333;
 
-    color: white;
+    color:
+        white;
 
-    font-size: 22px;
+    font-size:
+        22px;
 
-    font-weight: bold;
+    font-weight:
+        bold;
 
-    border-radius: 10px;
+    border-radius:
+        10px;
+}
+
+
+/* =========================================
+   座席エリア
+
+   通常：
+   1本指スクロール
+   2本指拡大縮小
+========================================= */
+
+#seats {
+    width:
+        100%;
+
+    overflow-x:
+        auto;
+
+    padding:
+        10px
+        0
+        30px;
+
+    -webkit-overflow-scrolling:
+        touch;
+
+    touch-action:
+        pan-x
+        pan-y
+        pinch-zoom;
+}
+
+
+/*
+   選択・入替中は
+   1本指をJSで使用。
+
+   2本指のpinch-zoomは許可。
+*/
+
+#seats.selection-mode {
+    touch-action:
+        pinch-zoom;
+}
+
+
+/* =========================================
+   ブロック
+========================================= */
+
+.block-pair {
+    display:
+        flex;
+
+    justify-content:
+        center;
+
+    align-items:
+        flex-start;
+
+    gap:
+        60px;
+
+    margin-bottom:
+        35px;
+
+    min-width:
+        max-content;
+}
+
+
+.block {
+    width:
+        max-content;
+
+    padding:
+        12px;
+
+    background:
+        white;
+
+    border-radius:
+        12px;
+
+    box-shadow:
+        0
+        2px
+        8px
+        rgba(
+            0,
+            0,
+            0,
+            0.15
+        );
+}
+
+
+.block-title {
+    margin-bottom:
+        12px;
+
+    padding:
+        8px;
+
+    background:
+        #eee;
+
+    border-radius:
+        8px;
+
+    font-size:
+        20px;
+
+    font-weight:
+        bold;
+}
+
+
+.seat-row {
+    display:
+        grid;
+
+    gap:
+        var(
+            --seat-gap
+        );
+
+    width:
+        max-content;
+
+    min-height:
+        var(
+            --seat-height
+        );
+
+    margin-bottom:
+        5px;
 }
 
 
@@ -423,170 +796,157 @@ h1 {
    座席
 ========================================= */
 
-#seats {
-    width: 100%;
-
-    overflow-x: auto;
-
-    padding: 10px 0 30px;
-
-    -webkit-overflow-scrolling: touch;
-
-    touch-action: pan-x pan-y;
-}
-
-
-#seats.selection-mode {
-    touch-action: none;
-}
-
-
-.block-pair {
-    display: flex;
-
-    justify-content: center;
-
-    align-items: flex-start;
-
-    gap: 60px;
-
-    margin-bottom: 35px;
-
-    min-width: max-content;
-}
-
-
-.block {
-    width: max-content;
-
-    padding: 12px;
-
-    background: white;
-
-    border-radius: 12px;
-
-    box-shadow:
-        0 2px 8px rgba(0,0,0,0.15);
-}
-
-
-.block-title {
-    margin-bottom: 12px;
-
-    padding: 8px;
-
-    background: #eee;
-
-    border-radius: 8px;
-
-    font-size: 20px;
-
-    font-weight: bold;
-}
-
-
-.seat-row {
-    display: grid;
-
-    gap: var(--seat-gap);
-
-    width: max-content;
-
-    min-height: var(--seat-height);
-
-    margin-bottom: 5px;
-}
-
-
 .seat {
-    width: var(--seat-width);
+    width:
+        var(
+            --seat-width
+        );
 
-    height: var(--seat-height);
+    height:
+        var(
+            --seat-height
+        );
 
-    padding: 3px;
+    padding:
+        3px;
 
-    border: none;
+    border:
+        none;
 
-    border-radius: 6px;
+    border-radius:
+        6px;
 
-    background: #4caf50;
+    background:
+        #4caf50;
 
-    color: white;
+    color:
+        white;
 
-    touch-action: pan-x pan-y;
+    touch-action:
+        pan-x
+        pan-y
+        pinch-zoom;
 
-    user-select: none;
+    user-select:
+        none;
 
-    -webkit-user-select: none;
+    -webkit-user-select:
+        none;
 
-    -webkit-touch-callout: none;
+    -webkit-touch-callout:
+        none;
 }
 
 
-#seats.selection-mode .seat {
-    touch-action: none;
+#seats.selection-mode
+.seat {
+    touch-action:
+        pinch-zoom;
 }
 
 
 .seat span {
-    display: block;
+    display:
+        block;
 
-    font-size: 10px;
+    font-size:
+        10px;
 
-    line-height: 12px;
+    line-height:
+        12px;
 
-    pointer-events: none;
+    pointer-events:
+        none;
 }
 
 
 .seat small {
-    display: block;
+    display:
+        block;
 
-    margin-top: 2px;
+    margin-top:
+        2px;
 
-    font-size: 9px;
+    font-size:
+        9px;
 
-    pointer-events: none;
+    pointer-events:
+        none;
 }
 
+
+/* =========================================
+   使用中
+========================================= */
 
 .seat.used {
-    color: white;
-}
-
-
-.seat.selected-aceg {
-    background: #2196f3 !important;
-
-    outline: 3px solid #0d47a1;
-}
-
-
-.seat.selected-bdfh {
-    background: #9c27b0 !important;
-
-    outline: 3px solid #4a148c;
+    color:
+        white;
 }
 
 
 .seat.used-manual {
-    background: #e53935;
+    background:
+        #e53935;
 }
 
 
-.seat.bulk-pending-used {
-    background: #ff9800 !important;
+/* =========================================
+   案内候補
+========================================= */
 
-    outline: 3px solid #e65100;
+.seat.selected-aceg {
+    background:
+        #2196f3
+        !important;
+
+    outline:
+        3px
+        solid
+        #0d47a1;
+}
+
+
+.seat.selected-bdfh {
+    background:
+        #9c27b0
+        !important;
+
+    outline:
+        3px
+        solid
+        #4a148c;
+}
+
+
+/* =========================================
+   手動範囲選択
+========================================= */
+
+.seat.bulk-pending-used {
+    background:
+        #ff9800
+        !important;
+
+    outline:
+        3px
+        solid
+        #e65100;
 }
 
 
 .seat.bulk-pending-empty {
-    background: #ffeb3b !important;
+    background:
+        #ffeb3b
+        !important;
 
-    color: #333;
+    color:
+        #333;
 
-    outline: 3px solid #f57f17;
+    outline:
+        3px
+        solid
+        #f57f17;
 }
 
 
@@ -595,178 +955,286 @@ h1 {
 ========================================= */
 
 .seat.move-source {
-    outline: 4px solid #000;
+    outline:
+        4px
+        solid
+        #000;
 
-    outline-offset: -3px;
+    outline-offset:
+        -3px;
 
-    transform: scale(1.05);
+    transform:
+        scale(
+            1.05
+        );
 }
 
 
 .seat.move-target {
-    background: #ffd54f !important;
+    background:
+        #ffd54f
+        !important;
 
-    color: #222 !important;
+    color:
+        #222
+        !important;
 
-    outline: 4px solid #f57f17;
+    outline:
+        4px
+        solid
+        #f57f17;
 
-    outline-offset: -3px;
-}
-
-
-.seat-move-bar {
-    display: none;
-
-    position: fixed;
-
-    left: 50%;
-
-    bottom: 15px;
-
-    transform: translateX(-50%);
-
-    z-index: 12000;
-
-    width: min(600px, calc(100% - 20px));
-
-    padding: 15px;
-
-    background: white;
-
-    border-radius: 15px;
-
-    box-shadow:
-        0 4px 20px rgba(0,0,0,0.3);
-
-    font-size: 18px;
-
-    font-weight: bold;
-}
-
-
-.seat-move-bar.show {
-    display: block;
-}
-
-
-.seat-move-actions {
-    display: flex;
-
-    gap: 10px;
-
-    margin-top: 10px;
-}
-
-
-.seat-move-confirm,
-.seat-move-cancel {
-    flex: 1;
-
-    padding: 15px;
-
-    border: none;
-
-    border-radius: 10px;
-
-    color: white;
-
-    font-size: 17px;
-
-    font-weight: bold;
-}
-
-
-.seat-move-confirm {
-    background: #4caf50;
-}
-
-
-.seat-move-confirm:disabled {
-    background: #aaa;
-}
-
-
-.seat-move-cancel {
-    background: #777;
+    outline-offset:
+        -3px;
 }
 
 
 /* =========================================
-   手動変更確認
+   手動変更確認バー
 ========================================= */
 
 .bulk-action-bar {
-    display: none;
+    display:
+        none;
 
-    position: fixed;
+    position:
+        fixed;
 
-    left: 50%;
+    left:
+        50%;
 
-    bottom: 15px;
+    bottom:
+        15px;
 
-    transform: translateX(-50%);
+    transform:
+        translateX(
+            -50%
+        );
 
-    z-index: 9999;
+    z-index:
+        9999;
 
-    width: min(600px, calc(100% - 20px));
+    width:
+        min(
+            600px,
+            calc(
+                100% -
+                20px
+            )
+        );
 
-    padding: 15px;
+    padding:
+        15px;
 
-    background: white;
+    background:
+        white;
 
-    border-radius: 15px;
+    border-radius:
+        15px;
 
     box-shadow:
-        0 4px 20px rgba(0,0,0,0.3);
+        0
+        4px
+        20px
+        rgba(
+            0,
+            0,
+            0,
+            0.3
+        );
 }
 
 
 .bulk-action-bar.show {
-    display: block;
+    display:
+        block;
 }
 
 
 .bulk-action-text {
-    margin-bottom: 10px;
+    margin-bottom:
+        10px;
 
-    font-size: 19px;
+    font-size:
+        19px;
 
-    font-weight: bold;
+    font-weight:
+        bold;
 }
 
 
 .bulk-action-buttons {
-    display: flex;
+    display:
+        flex;
 
-    gap: 10px;
+    gap:
+        10px;
 }
 
 
 .bulk-confirm-button,
 .bulk-cancel-button {
-    flex: 1;
+    flex:
+        1;
 
-    padding: 15px;
+    min-height:
+        48px;
 
-    border: none;
+    padding:
+        15px;
 
-    border-radius: 10px;
+    border:
+        none;
 
-    color: white;
+    border-radius:
+        10px;
 
-    font-size: 18px;
+    color:
+        white;
 
-    font-weight: bold;
+    font-size:
+        18px;
+
+    font-weight:
+        bold;
 }
 
 
 .bulk-confirm-button {
-    background: #4caf50;
+    background:
+        #4caf50;
 }
 
 
 .bulk-cancel-button {
-    background: #777;
+    background:
+        #777;
+}
+
+
+/* =========================================
+   座席入替バー
+========================================= */
+
+.seat-move-bar {
+    display:
+        none;
+
+    position:
+        fixed;
+
+    left:
+        50%;
+
+    bottom:
+        15px;
+
+    transform:
+        translateX(
+            -50%
+        );
+
+    z-index:
+        12000;
+
+    width:
+        min(
+            600px,
+            calc(
+                100% -
+                20px
+            )
+        );
+
+    padding:
+        15px;
+
+    background:
+        white;
+
+    border-radius:
+        15px;
+
+    box-shadow:
+        0
+        4px
+        20px
+        rgba(
+            0,
+            0,
+            0,
+            0.3
+        );
+
+    font-size:
+        18px;
+
+    font-weight:
+        bold;
+}
+
+
+.seat-move-bar.show {
+    display:
+        block;
+}
+
+
+.seat-move-actions {
+    display:
+        flex;
+
+    gap:
+        10px;
+
+    margin-top:
+        10px;
+}
+
+
+.seat-move-confirm,
+.seat-move-cancel {
+    flex:
+        1;
+
+    min-height:
+        48px;
+
+    padding:
+        15px;
+
+    border:
+        none;
+
+    border-radius:
+        10px;
+
+    color:
+        white;
+
+    font-size:
+        17px;
+
+    font-weight:
+        bold;
+}
+
+
+.seat-move-confirm {
+    background:
+        #4caf50;
+}
+
+
+.seat-move-confirm:disabled {
+    background:
+        #aaa;
+}
+
+
+.seat-move-cancel {
+    background:
+        #777;
 }
 
 
@@ -775,15 +1243,21 @@ h1 {
 ========================================= */
 
 .back {
-    width: 80%;
+    width:
+        80%;
 
-    margin: 10px auto;
+    margin:
+        10px
+        auto;
 
-    padding: 10px;
+    padding:
+        10px;
 
-    font-size: 18px;
+    font-size:
+        18px;
 
-    color: #555;
+    color:
+        #555;
 }
 
 
@@ -792,123 +1266,196 @@ h1 {
 ========================================= */
 
 .reset-area {
-    width: 100%;
+    width:
+        100%;
 
-    max-width: 700px;
+    max-width:
+        700px;
 
-    margin: 40px auto 10px;
+    margin:
+        45px
+        auto
+        10px;
 
-    text-align: center;
+    text-align:
+        center;
 }
 
 
 .reset-open-button {
-    padding: 12px 25px;
+    min-height:
+        48px;
 
-    border: 2px solid #d32f2f;
+    padding:
+        12px
+        25px;
 
-    border-radius: 10px;
+    border:
+        2px
+        solid
+        #d32f2f;
 
-    background: white;
+    border-radius:
+        10px;
 
-    color: #d32f2f;
+    background:
+        white;
 
-    font-size: 16px;
+    color:
+        #d32f2f;
 
-    font-weight: bold;
+    font-size:
+        16px;
+
+    font-weight:
+        bold;
 }
 
 
+/* =========================================
+   リセット確認
+========================================= */
+
 .reset-confirm-area {
-    display: none;
+    display:
+        none;
 
-    position: fixed;
+    position:
+        fixed;
 
-    inset: 0;
+    inset:
+        0;
 
-    z-index: 20000;
+    z-index:
+        20000;
 
-    background: rgba(0,0,0,0.55);
+    background:
+        rgba(
+            0,
+            0,
+            0,
+            0.55
+        );
 
-    align-items: center;
+    align-items:
+        center;
 
-    justify-content: center;
+    justify-content:
+        center;
 
-    padding: 20px;
+    padding:
+        20px;
 }
 
 
 .reset-confirm-area.show {
-    display: flex;
+    display:
+        flex;
 }
 
 
 .reset-confirm-box {
-    width: min(500px, 100%);
+    width:
+        min(
+            500px,
+            100%
+        );
 
-    padding: 25px;
+    padding:
+        25px;
 
-    background: white;
+    background:
+        white;
 
-    border-radius: 15px;
+    border-radius:
+        15px;
 
     box-shadow:
-        0 5px 30px rgba(0,0,0,0.35);
+        0
+        5px
+        30px
+        rgba(
+            0,
+            0,
+            0,
+            0.35
+        );
 }
 
 
 .reset-warning {
-    margin-bottom: 15px;
+    margin-bottom:
+        15px;
 
-    color: #d32f2f;
+    color:
+        #d32f2f;
 
-    font-size: 22px;
+    font-size:
+        22px;
 
-    font-weight: bold;
+    font-weight:
+        bold;
 }
 
 
 .reset-description {
-    margin-bottom: 20px;
+    margin-bottom:
+        20px;
 
-    line-height: 1.7;
+    line-height:
+        1.7;
 
-    font-size: 16px;
+    font-size:
+        16px;
 }
 
 
 .reset-buttons {
-    display: flex;
+    display:
+        flex;
 
-    gap: 10px;
+    gap:
+        10px;
 }
 
 
 .reset-execute-button,
 .reset-cancel-button {
-    flex: 1;
+    flex:
+        1;
 
-    padding: 15px;
+    min-height:
+        48px;
 
-    border: none;
+    padding:
+        15px;
 
-    border-radius: 10px;
+    border:
+        none;
 
-    color: white;
+    border-radius:
+        10px;
 
-    font-size: 16px;
+    color:
+        white;
 
-    font-weight: bold;
+    font-size:
+        16px;
+
+    font-weight:
+        bold;
 }
 
 
 .reset-execute-button {
-    background: #d32f2f;
+    background:
+        #d32f2f;
 }
 
 
 .reset-cancel-button {
-    background: #777;
+    background:
+        #777;
 }
 
 
@@ -916,64 +1463,96 @@ h1 {
    スマホ
 ========================================= */
 
-@media (max-width: 700px) {
+@media (
+    max-width:
+        700px
+) {
 
     :root {
-        --seat-width: 48px;
-        --seat-height: 45px;
-        --seat-gap: 3px;
+        --seat-width:
+            48px;
+
+        --seat-height:
+            45px;
+
+        --seat-gap:
+            3px;
     }
 
 
     body {
-        padding: 8px 8px 150px;
+        padding:
+            8px
+            8px
+            160px;
+    }
+
+
+    h1 {
+        font-size:
+            24px;
     }
 
 
     .reception-wrapper {
-        display: block;
+        display:
+            block;
     }
 
 
     .reception {
-        width: 100%;
+        width:
+            100%;
 
-        max-width: none;
+        max-width:
+            none;
 
-        margin-bottom: 15px;
+        margin-bottom:
+            15px;
     }
 
 
     .people-difference {
-        width: 100%;
+        width:
+            100%;
 
-        margin: 10px 0 20px;
+        margin:
+            10px
+            0
+            20px;
     }
 
 
     .stage {
-        width: 95%;
+        width:
+            95%;
     }
 
 
     .block-pair {
-        justify-content: flex-start;
+        justify-content:
+            flex-start;
 
-        gap: 25px;
+        gap:
+            25px;
     }
 
 
     .block {
-        padding: 7px;
+        padding:
+            7px;
     }
 
 
     .seat span {
-        font-size: 9px;
+        font-size:
+            9px;
     }
 
 
     .seat small {
-        font-size: 8px;
+        font-size:
+            8px;
     }
+
 }
