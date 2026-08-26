@@ -519,7 +519,6 @@ function getAisleBreaks(
     blockName
 ) {
 
-    // A・B
     if (
         ["A", "B"].includes(
             blockName
@@ -532,7 +531,6 @@ function getAisleBreaks(
     }
 
 
-    // C・D・E・F
     if (
         [
             "C",
@@ -552,7 +550,6 @@ function getAisleBreaks(
     }
 
 
-    // G・H
     if (
         ["G", "H"].includes(
             blockName
@@ -1015,10 +1012,6 @@ function createSeat(
             }
 
 
-            // =================================
-            // 座席入替
-            // =================================
-
             if (
                 seatMoveMode
             ) {
@@ -1052,7 +1045,6 @@ function createSeat(
             }
 
 
-            // 通常はスクロール
             if (
                 !selectionMode
             ) {
@@ -1091,7 +1083,6 @@ function createSeat(
                 groupName;
 
 
-            // 案内中ではない
             if (
                 !group.currentCustomer
             ) {
@@ -1121,7 +1112,6 @@ function createSeat(
             }
 
 
-            // 使用中は候補にできない
             if (
                 seat.classList.contains(
                     "used"
@@ -1414,7 +1404,6 @@ document.addEventListener(
         }
 
 
-        // 入替
         if (
             seatMoveMode &&
             moveDragging
@@ -1430,7 +1419,6 @@ document.addEventListener(
         }
 
 
-        // 範囲選択
         if (
             !selectionMode ||
             !isDragging
@@ -1767,7 +1755,6 @@ function applySeatMoveDrag(
             .textContent;
 
 
-    // 移動元
     if (
         moveDragType ===
         "source"
@@ -1852,7 +1839,6 @@ function applySeatMoveDrag(
     }
 
 
-    // 移動先
     if (
         moveDragType ===
         "target"
@@ -2658,7 +2644,12 @@ function getContinuousSeatGroups(
 
 // =====================================
 // 自動候補
-// できるだけ一塊
+//
+// ① 同じ列・同じ塊
+// ② 同じブロック内
+// ③ グループ全体
+//
+// 空席が人数分あれば必ず探す
 // =====================================
 
 function findSuggestedSeats(
@@ -2667,10 +2658,15 @@ function findSuggestedSeats(
 ) {
 
     const group =
-        groups[groupName];
+        groups[
+            groupName
+        ];
 
 
-    // まず1列で全員
+    // =================================
+    // ① 同じ列・同じまとまり
+    // =================================
+
     for (
         const blockName
         of group.blocks
@@ -2683,19 +2679,18 @@ function findSuggestedSeats(
             );
 
 
-        const rows =
-            block
-                ?.querySelectorAll(
-                    ".seat-row"
-                );
-
-
         if (
-            !rows
+            !block
         ) {
 
             continue;
         }
+
+
+        const rows =
+            block.querySelectorAll(
+                ".seat-row"
+            );
 
 
         for (
@@ -2707,6 +2702,38 @@ function findSuggestedSeats(
                 getContinuousSeatGroups(
                     row
                 );
+
+
+            sets.sort(
+                (
+                    a,
+                    b
+                ) => {
+
+                    const aNumber =
+                        Number(
+                            a[0]
+                                ?.dataset
+                                .number ||
+                            9999
+                        );
+
+
+                    const bNumber =
+                        Number(
+                            b[0]
+                                ?.dataset
+                                .number ||
+                            9999
+                        );
+
+
+                    return (
+                        aNumber -
+                        bNumber
+                    );
+                }
+            );
 
 
             for (
@@ -2729,7 +2756,10 @@ function findSuggestedSeats(
     }
 
 
-    // 同じブロック内で連続列
+    // =================================
+    // ② 同じブロック内で集める
+    // =================================
+
     for (
         const blockName
         of group.blocks
@@ -2758,48 +2788,156 @@ function findSuggestedSeats(
             );
 
 
+        const selected =
+            [];
+
+
         for (
-            let start = 0;
-            start < rows.length;
-            start++
+            const row
+            of rows
         ) {
 
-            const selected =
-                [];
+            const sets =
+                getContinuousSeatGroups(
+                    row
+                );
+
+
+            if (
+                sets.length ===
+                0
+            ) {
+
+                continue;
+            }
+
+
+            sets.sort(
+                (
+                    a,
+                    b
+                ) =>
+                    b.length -
+                    a.length
+            );
 
 
             for (
-                let r = start;
-                r < rows.length;
-                r++
+                const seat
+                of sets[0]
             ) {
 
-                const sets =
-                    getContinuousSeatGroups(
-                        rows[r]
-                    );
+                if (
+                    seat.classList.contains(
+                        "used"
+                    )
+                ) {
+
+                    continue;
+                }
 
 
-                sets.sort(
-                    (a, b) =>
-                        b.length -
-                        a.length
+                selected.push(
+                    seat
                 );
 
 
                 if (
-                    sets.length ===
-                    0
+                    selected.length ===
+                    count
                 ) {
 
-                    break;
+                    return selected;
                 }
+            }
+        }
+    }
 
+
+    // =================================
+    // ③ ACEG / BDFH 全体
+    // =================================
+
+    const selected =
+        [];
+
+
+    for (
+        const blockName
+        of group.blocks
+    ) {
+
+        const block =
+            document.querySelector(
+                ".block-" +
+                blockName
+            );
+
+
+        if (
+            !block
+        ) {
+
+            continue;
+        }
+
+
+        const rows =
+            block.querySelectorAll(
+                ".seat-row"
+            );
+
+
+        for (
+            const row
+            of rows
+        ) {
+
+            const sets =
+                getContinuousSeatGroups(
+                    row
+                );
+
+
+            sets.sort(
+                (
+                    a,
+                    b
+                ) =>
+                    b.length -
+                    a.length
+            );
+
+
+            for (
+                const set
+                of sets
+            ) {
 
                 for (
                     const seat
-                    of sets[0]
+                    of set
                 ) {
+
+                    if (
+                        seat.classList.contains(
+                            "used"
+                        )
+                    ) {
+
+                        continue;
+                    }
+
+
+                    if (
+                        selected.includes(
+                            seat
+                        )
+                    ) {
+
+                        continue;
+                    }
+
 
                     selected.push(
                         seat
@@ -2823,12 +2961,18 @@ function findSuggestedSeats(
 }
 
 
+// =====================================
+// 候補表示
+// =====================================
+
 function suggestSeats(
     groupName
 ) {
 
     const group =
-        groups[groupName];
+        groups[
+            groupName
+        ];
 
 
     clearSelected(
@@ -2857,7 +3001,14 @@ function suggestSeats(
     ) {
 
         alert(
-            "人数分の空席がありません。"
+            "空席数が不足しています。\n\n" +
+            group.currentCustomer.count +
+            "名様分の空席がありません。"
+        );
+
+
+        updateConfirmButton(
+            groupName
         );
 
 
