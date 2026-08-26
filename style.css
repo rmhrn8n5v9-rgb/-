@@ -415,83 +415,55 @@ h1 {
 
 
 /* =========================================
-   待ち一覧
+   案内待ち一覧
+   6件まで表示・7件目以降スクロール
 ========================================= */
 
 .waiting-list {
-    margin-top:
-        20px;
+    margin-top: 20px;
 
-    padding:
-        10px;
+    padding: 10px;
 
-    text-align:
-        left;
+    text-align: left;
 
-    font-size:
-        17px;
+    font-size: 17px;
 
-    background:
-        #fafafa;
+    background: #fafafa;
 
-    border-radius:
-        8px;
+    border-radius: 8px;
+
+    /* 6件分を超えたらスクロール */
+    max-height: 390px;
+
+    overflow-y: auto;
+
+    -webkit-overflow-scrolling: touch;
+
+    overscroll-behavior: contain;
 }
 
 
 .waiting-item {
     display: flex;
 
-    justify-content:
-        space-between;
+    justify-content: space-between;
 
-    align-items:
-        center;
+    align-items: center;
 
-    gap:
-        10px;
+    gap: 10px;
 
-    padding:
-        10px;
+    min-height: 58px;
 
-    border-bottom:
-        1px
-        solid
-        #ddd;
+    padding: 10px;
+
+    border-bottom: 1px solid #ddd;
 }
 
 
-.waiting-edit-button {
-    flex-shrink:
-        0;
-
-    min-height:
-        40px;
-
-    padding:
-        7px
-        12px;
-
-    border:
-        none;
-
-    border-radius:
-        7px;
-
-    background:
-        #607d8b;
-
-    color:
-        white;
-
-    font-size:
-        14px;
-
-    font-weight:
-        bold;
+/* 最後の1件は線なし */
+.waiting-item:last-child {
+    border-bottom: none;
 }
-
-
 /* =========================================
    操作モード
 ========================================= */
@@ -1467,7 +1439,16 @@ h1 {
     max-width:
         700px
 ) {
+.waiting-list {
+    max-height: 330px;
+}
 
+
+.waiting-item {
+    min-height: 50px;
+
+    padding: 8px;
+}
     :root {
         --seat-width:
             48px;
