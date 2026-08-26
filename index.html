@@ -7,27 +7,30 @@
 
     <meta
         name="viewport"
-        content="
-            width=device-width,
-            initial-scale=1.0,
-            maximum-scale=5.0,
-            user-scalable=yes
-        "
+        content="width=device-width,
+                 initial-scale=1.0,
+                 maximum-scale=5.0,
+                 user-scalable=yes"
     >
 
-    <title>
-        座席管理システム
-    </title>
+    <title>座席管理システム</title>
 
     <link
         rel="stylesheet"
-        href="style.css?v=30"
+        href="style.css?v=40"
     >
 
 </head>
 
 
 <body>
+
+
+<!-- =====================================
+     上部固定エリア
+===================================== -->
+
+<div class="top-control-panel">
 
 
     <h1>
@@ -62,9 +65,7 @@
                     placeholder="人数"
                 >
 
-                <span>
-                    名
-                </span>
+                <span>名</span>
 
                 <button
                     id="acegReceptionButton"
@@ -80,25 +81,19 @@
 
                 <div>
                     座席使用中人数：
-                    <span id="acegConfirmedCount">
-                        0
-                    </span>
+                    <span id="acegConfirmedCount">0</span>
                     人
                 </div>
 
                 <div>
                     待ち人数：
-                    <span id="acegWaitingCount">
-                        0
-                    </span>
+                    <span id="acegWaitingCount">0</span>
                     人
                 </div>
 
                 <div class="total-count">
                     合計人数：
-                    <span id="acegTotalCount">
-                        0
-                    </span>
+                    <span id="acegTotalCount">0</span>
                     人
                 </div>
 
@@ -187,9 +182,7 @@
                     placeholder="人数"
                 >
 
-                <span>
-                    名
-                </span>
+                <span>名</span>
 
                 <button
                     id="bdfhReceptionButton"
@@ -205,25 +198,19 @@
 
                 <div>
                     座席使用中人数：
-                    <span id="bdfhConfirmedCount">
-                        0
-                    </span>
+                    <span id="bdfhConfirmedCount">0</span>
                     人
                 </div>
 
                 <div>
                     待ち人数：
-                    <span id="bdfhWaitingCount">
-                        0
-                    </span>
+                    <span id="bdfhWaitingCount">0</span>
                     人
                 </div>
 
                 <div class="total-count">
                     合計人数：
-                    <span id="bdfhTotalCount">
-                        0
-                    </span>
+                    <span id="bdfhTotalCount">0</span>
                     人
                 </div>
 
@@ -308,73 +295,154 @@
     </div>
 
 
-    <!-- =====================================
-         舞台
-    ====================================== -->
+</div>
 
-    <div class="stage">
-        舞台側
+
+<!-- =====================================
+     舞台
+===================================== -->
+
+<div class="stage">
+    舞台側
+</div>
+
+
+<!-- =====================================
+     座席
+===================================== -->
+
+<div id="seats"></div>
+
+
+<div class="back">
+    後方
+</div>
+
+
+<!-- =====================================
+     全データリセット
+===================================== -->
+
+<div class="reset-area">
+
+    <button
+        id="resetOpenButton"
+        class="reset-open-button"
+    >
+        全データをリセット
+    </button>
+
+</div>
+
+
+<!-- =====================================
+     範囲選択確認
+===================================== -->
+
+<div
+    id="bulkActionBar"
+    class="bulk-action-bar"
+>
+
+    <div
+        id="bulkActionText"
+        class="bulk-action-text"
+    >
+        0席選択中
     </div>
 
 
-    <!-- =====================================
-         座席
-    ====================================== -->
-
-    <div id="seats"></div>
-
-
-    <div class="back">
-        後方
-    </div>
-
-
-    <!-- =====================================
-         全データリセット
-         一番下
-    ====================================== -->
-
-    <div class="reset-area">
+    <div class="bulk-action-buttons">
 
         <button
-            id="resetOpenButton"
-            class="reset-open-button"
+            id="bulkConfirmButton"
+            class="bulk-confirm-button"
         >
-            全データをリセット
+            確定
+        </button>
+
+        <button
+            id="bulkCancelButton"
+            class="bulk-cancel-button"
+        >
+            キャンセル
         </button>
 
     </div>
 
+</div>
 
-    <!-- =====================================
-         手動範囲変更 確認バー
-    ====================================== -->
 
-    <div
-        id="bulkActionBar"
-        class="bulk-action-bar"
-    >
+<!-- =====================================
+     座席入替
+===================================== -->
 
-        <div
-            id="bulkActionText"
-            class="bulk-action-text"
+<div
+    id="seatMoveBar"
+    class="seat-move-bar"
+>
+
+    <div id="seatMoveStatus">
+        移動元 0席 ／ 移動先 0席
+    </div>
+
+
+    <div class="seat-move-actions">
+
+        <button
+            id="seatMoveConfirmButton"
+            class="seat-move-confirm"
+            disabled
         >
-            0席選択中
+            入替を確定
+        </button>
+
+
+        <button
+            id="seatMoveCancelButton"
+            class="seat-move-cancel"
+        >
+            キャンセル
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================
+     リセット確認
+===================================== -->
+
+<div
+    id="resetConfirmArea"
+    class="reset-confirm-area"
+>
+
+    <div class="reset-confirm-box">
+
+        <div class="reset-warning">
+            ⚠️ 本当に全データをリセットしますか？
+        </div>
+
+        <div class="reset-description">
+            受付番号・待ち人数・案内中・
+            全座席の使用状況がすべて消えます。
         </div>
 
 
-        <div class="bulk-action-buttons">
+        <div class="reset-buttons">
 
             <button
-                id="bulkConfirmButton"
-                class="bulk-confirm-button"
+                id="resetExecuteButton"
+                class="reset-execute-button"
             >
-                確定
+                完全リセットを確定
             </button>
 
             <button
-                id="bulkCancelButton"
-                class="bulk-cancel-button"
+                id="resetCancelButton"
+                class="reset-cancel-button"
             >
                 キャンセル
             </button>
@@ -383,98 +451,14 @@
 
     </div>
 
-
-    <!-- =====================================
-         座席入替 確認バー
-    ====================================== -->
-
-    <div
-        id="seatMoveBar"
-        class="seat-move-bar"
-    >
-
-        <div id="seatMoveStatus">
-            移動元 0席 ／ 移動先 0席
-        </div>
+</div>
 
 
-        <div class="seat-move-actions">
-
-            <button
-                id="seatMoveConfirmButton"
-                class="seat-move-confirm"
-                disabled
-            >
-                入替を確定
-            </button>
-
-
-            <button
-                id="seatMoveCancelButton"
-                class="seat-move-cancel"
-            >
-                キャンセル
-            </button>
-
-        </div>
-
-    </div>
-
-
-    <!-- =====================================
-         リセット確認
-    ====================================== -->
-
-    <div
-        id="resetConfirmArea"
-        class="reset-confirm-area"
-    >
-
-        <div class="reset-confirm-box">
-
-            <div class="reset-warning">
-                ⚠️ 本当に全データをリセットしますか？
-            </div>
-
-
-            <div class="reset-description">
-
-                受付番号・待ち人数・案内中・
-                全座席の使用状況がすべて消えます。
-
-            </div>
-
-
-            <div class="reset-buttons">
-
-                <button
-                    id="resetExecuteButton"
-                    class="reset-execute-button"
-                >
-                    完全リセットを確定
-                </button>
-
-
-                <button
-                    id="resetCancelButton"
-                    class="reset-cancel-button"
-                >
-                    キャンセル
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <script
-        type="module"
-        src="script.js?v=32"
-    ></script>
+<script
+    type="module"
+    src="script.js?v=40"
+></script>
 
 
 </body>
-
 </html>
